@@ -1,4 +1,4 @@
-import { DeliveryType, ProductStatus, StorageMethodType } from '~/types/api/v1'
+import { DeliveryType, ProductScope, ProductStatus, StorageMethodType } from '~/types/api/v1'
 
 export const productStatuses = [
   { title: '予約販売', value: ProductStatus.ProductStatusPresale },
@@ -21,9 +21,10 @@ export const deliveryTypes = [
   { title: '冷凍便', value: DeliveryType.DeliveryTypeFrozen },
 ]
 
-export const productPublicationStatuses = [
-  { title: '公開', value: true },
-  { title: '下書き', value: false },
+export const productScopes = [
+  { title: '全体公開', value: ProductScope.ProductScopePublic },
+  { title: 'LINE限定', value: ProductScope.ProductScopeLimited },
+  { title: '下書き', value: ProductScope.ProductScopePrivate },
 ]
 
 export const productItemUnits = ['個', '瓶']

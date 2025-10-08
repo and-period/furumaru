@@ -124,6 +124,7 @@ export * from './ProducersResponse';
 export * from './Product';
 export * from './ProductMedia';
 export * from './ProductResponse';
+export * from './ProductScope';
 export * from './ProductStatus';
 export * from './ProductTag';
 export * from './ProductTagResponse';

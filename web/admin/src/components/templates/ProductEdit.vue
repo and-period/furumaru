@@ -23,12 +23,14 @@ import {
   ProductStatus,
   StorageMethodType,
   AdminType,
+  ProductScope,
 } from '~/types/api/v1'
 import type { Category, Producer, Product, ProductTag, ProductType, UpdateProductRequest } from '~/types/api/v1'
 import { getErrorMessage } from '~/lib/validations'
 import {
   prefecturesList,
-  cityList, productStatuses, productPublicationStatuses, storageMethodTypes, deliveryTypes, productItemUnits,
+  cityList, productStatuses, storageMethodTypes, deliveryTypes, productItemUnits,
+  productScopes,
 
 } from '~/constants'
 import type { PrefecturesListItem, CityListItem } from '~/constants'
@@ -65,7 +67,7 @@ const props = defineProps({
     default: (): UpdateProductRequest => ({
       name: '',
       description: '',
-      _public: false,
+      scope: ProductScope.ProductScopePublic,
       productTypeId: '',
       productTagIds: [],
       media: [],
@@ -96,7 +98,7 @@ const props = defineProps({
       id: '',
       name: '',
       description: '',
-      _public: false,
+      scope: ProductScope.ProductScopePublic,
       status: ProductStatus.ProductStatusUnknown,
       coordinatorId: '',
       producerId: '',
@@ -184,7 +186,7 @@ const endTimeDataValue = computed({
   },
 })
 const productStatus = computed<ProductStatus>(() => {
-  if (!formDataValue.value._public) {
+  if (formDataValue.value.scope === ProductScope.ProductScopePrivate) {
     return ProductStatus.ProductStatusPrivate
   }
   if (!formDataValue.value.startAt || !formDataValue.value.endAt) {
@@ -907,10 +909,10 @@ const onSubmit = async (): Promise<void> => {
             </v-alert>
 
             <v-select
-              v-model="formDataValidate._public.$model"
-              :error-messages="getErrorMessage(formDataValidate._public.$errors)"
+              v-model="formDataValidate.scope.$model"
+              :error-messages="getErrorMessage(formDataValidate.scope.$errors)"
               label="公開状況 *"
-              :items="productPublicationStatuses"
+              :items="productScopes"
               variant="outlined"
               density="comfortable"
               class="mb-4"

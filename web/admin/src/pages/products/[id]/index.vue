@@ -12,7 +12,7 @@ import {
   useProductTypeStore,
 } from '~/store'
 import { Prefecture } from '~/types'
-import { DeliveryType, StorageMethodType } from '~/types/api/v1'
+import { DeliveryType, ProductScope, StorageMethodType } from '~/types/api/v1'
 import type { UpdateProductRequest, CreateProductMedia } from '~/types/api/v1'
 
 const route = useRoute()
@@ -40,7 +40,7 @@ const selectedCategoryId = ref<string>()
 const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
-  _public: false,
+  scope: ProductScope.ProductScopePublic,
   productTypeId: '',
   productTagIds: [],
   media: [],

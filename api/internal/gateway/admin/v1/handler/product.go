@@ -325,11 +325,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	productScope := service.ProductScope(types.ProductScopePrivate)
-	if req.Public {
-		productScope = service.ProductScope(types.ProductScopePublic)
-	}
-
 	productMedia := make([]*store.CreateProductMedia, len(req.Media))
 	for i := range req.Media {
 		productMedia[i] = &store.CreateProductMedia{
@@ -346,7 +341,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		TagIDs:               req.TagIDs,
 		Name:                 req.Name,
 		Description:          req.Description,
-		Scope:                productScope.StoreEntity(),
+		Scope:                service.ProductScope(req.Scope).StoreEntity(),
 		Inventory:            req.Inventory,
 		Weight:               weight,
 		WeightUnit:           weightUnit,
@@ -433,11 +428,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	productScope := service.ProductScope(types.ProductScopePrivate)
-	if req.Public {
-		productScope = service.ProductScope(types.ProductScopePublic)
-	}
-
 	productMedia := make([]*store.UpdateProductMedia, len(req.Media))
 	for i := range req.Media {
 		productMedia[i] = &store.UpdateProductMedia{
@@ -452,7 +442,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		TagIDs:               req.TagIDs,
 		Name:                 req.Name,
 		Description:          req.Description,
-		Scope:                productScope.StoreEntity(),
+		Scope:                service.ProductScope(req.Scope).StoreEntity(),
 		Inventory:            req.Inventory,
 		Weight:               weight,
 		WeightUnit:           weightUnit,

@@ -17,11 +17,11 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { Prefecture } from '~/types'
-import { DeliveryType, ProductStatus, StorageMethodType, TimeWeekday } from '~/types/api/v1'
+import { DeliveryType, ProductScope, ProductStatus, StorageMethodType } from '~/types/api/v1'
 import type { Category, CreateProductRequest, Producer, ProductTag, ProductType } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
-import { prefecturesList, cityList, productStatuses, productPublicationStatuses, storageMethodTypes, deliveryTypes, productItemUnits } from '~/constants'
+import { prefecturesList, cityList, productStatuses, storageMethodTypes, deliveryTypes, productItemUnits, productScopes } from '~/constants'
 import type { PrefecturesListItem, CityListItem } from '~/constants'
 import {
   CreateProductValidationRules,
@@ -51,7 +51,7 @@ const props = defineProps({
     default: (): CreateProductRequest => ({
       name: '',
       description: '',
-      _public: false,
+      scope: ProductScope.ProductScopePublic,
       coordinatorId: '',
       producerId: '',
       productTypeId: '',
@@ -137,7 +137,7 @@ const endTimeDataValue = computed({
   },
 })
 const productStatusValue = computed<ProductStatus>(() => {
-  if (!formDataValue.value._public) {
+  if (formDataValue.value.scope === ProductScope.ProductScopePrivate) {
     return ProductStatus.ProductStatusPrivate
   }
   if (!formDataValue.value.startAt || !formDataValue.value.endAt) {
@@ -877,10 +877,10 @@ const onSubmit = async (): Promise<void> => {
             </v-alert>
 
             <v-select
-              v-model="formDataValidate._public.$model"
-              :error-messages="getErrorMessage(formDataValidate._public.$errors)"
+              v-model="formDataValidate.scope.$model"
+              :error-messages="getErrorMessage(formDataValidate.scope.$errors)"
               label="公開状況 *"
-              :items="productPublicationStatuses"
+              :items="productScopes"
               variant="outlined"
               density="comfortable"
               class="mb-4"
