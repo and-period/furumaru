@@ -37,7 +37,7 @@ const handleClick = () => {
       />
     </div>
     <div class="mt-2 flex w-full flex-col gap-2">
-      <p class="line-clamp-3 break-words text-[14px] tracking-[10%]">
+      <p class="line-clamp-3 break-words text-[14px] md:text-[16px] pl-2 pb-2">
         {{ title }}
       </p>
     </div>

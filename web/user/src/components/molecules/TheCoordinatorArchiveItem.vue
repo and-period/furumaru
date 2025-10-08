@@ -35,12 +35,12 @@ const handleClick = () => {
       />
     </div>
     <div class="mt-2 flex w-full flex-col gap-2 md:ml-0 md:pt-0">
-      <div class="flex items-center justify-between text-sm">
+      <div class="flex items-center justify-between text-sm pl-2">
         <span class="rounded border-2 border-main px-2 font-bold text-main">
           アーカイブ配信
         </span>
       </div>
-      <p class="line-clamp-3 break-words text-[14px] md:text-[16px]">
+      <p class="line-clamp-3 break-words text-[14px] md:text-[16px] pl-2 pb-2">
         {{ title }}
       </p>
     </div>

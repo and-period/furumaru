@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useCoordinatorStore } from '~/store/coordinator'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
+
+const tt = (str: keyof I18n['base']['top']) => {
+  return i18n.t(`base.top.${str}`)
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -9,8 +16,19 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const { coordinatorInfo, archives, lives, producers }
+const { coordinatorInfo, archives, lives, producers, videos, experiences }
   = storeToRefs(coordinatorStore)
+
+// 商品がある生産者を先に、ない生産者を後に並び替え
+const sortedProducers = computed(() => {
+  return [...producers.value].sort((a, b) => {
+    const aHasProducts = a.products && a.products.length > 0
+    const bHasProducts = b.products && b.products.length > 0
+    if (aHasProducts && !bHasProducts) return -1
+    if (!aHasProducts && bHasProducts) return 1
+    return 0
+  })
+})
 
 const id = computed<string>(() => {
   const ids = route.params.id
@@ -30,53 +48,65 @@ const handleClickProductItem = (id: string) => {
   router.push(`/items/${id}`)
 }
 
+const handleClickVideoItem = (id: string) => {
+  router.push(`/video/${id}`)
+}
+
+const handleClickExperienceItem = (id: string) => {
+  router.push(`/experiences/${id}`)
+}
+
 useAsyncData(`coordinator-${id.value}`, () => {
   return fetchCoordinator(id.value)
 })
 </script>
 
 <template>
-  <div>
-    <div class="static mx-auto w-full text-main md:max-w-[1216px]">
+  <div class="min-h-screen bg-base">
+    <div class="mx-auto w-full max-w-7xl px-4 text-main md:px-8">
       <!-- ヘッダー部分 -->
-      <div class="h-[160px] w-full md:h-[320px] md:w-[1216px]">
+      <div class="relative h-[160px] w-full overflow-hidden rounded-lg shadow-lg md:h-[320px]">
         <template v-if="coordinatorInfo.headerUrl">
           <img
-            class="h-full w-full object-cover"
+            class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
             :src="coordinatorInfo.headerUrl"
+            :alt="coordinatorInfo.marcheName + 'のヘッダー画像'"
           >
         </template>
         <template v-else>
-          <div class="h-full w-full bg-gray-200" />
+          <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
+            <div class="text-center text-gray-400">
+              <p class="text-sm">
+                ヘッダー画像
+              </p>
+            </div>
+          </div>
         </template>
       </div>
       <div
-        class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12"
+        class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12 bg-base"
       >
         <div class="col-span-2">
-          <div class="flex justify-center">
+          <div class="flex justify-center relative bottom-[30px] md:bottom-[40px]">
             <img
               :src="coordinatorInfo.thumbnailUrl"
-              class="block aspect-square w-[120px] rounded-full border-2 border-white md:w-[168px]"
+              class="block aspect-square w-[120px] rounded-full border-4 border-white md:w-[168px] shadow-lg"
             >
           </div>
           <p
-            class="mt-4 text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
+            class="relative bottom-[20px] md:bottom-[25px] text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
           >
             {{ coordinatorInfo.marcheName }}
           </p>
           <div
-            class="flex justify-center pt-2 text-[12px] tracking-[1.4px] md:text-[14px]"
+            class="relative bottom-[16px] md:bottom-[20px] flex justify-center text-[12px] tracking-[1.4px] md:text-[14px]"
           >
             <p>{{ coordinatorInfo.prefecture }}</p>
             <p class="pl-2">
               {{ coordinatorInfo.city }}
             </p>
           </div>
-          <div class="my-4 flex justify-center tracking-[2.4px]">
-            <p class="mt-auto text-[12px] md:text-[14px]">
-              コーディネータ
-            </p>
+          <div class="relative bottom-[12px] md:bottom-[16px] flex justify-center tracking-[2.4px]">
             <p class="ml-2 text-[16px] font-bold md:text-[24px]">
               {{ coordinatorInfo.username }}
             </p>
@@ -160,6 +190,23 @@ useAsyncData(`coordinator-${id.value}`, () => {
               </a>
             </div>
           </div>
+          <!-- プロモーション動画 -->
+          <div
+            v-if="coordinatorInfo.promotionVideoUrl"
+            class="mx-4 mt-4 md:mx-0"
+          >
+            <hr class="mb-4 border-dashed border-main">
+            <div class="mb-4 text-[14px] md:text-[16px]">
+              紹介動画
+            </div>
+            <video
+              class="w-full rounded-lg"
+              controls
+              :src="coordinatorInfo.promotionVideoUrl"
+            >
+              お使いのブラウザは動画再生をサポートしていません。
+            </video>
+          </div>
         </div>
         <div class="static pt-[16px] text-main md:col-span-5 md:pt-[100px]">
           <div class="flex w-full px-4 md:px-0">
@@ -169,16 +216,20 @@ useAsyncData(`coordinator-${id.value}`, () => {
             >
           </div>
           <div
-            class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
+            class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[20px] md:pt-[65px] md:bottom-8 md:mx-0 md:w-full"
           >
-            <div class="px-4">
+            <div
+              v-if="lives.length > 0"
+              class="px-4"
+            >
               <div
-                class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
-                配信中・配信予定のマルシェ
+                配信中・配信予定のライブ
               </div>
             </div>
             <div
+              v-if="lives.length > 0"
               class="mx-4 grid grid-cols-1 gap-8 bg-white pt-4 md:mx-auto md:grid-cols-2"
             >
               <the-coordinator-live-item
@@ -195,9 +246,94 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
             <div class="my-8 px-4">
               <div
-                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                v-if="experiences.length > 0"
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-blue-400 to-blue-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
               >
-                過去のマルシェ
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+                <span class="tracking-wide">体験をする</span>
+              </div>
+            </div>
+            <div
+              v-if="experiences.length > 0"
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
+            >
+              <div
+                v-for="experience in experiences"
+                :key="experience.id"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                @click="handleClickExperienceItem(experience.id)"
+              >
+                <div class="aspect-video relative overflow-hidden">
+                  <img
+                    :src="experience.thumbnailUrl"
+                    :alt="experience.title"
+                    class="w-full h-full object-cover"
+                  >
+                </div>
+                <div class="p-4">
+                  <h3 class="text-[16px] font-bold tracking-[1.6px] line-clamp-2">
+                    {{ experience.title }}
+                  </h3>
+                  <p class="text-[14px] text-gray-600 mt-2 line-clamp-2">
+                    {{ experience.description }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="my-8 px-4">
+              <div
+                v-if="videos.length > 0"
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-red-400 to-pink-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
+              >
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                </svg>
+                <span class="tracking-wide">関連動画</span>
+              </div>
+            </div>
+            <div
+              v-if="videos.length > 0"
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
+            >
+              <the-video-item
+                v-for="video in videos"
+                :id="video.id"
+                :key="video.id"
+                :title="video.title"
+                :img-src="video.thumbnailUrl"
+                :width="368"
+                :end-at="video.publishedAt"
+                :archived-stream-text="tt('archivedStreamText')"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                @click="handleClickVideoItem(video.id)"
+              />
+            </div>
+            <div class="my-8 px-4">
+              <div
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-purple-400 to-indigo-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
+              >
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="tracking-wide">過去の配信</span>
               </div>
             </div>
             <div
@@ -210,7 +346,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 :title="archive.title"
                 :img-src="archive.thumbnailUrl"
                 :width="320"
-                class="cursor-pointer"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                 @click="handleClickLiveItem(archive.scheduleId)"
               />
             </div>
@@ -236,7 +372,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             class="grid grid-cols-1 gap-x-4 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px] lg:gap-x-6"
           >
             <the-producer-list
-              v-for="producer in producers"
+              v-for="producer in sortedProducers"
               :id="producer.id"
               :key="producer.id"
               :name="producer.username"
