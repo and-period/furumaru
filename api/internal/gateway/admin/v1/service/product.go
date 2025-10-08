@@ -57,6 +57,8 @@ func NewProductScope(scope entity.ProductScope) ProductScope {
 	switch scope {
 	case entity.ProductScopePublic:
 		return ProductScope(types.ProductScopePublic)
+	case entity.ProductScopeLimited:
+		return ProductScope(types.ProductScopeLimited)
 	case entity.ProductScopePrivate:
 		return ProductScope(types.ProductScopePrivate)
 	default:

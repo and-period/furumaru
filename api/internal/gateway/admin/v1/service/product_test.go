@@ -56,6 +56,87 @@ func TestProductStatus(t *testing.T) {
 	}
 }
 
+func TestProductScope(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		scope  entity.ProductScope
+		expect types.ProductScope
+	}{
+		{
+			name:   "public",
+			scope:  entity.ProductScopePublic,
+			expect: types.ProductScopePublic,
+		},
+		{
+			name:   "limited",
+			scope:  entity.ProductScopeLimited,
+			expect: types.ProductScopeLimited,
+		},
+		{
+			name:   "private",
+			scope:  entity.ProductScopePrivate,
+			expect: types.ProductScopePrivate,
+		},
+		{
+			name:   "unknown",
+			scope:  entity.ProductScopeUnknown,
+			expect: types.ProductScopeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewProductScope(tt.scope)
+			assert.Equal(t, tt.expect, actual.Response())
+		})
+	}
+}
+
+func TestProductScope_StoreEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		scope  types.ProductScope
+		expect entity.ProductScope
+	}{
+		{
+			name:   "public",
+			scope:  types.ProductScopePublic,
+			expect: entity.ProductScopePublic,
+		},
+		{
+			name:   "limited",
+			scope:  types.ProductScopeLimited,
+			expect: entity.ProductScopeUnknown,
+		},
+		{
+			name:   "private",
+			scope:  types.ProductScopePrivate,
+			expect: entity.ProductScopePrivate,
+		},
+		{
+			name:   "unknown",
+			scope:  types.ProductScopeUnknown,
+			expect: entity.ProductScopeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, ProductScope(tt.scope).StoreEntity())
+		})
+	}
+}
+
+func TestProductScope_Response(t *testing.T) {
+	t.Parallel()
+	actual := ProductScope(types.ProductScopePublic).Response()
+	assert.Equal(t, types.ProductScopePublic, actual)
+}
+
 func TestStorageMethodType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
