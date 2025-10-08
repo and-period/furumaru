@@ -4,7 +4,7 @@ import { maxLength, maxLengthArray, maxValue, minValue, required } from '~/lib/v
 export const CreateProductValidationRules: ValidationArgs = {
   name: { required, maxLength: maxLength(128) },
   description: { required, maxLength: maxLength(20000) },
-  _public: {},
+  scope: { required },
   producerId: { required },
   productTypeId: { required },
   productTagIds: { maxLengthArray: maxLengthArray(8) },
@@ -31,7 +31,7 @@ export const CreateProductValidationRules: ValidationArgs = {
 export const UpdateProductValidationRules: ValidationArgs = {
   name: { required, maxLength: maxLength(128) },
   description: { required, maxLength: maxLength(20000) },
-  _public: {},
+  scope: { required },
   productTypeId: { required },
   productTagIds: { maxLengthArray: maxLengthArray(8) },
   media: { maxLengthArray: maxLengthArray(8) },
