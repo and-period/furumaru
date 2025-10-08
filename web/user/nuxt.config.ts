@@ -1,6 +1,4 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
-import en from './src/locales/en_us.json'
-import ja from './src/locales/ja_jp.json'
 
 export default defineNuxtConfig({
   ssr: true,
@@ -87,30 +85,7 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
-    defaultLocale: 'ja',
-    detectBrowserLanguage: {
-      useCookie: false,
-      alwaysRedirect: true,
-    },
-    locales: [
-      {
-        code: 'ja',
-        iso: 'ja',
-        file: 'ja_jp.json',
-      },
-      {
-        code: 'en',
-        iso: 'en',
-        file: 'en_us.json',
-      },
-    ],
-    vueI18n: {
-      fallbackLocale: 'ja',
-      messages: {
-        ja,
-        en,
-      },
-    },
+    vueI18n: './i18n.config.ts',
   },
   components: [
     {
@@ -159,7 +134,7 @@ export default defineNuxtConfig({
       sourcemap: true,
     },
     plugins: [
-      ...(process.env.ENVIRONMENT === 'production' && process.env.SENTRY_AUTH_TOKEN)
+      ...((process.env.ENVIRONMENT === 'production' && process.env.SENTRY_AUTH_TOKEN)
         ? [
             sentryVitePlugin({
               org: process.env.SENTRY_ORGANIZATION,
@@ -167,7 +142,7 @@ export default defineNuxtConfig({
               authToken: process.env.SENTRY_AUTH_TOKEN,
             }),
           ]
-        : [],
+        : []),
     ],
   },
 })
