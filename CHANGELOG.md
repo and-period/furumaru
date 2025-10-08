@@ -1,5 +1,24 @@
 # Changelog
 
+## [v7.2.1](https://github.com/and-period/furumaru/compare/v7.2.0...v7.2.1) - 2025-10-08
+- fix(auth): 管理者アカウントの外部連携処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3095
+- Fix/liff/checkout by @wf-yamaday in https://github.com/and-period/furumaru/pull/3097
+- fix: フォームの体裁を整える by @wf-yamaday in https://github.com/and-period/furumaru/pull/3103
+- build(deps): bump the dependencies group in /web/admin with 22 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3101
+- chore(deps): Update LIFF Web dependencies - autoclosed by @renovate[bot] in https://github.com/and-period/furumaru/pull/3099
+- build(deps): bump actions/cache from 4.2.4 to 4.3.0 in the dependencies group by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3098
+- build(deps): bump the dependencies group across 1 directory with 83 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3102
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.13 to 1.20.14 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3106
+- LIFFのセットアップ処理を整理 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3109
+- fix: error句に処理が記述されていたので修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3110
+- feat:チェックイン登録が必須の場合はチェックイン登録画面から遷移できないように変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3111
+- chore(deps): Update Node.js to v20.19.5 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3100
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/medialive from 1.83.2 to 1.84.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3108
+- build(deps): bump github.com/coreos/go-oidc/v3 from 3.15.0 to 3.16.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3104
+- fix: チェックイン後の処理を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3112
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/s3 from 1.88.3 to 1.88.4 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3118
+- feat(api): 商品公開範囲の機能拡張 - PublicフィールドからScopeフィールドへの移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3116
+
 ## [v7.1.4](https://github.com/and-period/furumaru/compare/v7.1.3...v7.1.4) - 2025-09-30
 - fix(api): Cognito外部認証プロバイダー連携の処理を改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3075
 - fix(api): admin auth テストの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3078
