@@ -12,7 +12,7 @@ import {
   useProductTypeStore,
 } from '~/store'
 import { Prefecture } from '~/types'
-import { DeliveryType, StorageMethodType } from '~/types/api/v1'
+import { DeliveryType, ProductScope, StorageMethodType } from '~/types/api/v1'
 import type { CreateProductRequest, CreateProductMedia } from '~/types/api/v1'
 
 const route = useRoute()
@@ -46,7 +46,7 @@ const selectedCategoryId = ref<string>()
 const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
-  _public: false,
+  scope: ProductScope.ProductScopePublic,
   coordinatorId: '',
   producerId: '',
   productTypeId: '',
@@ -80,7 +80,7 @@ const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
     )
     formData.value.name = `${sourceProduct.product.name}のコピー`
     formData.value.description = sourceProduct.product.description
-    formData.value._public = sourceProduct.product._public
+    formData.value.scope = sourceProduct.product.scope
     formData.value.coordinatorId = sourceProduct.product.coordinatorId
     formData.value.producerId = sourceProduct.product.producerId
     formData.value.productTypeId = sourceProduct.product.productTypeId

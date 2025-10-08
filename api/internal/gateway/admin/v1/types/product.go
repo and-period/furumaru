@@ -53,7 +53,6 @@ type Product struct {
 	ProductTagIDs        []string          `json:"productTagIds"`        // 商品タグID一覧
 	Name                 string            `json:"name"`                 // 商品名
 	Description          string            `json:"description"`          // 商品説明
-	Public               bool              `json:"public"`               // 公開フラグ
 	Scope                ProductScope      `json:"scope"`                // 公開範囲
 	Status               ProductStatus     `json:"status"`               // 販売状況
 	Inventory            int64             `json:"inventory"`            // 在庫数
@@ -89,7 +88,7 @@ type ProductMedia struct {
 type CreateProductRequest struct {
 	Name                 string                `json:"name" validate:"required,max=64"`                       // 商品名
 	Description          string                `json:"description" validate:"required,max=2000"`              // 商品説明
-	Public               bool                  `json:"public"`                                                // 公開フラグ
+	Scope                ProductScope          `json:"scope" validate:"required"`                             // 公開範囲
 	CoordinatorID        string                `json:"coordinatorId" validate:"required"`                     // コーディネータID
 	ProducerID           string                `json:"producerId" validate:"required"`                        // 生産者ID
 	TypeID               string                `json:"productTypeId" validate:"required"`                     // 品目ID
@@ -124,7 +123,7 @@ type CreateProductMedia struct {
 type UpdateProductRequest struct {
 	Name                 string                `json:"name" validate:"required,max=64"`                       // 商品名
 	Description          string                `json:"description" validate:"required,max=2000"`              // 商品説明
-	Public               bool                  `json:"public"`                                                // 公開フラグ
+	Scope                ProductScope          `json:"scope" validate:"required"`                             // 公開範囲
 	TypeID               string                `json:"productTypeId" validate:"required"`                     // 品目ID
 	TagIDs               []string              `json:"productTagIds" validate:"max=8,dive,required"`          // 商品タグID一覧
 	Inventory            int64                 `json:"inventory" validate:"min=0"`                            // 在庫数

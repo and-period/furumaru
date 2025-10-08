@@ -136,12 +136,6 @@ export interface UpdateProductRequest {
      */
     productTypeId: string;
     /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof UpdateProductRequest
-     */
-    _public: boolean;
-    /**
      * おすすめポイント1
      * @type {string}
      * @memberof UpdateProductRequest
@@ -159,6 +153,12 @@ export interface UpdateProductRequest {
      * @memberof UpdateProductRequest
      */
     recommendedPoint3: string;
+    /**
+     * 公開範囲
+     * @type {number}
+     * @memberof UpdateProductRequest
+     */
+    scope: number;
     /**
      * 販売開始日時
      * @type {number}
@@ -201,10 +201,10 @@ export function instanceOfUpdateProductRequest(value: object): value is UpdatePr
     if (!('price' in value) || value['price'] === undefined) return false;
     if (!('productTagIds' in value) || value['productTagIds'] === undefined) return false;
     if (!('productTypeId' in value) || value['productTypeId'] === undefined) return false;
-    if (!('_public' in value) || value['_public'] === undefined) return false;
     if (!('recommendedPoint1' in value) || value['recommendedPoint1'] === undefined) return false;
     if (!('recommendedPoint2' in value) || value['recommendedPoint2'] === undefined) return false;
     if (!('recommendedPoint3' in value) || value['recommendedPoint3'] === undefined) return false;
+    if (!('scope' in value) || value['scope'] === undefined) return false;
     if (!('startAt' in value) || value['startAt'] === undefined) return false;
     if (!('storageMethodType' in value) || value['storageMethodType'] === undefined) return false;
     if (!('weight' in value) || value['weight'] === undefined) return false;
@@ -239,10 +239,10 @@ export function UpdateProductRequestFromJSONTyped(json: any, ignoreDiscriminator
         'price': json['price'],
         'productTagIds': json['productTagIds'],
         'productTypeId': json['productTypeId'],
-        '_public': json['public'],
         'recommendedPoint1': json['recommendedPoint1'],
         'recommendedPoint2': json['recommendedPoint2'],
         'recommendedPoint3': json['recommendedPoint3'],
+        'scope': json['scope'],
         'startAt': json['startAt'],
         'storageMethodType': json['storageMethodType'],
         'weight': json['weight'],
@@ -278,10 +278,10 @@ export function UpdateProductRequestToJSONTyped(value?: UpdateProductRequest | n
         'price': value['price'],
         'productTagIds': value['productTagIds'],
         'productTypeId': value['productTypeId'],
-        'public': value['_public'],
         'recommendedPoint1': value['recommendedPoint1'],
         'recommendedPoint2': value['recommendedPoint2'],
         'recommendedPoint3': value['recommendedPoint3'],
+        'scope': value['scope'],
         'startAt': value['startAt'],
         'storageMethodType': value['storageMethodType'],
         'weight': value['weight'],
