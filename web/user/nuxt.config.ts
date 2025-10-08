@@ -1,4 +1,6 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import { locale } from 'dayjs'
+import { s } from 'vitest/dist/index-761e769b'
 
 export default defineNuxtConfig({
   ssr: true,
@@ -85,6 +87,21 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
+    strategy: 'prefix_except_default',
+    langDir: './locales',
+    locales: [
+      {
+        code: 'ja',
+        iso: 'ja',
+        file: 'ja_jp.json',
+      },
+      {
+        code: 'en',
+        iso: 'en',
+        file: 'en_us.json',
+      },
+    ],
+    defaultLocale: 'ja',
     vueI18n: './i18n.config.ts',
   },
   components: [
