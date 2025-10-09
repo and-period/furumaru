@@ -1,5 +1,9 @@
 # Changelog
 
+## [v7.3.4](https://github.com/and-period/furumaru/compare/v7.3.3...v7.3.4) - 2025-10-09
+- [web/user] Nuxt v4へのアップデート by @wf-yamaday in https://github.com/and-period/furumaru/pull/3129
+- [web/user] `/api`が機能しないのを修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3131
+
 ## [v7.3.3](https://github.com/and-period/furumaru/compare/v7.3.2...v7.3.3) - 2025-10-08
 - chore(deps): Update dependency golang to v1.25.2 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3123
 - build(deps): bump google.golang.org/grpc from 1.75.1 to 1.76.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3114
