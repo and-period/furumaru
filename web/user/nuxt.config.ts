@@ -3,6 +3,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin'
 export default defineNuxtConfig({
   ssr: true,
   srcDir: 'src',
+  serverDir: 'src/server',
   app: {
     head: {
       titleTemplate: '%s - 産地直送のお取り寄せ通販【ふるマル】',
