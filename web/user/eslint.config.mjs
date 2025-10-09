@@ -4,8 +4,8 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 export default withNuxt(
   {
     ignores: [
+      'public/**/*',
       'src/assets/**/*',
-      'src/public/**/*',
       'src/types/api/**/*',
     ],
   },
