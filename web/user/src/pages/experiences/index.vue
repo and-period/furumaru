@@ -80,9 +80,7 @@ const updateMapCenter = () => {
   }
 }
 
-const renderer = ref<
-  undefined | { render: (obj: { count: number, position: any }) => any }
-    >(undefined)
+const renderer = ref<undefined | { render: (obj: { count: number, position: any }) => any }>(undefined)
 
 const handleClickSpot = (id: string) => {
   router.push(`/experiences/${id}`)

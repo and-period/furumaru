@@ -99,3 +99,6 @@ sw.*
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# aws amplify build artifacts
+.amplify-hosting/**
