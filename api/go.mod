@@ -1,10 +1,10 @@
 module github.com/and-period/furumaru/api
 
-go 1.25.1
+go 1.25.2
 
 require (
 	firebase.google.com/go/v4 v4.18.0
-	github.com/aws/aws-lambda-go v1.49.0
+	github.com/aws/aws-lambda-go v1.50.0
 	github.com/aws/aws-sdk-go-v2 v1.39.2
 	github.com/aws/aws-sdk-go-v2/config v1.31.12
 	github.com/aws/aws-sdk-go-v2/credentials v1.18.16
@@ -21,7 +21,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.8
 	github.com/aws/aws-sdk-go-v2/service/transcribe v1.52.6
 	github.com/aws/aws-sdk-go-v2/service/translate v1.33.6
-	github.com/casbin/casbin/v2 v2.127.0
+	github.com/casbin/casbin/v2 v2.128.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/coreos/go-oidc/v3 v3.16.0
 	github.com/dlclark/regexp2 v1.11.5
@@ -57,10 +57,10 @@ require (
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.6.0
-	golang.org/x/crypto v0.42.0
-	golang.org/x/oauth2 v0.31.0
+	golang.org/x/crypto v0.43.0
+	golang.org/x/oauth2 v0.32.0
 	golang.org/x/sync v0.17.0
-	golang.org/x/text v0.29.0
+	golang.org/x/text v0.30.0
 	google.golang.org/api v0.252.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251002232023-7c0ddcbb5797
 	google.golang.org/grpc v1.76.0
