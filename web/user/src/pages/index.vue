@@ -322,7 +322,7 @@ useSeoMeta({
       </div>
 
       <the-content-box
-        title="ARCHIVE"
+        title="LIVE ARCHIVE"
         :sub-title="tt('archiveListSubTitle')"
       >
         <div class="relative mx-auto flex max-w-[1440px]">
