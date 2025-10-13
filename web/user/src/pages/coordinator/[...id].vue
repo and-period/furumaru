@@ -20,6 +20,10 @@ const { coordinatorFetchState } = storeToRefs(coordinatorStore)
 const { coordinatorInfo, archives, lives, producers, videos, experiences }
   = storeToRefs(coordinatorStore)
 
+const pageTitle = computed<string>(() => {
+  return coordinatorInfo.value ? coordinatorInfo.value.marcheName : 'コーディネーターページ'
+})
+
 // 商品がある生産者を先に、ない生産者を後に並び替え
 const sortedProducers = computed(() => {
   return [...producers.value].sort((a, b) => {
@@ -60,12 +64,10 @@ const handleClickExperienceItem = (id: string) => {
 useAsyncData(`coordinator-${id.value}`, async () => {
   await fetchCoordinator(id.value)
   return true
-})
+}, { watch: [id] })
 
 useSeoMeta({
-  title: coordinatorInfo.value
-    ? `${coordinatorInfo.value.marcheName}`
-    : 'コーディネーターのページ',
+  title: pageTitle.value,
 })
 </script>
 
