@@ -1,5 +1,9 @@
 # Changelog
 
+## [v7.3.5](https://github.com/and-period/furumaru/compare/v7.3.4...v7.3.5) - 2025-10-13
+- feat: コーディネーターの詳細ページがロードできるように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3134
+- fix: トップページの文言でアーカイブ部分をライブコマースのアーカイブだとわかるように改善 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3136
+
 ## [v7.3.4](https://github.com/and-period/furumaru/compare/v7.3.3...v7.3.4) - 2025-10-09
 - [web/user] Nuxt v4へのアップデート by @wf-yamaday in https://github.com/and-period/furumaru/pull/3129
 - [web/user] `/api`が機能しないのを修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3131
