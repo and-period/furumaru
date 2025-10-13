@@ -65,7 +65,7 @@ const canAddCart = computed<boolean>(() => {
   return false
 })
 
-const handleClickCoorinator = () => {
+const handleClickCoordinator = () => {
   router.push(`/coordinator/${props.coordinator?.id}`)
 }
 
@@ -175,7 +175,7 @@ const handleClickAddCartButton = () => {
       class="mt-4 flex flex-col gap-4 text-xs md:flex-row md:items-center"
     >
       <div class="md:hidden">
-        <button @click="handleClickCoorinator">
+        <button @click="handleClickCoordinator">
           <p
             class="mb-2 w-full whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
           >
@@ -195,7 +195,7 @@ const handleClickAddCartButton = () => {
         >
         <div>
           <div class="hidden md:block">
-            <button @click="handleClickCoorinator">
+            <button @click="handleClickCoordinator">
               <p
                 class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
               >
