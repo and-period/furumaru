@@ -18,6 +18,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param coordinatorId 対象のコーディネーターのID
      */
     async fetchCoordinator(id: string): Promise<void> {
+      this.coordinatorFetchState.isLoading = true
       const response: CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({ coordinatorId: id })
       this.coordinatorResponse = response
       this.coordinatorFetchState.isLoading = false
