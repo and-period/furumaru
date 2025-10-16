@@ -77,9 +77,8 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	)
 	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		in := &store.ListShopProducersInput{
-			ShopID: getShopID(ctx),
-			Limit:  limit,
-			Offset: offset,
+			ShopID:  getShopID(ctx),
+			NoLimit: true, // それほど多くならない想定
 		}
 		producerIDs, err := h.store.ListShopProducers(ctx, in)
 		if err != nil {
