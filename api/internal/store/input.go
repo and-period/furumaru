@@ -1073,9 +1073,10 @@ type ListShopsInput struct {
 }
 
 type ListShopProducersInput struct {
-	ShopID string `validate:""`
-	Limit  int64  `validate:"min=0,max=200"`
-	Offset int64  `validate:"min=0"`
+	ShopID  string `validate:""`
+	Limit   int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset  int64  `validate:"min=0"`
+	NoLimit bool   `validate:""`
 }
 
 type MultiGetShopsInput struct {
