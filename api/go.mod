@@ -1,33 +1,33 @@
 module github.com/and-period/furumaru/api
 
-go 1.25.1
+go 1.25.3
 
 require (
 	firebase.google.com/go/v4 v4.18.0
-	github.com/aws/aws-lambda-go v1.49.0
-	github.com/aws/aws-sdk-go-v2 v1.39.2
-	github.com/aws/aws-sdk-go-v2/config v1.31.12
-	github.com/aws/aws-sdk-go-v2/credentials v1.18.16
-	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.20.14
-	github.com/aws/aws-sdk-go-v2/service/batch v1.57.10
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.57.7
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.51.0
-	github.com/aws/aws-sdk-go-v2/service/ivs v1.47.6
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.82.6
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.84.0
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.4
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.6
-	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.6
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.8
-	github.com/aws/aws-sdk-go-v2/service/transcribe v1.52.6
-	github.com/aws/aws-sdk-go-v2/service/translate v1.33.6
-	github.com/casbin/casbin/v2 v2.127.0
+	github.com/aws/aws-lambda-go v1.50.0
+	github.com/aws/aws-sdk-go-v2 v1.39.3
+	github.com/aws/aws-sdk-go-v2/config v1.31.13
+	github.com/aws/aws-sdk-go-v2/credentials v1.18.17
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.20.15
+	github.com/aws/aws-sdk-go-v2/service/batch v1.58.0
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.57.8
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.51.1
+	github.com/aws/aws-sdk-go-v2/service/ivs v1.48.0
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.82.7
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.84.1
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.5
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.7
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.7
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.9
+	github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.1
+	github.com/aws/aws-sdk-go-v2/service/translate v1.33.7
+	github.com/casbin/casbin/v2 v2.128.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/coreos/go-oidc/v3 v3.16.0
 	github.com/dlclark/regexp2 v1.11.5
-	github.com/getsentry/sentry-go v0.35.3
-	github.com/getsentry/sentry-go/slog v0.35.3
-	github.com/gin-contrib/gzip v1.2.3
+	github.com/getsentry/sentry-go v0.36.0
+	github.com/getsentry/sentry-go/slog v0.36.0
+	github.com/gin-contrib/gzip v1.2.4
 	github.com/gin-contrib/pprof v1.5.3
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-playground/validator/v10 v10.28.0
@@ -57,10 +57,10 @@ require (
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.6.0
-	golang.org/x/crypto v0.42.0
-	golang.org/x/oauth2 v0.31.0
+	golang.org/x/crypto v0.43.0
+	golang.org/x/oauth2 v0.32.0
 	golang.org/x/sync v0.17.0
-	golang.org/x/text v0.29.0
+	golang.org/x/text v0.30.0
 	google.golang.org/api v0.252.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251002232023-7c0ddcbb5797
 	google.golang.org/grpc v1.76.0
