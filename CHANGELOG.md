@@ -1,5 +1,8 @@
 # Changelog
 
+## [v7.3.7](https://github.com/and-period/furumaru/compare/v7.3.6...v7.3.7) - 2025-10-16
+- fix(store): 店舗に紐づく生産者一覧取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3141
+
 ## [v7.3.6](https://github.com/and-period/furumaru/compare/v7.3.5...v7.3.6) - 2025-10-13
 - コーディネーター情報のloading状態に編集 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3137
 
