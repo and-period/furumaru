@@ -1,5 +1,9 @@
 # Changelog
 
+## [v7.3.8](https://github.com/and-period/furumaru/compare/v7.3.7...v7.3.8) - 2025-10-18
+- chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3140
+- chore(deps): Update dependency golang to v1.25.3 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3139
+
 ## [v7.3.7](https://github.com/and-period/furumaru/compare/v7.3.6...v7.3.7) - 2025-10-16
 - fix(store): 店舗に紐づく生産者一覧取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3141
 
