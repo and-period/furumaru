@@ -244,7 +244,7 @@ func (h *handler) getProduct(ctx context.Context, producerID, productID string) 
 	if err != nil {
 		return nil, err
 	}
-	if product.Scope != entity.ProductScopePrivate {
+	if product.Scope == entity.ProductScopePrivate {
 		// 非公開のものは利用者側に表示しない
 		return nil, exception.ErrNotFound
 	}

@@ -70,6 +70,8 @@ func (s ProductScope) StoreEntity() entity.ProductScope {
 	switch types.ProductScope(s) {
 	case types.ProductScopePublic:
 		return entity.ProductScopePublic
+	case types.ProductScopeLimited:
+		return entity.ProductScopeLimited
 	case types.ProductScopePrivate:
 		return entity.ProductScopePrivate
 	default:
