@@ -109,7 +109,7 @@ func TestProductScope_StoreEntity(t *testing.T) {
 		{
 			name:   "limited",
 			scope:  types.ProductScopeLimited,
-			expect: entity.ProductScopeUnknown,
+			expect: entity.ProductScopeLimited,
 		},
 		{
 			name:   "private",
