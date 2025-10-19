@@ -4,6 +4,7 @@ import { NuxtLink } from '#components';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
 import { useShoppingCartStore } from '~/stores/shopping';
+import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
 
@@ -18,12 +19,19 @@ onMounted(async () => {
 
 // カート追加
 const shoppingCartStore = useShoppingCartStore();
+const addToCartError = ref<string | null>(null);
 async function handleAddToCart(productId: string, quantity: number) {
   try {
+    addToCartError.value = null;
     await shoppingCartStore.addCartItem(facilityId.value, productId, quantity);
   }
   catch (e) {
     console.error('Failed to add to cart:', e);
+    let statusLabel = '';
+    if (e instanceof ResponseError) {
+      statusLabel = `（ステータスコード: ${e.response.status}）`;
+    }
+    addToCartError.value = `カゴへの追加に失敗しました${statusLabel}。\n時間をおいて再度お試しください。`;
   }
 }
 </script>
@@ -54,6 +62,12 @@ async function handleAddToCart(productId: string, quantity: number) {
       v-else
       class="container mx-auto mt-6"
     >
+      <div
+        v-if="addToCartError"
+        class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded"
+      >
+        {{ addToCartError }}
+      </div>
       <div class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-4 px-4">
         <template
           v-for="product in products"

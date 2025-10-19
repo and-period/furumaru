@@ -3,6 +3,8 @@
 @import "tailwindcss";
 
 @theme {
+	--font-body: "Noto Sans JP Variable", sans-serif;
 	--color-main: oklch(0.4335 0.0341 54.63);
 	--color-orange: oklch(0.739 0.1632 59);
+	--color-green: oklch(0.7049 0.1553 131.38);
 }
