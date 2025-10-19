@@ -2,6 +2,7 @@
 import { FmProductDetail } from '@furumaru/shared';
 import { useProductStore } from '~/stores/product';
 import { useShoppingCartStore } from '~/stores/shopping';
+import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
 const router = useRouter();
@@ -29,16 +30,23 @@ const mediaFiles = computed(() => {
 
 // Add to cart handler
 const isAdding = ref(false);
+const addToCartError = ref<string | null>(null);
 
 const addToCart = async () => {
   if (!product.value) return;
   if (product.value.inventory === 0) return;
   try {
     isAdding.value = true;
+    addToCartError.value = null;
     await shoppingCartStore.addCartItem(facilityId.value, product.value.id, 1);
   }
   catch (e) {
     console.error('Failed to add to cart', e);
+    let statusLabel = '';
+    if (e instanceof ResponseError) {
+      statusLabel = `（ステータスコード: ${e.response.status}）`;
+    }
+    addToCartError.value = `カゴへの追加に失敗しました${statusLabel}。\n時間をおいて再度お試しください。`;
   }
   finally {
     isAdding.value = false;
@@ -129,8 +137,14 @@ if (!product.value) {
         class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
         @click="addToCart"
       >
-        {{ product.inventory > 0 ? (isAdding ? '追加中...' : 'カートに追加') : '在庫なし' }}
+        {{ product.inventory > 0 ? (isAdding ? '追加中...' : 'カゴに追加') : '在庫なし' }}
       </button>
+      <div
+        v-if="addToCartError"
+        class="mt-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded"
+      >
+        {{ addToCartError }}
+      </div>
     </div>
   </div>
 </template>

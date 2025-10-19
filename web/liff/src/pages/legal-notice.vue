@@ -14,7 +14,7 @@ definePageMeta({
     <div class="top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 fixed w-full">
       <div class="flex items-center">
         <button
-          class="flex items-center text-gray-600 hover:text-gray-800"
+          class="flex items-center text-gray-600 hover:text-gray-800 cursor-pointer"
           @click="router.back()"
         >
           <svg
