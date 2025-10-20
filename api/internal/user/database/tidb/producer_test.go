@@ -491,10 +491,6 @@ func TestProducer_Create(t *testing.T) {
 	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	type args struct {
 		producer *entity.Producer
 		shopID   string
@@ -518,10 +514,13 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				producer: p,
-				shopID:   shop.ID,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -533,7 +532,7 @@ func TestProducer_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producer: p,
-				shopID:   shop.ID,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -549,6 +548,9 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
@@ -559,7 +561,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
-				shopID:   shop.ID,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -575,10 +577,13 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				producer: p,
-				shopID:   shop.ID,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{

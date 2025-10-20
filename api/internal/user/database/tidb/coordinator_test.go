@@ -458,7 +458,7 @@ func TestCoordinator_Create(t *testing.T) {
 	c := testCoordinator("admin-id", now())
 	c.Admin = *admin
 
-	ishop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	ishop := testShop("shop-id", "admin-id", []string{}, []string{}, now())
 	shop := &ishop.Shop
 
 	type args struct {
