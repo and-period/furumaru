@@ -65,6 +65,7 @@ func deleteAll(ctx context.Context) error {
 		adminAuthProviderTable,
 		addressRevisionTable,
 		addressTable,
+		shopProducerTable,
 		shopTable,
 		producerTable,
 		coordinatorTable,
