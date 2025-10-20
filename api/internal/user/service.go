@@ -86,6 +86,15 @@ type Service interface {
 	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Producer, error)       // 登録
 	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error                           // 更新
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error                           // 退会
+	// Shop - 店舗
+	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, int64, error)                    // 一覧取得
+	ListShopProducers(ctx context.Context, in *ListShopProducersInput) ([]string, error)               // 生産者ID一覧取得
+	MultiGetShops(ctx context.Context, in *MultiGetShopsInput) (entity.Shops, error)                   // 一覧取得(ID指定)
+	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)                               // １件取得
+	GetShopByCoordinatorID(ctx context.Context, in *GetShopByCoordinatorIDInput) (*entity.Shop, error) // １件取得(コーディネータID指定)
+	UpdateShop(ctx context.Context, in *UpdateShopInput) error                                         // 更新
+	RelateShopProducer(ctx context.Context, in *RelateShopProducerInput) error                         // 関連付け(生産者)
+	UnrelateShopProducer(ctx context.Context, in *UnrelateShopProducerInput) error                     // 関連付け解除(生産者)
 	// User - 購入者
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)             // サインイン
 	SignOutUser(ctx context.Context, in *SignOutUserInput) error                               // サインアウト

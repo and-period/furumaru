@@ -2,7 +2,6 @@ package entity
 
 import "time"
 
-// Deprecated: userモジュール側に移動
 type ShopProducer struct {
 	ShopID     string    `gorm:"primaryKey;<-:create"` // 店舗ID
 	ProducerID string    `gorm:"primaryKey;<-:create"` // 生産者ID

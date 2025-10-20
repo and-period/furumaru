@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Deprecated: userモジュール側に移動 Shop - 店舗情報
+// Shop - 店舗情報
 type Shop struct {
 	ID             string         `gorm:"primaryKey;<-:create"` // 店舗ID
 	CoordinatorID  string         `gorm:""`                     // コーディネータID

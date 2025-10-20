@@ -493,6 +493,7 @@ func TestProducer_Create(t *testing.T) {
 
 	type args struct {
 		producer *entity.Producer
+		shopID   string
 		auth     func(ctx context.Context) error
 	}
 	type want struct {
@@ -513,9 +514,13 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				producer: p,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -527,6 +532,7 @@ func TestProducer_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producer: p,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -542,6 +548,9 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
@@ -552,6 +561,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -567,9 +577,13 @@ func TestProducer_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+				shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+				err = db.DB.Table(shopTable).Create(&shop).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				producer: p,
+				shopID:   "shop-id",
 				auth:     func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
@@ -581,13 +595,13 @@ func TestProducer_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, producerTable, coordinatorTable, adminTable)
+			err := delete(ctx, shopProducerTable, producerTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
 			db := &producer{db: db, now: now}
-			err = db.Create(ctx, tt.args.producer, tt.args.auth)
+			err = db.Create(ctx, tt.args.producer, tt.args.shopID, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

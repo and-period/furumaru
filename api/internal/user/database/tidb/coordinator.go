@@ -141,7 +141,7 @@ func (c *coordinator) GetWithDeleted(
 }
 
 func (c *coordinator) Create(
-	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
+	ctx context.Context, coordinator *entity.Coordinator, shop *entity.Shop, auth func(ctx context.Context) error,
 ) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		params := &entity.NewAdminGroupUsersParams{
@@ -163,11 +163,17 @@ func (c *coordinator) Create(
 		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error; err != nil {
 			return err
 		}
+
 		if len(groups) > 0 {
 			if err := tx.WithContext(ctx).Table(adminGroupUserTable).Create(&groups).Error; err != nil {
 				return err
 			}
 		}
+
+		if err := tx.WithContext(ctx).Table(shopTable).Create(&shop).Error; err != nil {
+			return err
+		}
+
 		return auth(ctx)
 	})
 	return dbError(err)
@@ -229,12 +235,21 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 		if err := stmt.Updates(aupdates).Error; err != nil {
 			return err
 		}
-		update := map[string]interface{}{
+		cupdate := map[string]interface{}{
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		stmt = tx.WithContext(ctx).Table(coordinatorTable).Where("admin_id = ?", coordinatorID)
-		if err := stmt.Updates(update).Error; err != nil {
+		if err := stmt.Updates(cupdate).Error; err != nil {
+			return err
+		}
+		supdate := map[string]interface{}{
+			"activated":  false,
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		stmt = tx.WithContext(ctx).Table(shopTable).Where("coordinator_id = ?", coordinatorID)
+		if err := stmt.Updates(supdate).Error; err != nil {
 			return err
 		}
 		return auth(ctx)

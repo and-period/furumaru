@@ -455,15 +455,15 @@ func TestCoordinator_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
-	err = db.DB.Create(&admin).Error
-	require.NoError(t, err)
 	c := testCoordinator("admin-id", now())
 	c.Admin = *admin
-	err = db.DB.Table(coordinatorTable).Create(&c).Error
-	require.NoError(t, err)
+
+	ishop := testShop("shop-id", "admin-id", []string{}, []string{}, now())
+	shop := &ishop.Shop
 
 	type args struct {
 		coordinator *entity.Coordinator
+		shop        *entity.Shop
 		auth        func(ctx context.Context) error
 	}
 	type want struct {
@@ -480,6 +480,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -498,6 +499,7 @@ func TestCoordinator_Create(t *testing.T) {
 			},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -509,6 +511,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
@@ -520,13 +523,13 @@ func TestCoordinator_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, shopTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
 			db := &coordinator{db: db, now: now}
-			err = db.Create(ctx, tt.args.coordinator, tt.args.auth)
+			err = db.Create(ctx, tt.args.coordinator, tt.args.shop, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
