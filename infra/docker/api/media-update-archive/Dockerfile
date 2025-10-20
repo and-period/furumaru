@@ -1,5 +1,5 @@
 # ビルド用コンテナ
-FROM golang:1.25.1-bookworm as builder
+FROM golang:1.25.3-bookworm as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
