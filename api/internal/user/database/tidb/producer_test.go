@@ -491,8 +491,13 @@ func TestProducer_Create(t *testing.T) {
 	p := testProducer("admin-id", "coordinator-id", now())
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		producer *entity.Producer
+		shopID   string
 		auth     func(ctx context.Context) error
 	}
 	type want struct {
@@ -516,6 +521,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
+				shopID:   shop.ID,
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -527,6 +533,7 @@ func TestProducer_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producer: p,
+				shopID:   shop.ID,
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -552,6 +559,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
+				shopID:   shop.ID,
 				auth:     func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -570,6 +578,7 @@ func TestProducer_Create(t *testing.T) {
 			},
 			args: args{
 				producer: p,
+				shopID:   shop.ID,
 				auth:     func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
@@ -587,7 +596,7 @@ func TestProducer_Create(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &producer{db: db, now: now}
-			err = db.Create(ctx, tt.args.producer, tt.args.auth)
+			err = db.Create(ctx, tt.args.producer, tt.args.shopID, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

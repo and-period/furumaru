@@ -82,6 +82,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+
 	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
@@ -96,6 +97,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, internalError(err)
 	}
+
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     "", // 生産者は認証機能を持たせない
 		Type:          entity.AdminTypeProducer,
@@ -128,15 +130,18 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, fmt.Errorf("service: failed to new producer: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
+
 	auth := func(_ context.Context) error {
 		return nil // 生産者は認証機能を持たないため何もしない
 	}
-	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
+	if err := s.db.Producer.Create(ctx, producer, shop.ID, auth); err != nil {
 		return nil, internalError(err)
 	}
+
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
+		// Deprecated: 移行が完了し次第削除
 		in := &store.RelateShopProducerInput{
 			ShopID:     shop.ID,
 			ProducerID: producer.ID,
@@ -206,6 +211,7 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 		return internalError(err)
 	}
 	for _, shop := range shops {
+		// Deprecated: 移行が完了し次第削除
 		deleteIn := &store.UnrelateShopProducerInput{
 			ShopID:     shop.ID,
 			ProducerID: in.ProducerID,

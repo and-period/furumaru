@@ -1062,7 +1062,7 @@ type DeleteShippingInput struct {
 }
 
 /**
- * Shop - 店舗
+ * Deprecated: Shop - 店舗
  */
 type ListShopsInput struct {
 	CoordinatorIDs []string `validate:""`

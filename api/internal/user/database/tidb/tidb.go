@@ -28,6 +28,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Guest:             NewGuest(db),
 		Member:            NewMember(db),
 		Producer:          NewProducer(db),
+		Shop:              NewShop(db),
 		User:              NewUser(db),
 		UserNotification:  NewUserNotification(db),
 	}

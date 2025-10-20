@@ -140,7 +140,7 @@ func (p *producer) GetWithDeleted(
 }
 
 func (p *producer) Create(
-	ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error,
+	ctx context.Context, producer *entity.Producer, shopID string, auth func(ctx context.Context) error,
 ) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		params := &entity.NewAdminGroupUsersParams{
@@ -156,17 +156,30 @@ func (p *producer) Create(
 			group.CreatedAt, group.UpdatedAt = now, now
 		}
 
+		shop := &entity.ShopProducer{
+			ShopID:     shopID,
+			ProducerID: producer.AdminID,
+			CreatedAt:  now,
+			UpdatedAt:  now,
+		}
+
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&producer.Admin).Error; err != nil {
 			return err
 		}
 		if err := tx.WithContext(ctx).Table(producerTable).Create(&producer).Error; err != nil {
 			return err
 		}
+
 		if len(groups) > 0 {
 			if err := tx.WithContext(ctx).Table(adminGroupUserTable).Create(&groups).Error; err != nil {
 				return err
 			}
 		}
+
+		if err := tx.WithContext(ctx).Table(shopProducerTable).Create(&shop).Error; err != nil {
+			return err
+		}
+
 		return auth(ctx)
 	})
 	return dbError(err)
@@ -220,21 +233,25 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
-		aupdates := map[string]interface{}{
+		aupdate := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", producerID)
-		if err := stmt.Updates(aupdates).Error; err != nil {
+		if err := stmt.Updates(aupdate).Error; err != nil {
 			return err
 		}
-		update := map[string]interface{}{
+		pupdate := map[string]interface{}{
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		stmt = tx.WithContext(ctx).Table(producerTable).Where("admin_id = ?", producerID)
-		if err := stmt.Updates(update).Error; err != nil {
+		if err := stmt.Updates(pupdate).Error; err != nil {
+			return err
+		}
+		stmt = tx.WithContext(ctx).Table(shopProducerTable).Where("producer_id = ?", producerID)
+		if err := stmt.Delete(&entity.ShopProducer{}).Error; err != nil {
 			return err
 		}
 		return auth(ctx)

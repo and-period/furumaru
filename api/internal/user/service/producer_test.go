@@ -416,8 +416,8 @@ func TestCreateProducer(t *testing.T) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				mocks.db.Producer.EXPECT().
-					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error {
+					Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, producer *entity.Producer, shopID string, auth func(ctx context.Context) error) error {
 						expectProducer.ID = producer.ID
 						expectProducer.AdminID = producer.ID
 						assert.Equal(t, expectProducer, producer)
@@ -564,7 +564,7 @@ func TestCreateProducer(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",

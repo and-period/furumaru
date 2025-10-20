@@ -462,8 +462,12 @@ func TestCoordinator_Create(t *testing.T) {
 	err = db.DB.Table(coordinatorTable).Create(&c).Error
 	require.NoError(t, err)
 
+	ishop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	shop := &ishop.Shop
+
 	type args struct {
 		coordinator *entity.Coordinator
+		shop        *entity.Shop
 		auth        func(ctx context.Context) error
 	}
 	type want struct {
@@ -480,6 +484,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -498,6 +503,7 @@ func TestCoordinator_Create(t *testing.T) {
 			},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return nil },
 			},
 			want: want{
@@ -509,6 +515,7 @@ func TestCoordinator_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
+				shop:        shop,
 				auth:        func(ctx context.Context) error { return assert.AnError },
 			},
 			want: want{
@@ -526,7 +533,7 @@ func TestCoordinator_Create(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &coordinator{db: db, now: now}
-			err = db.Create(ctx, tt.args.coordinator, tt.args.auth)
+			err = db.Create(ctx, tt.args.coordinator, tt.args.shop, tt.args.auth)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

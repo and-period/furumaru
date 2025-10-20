@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -19,7 +19,6 @@ const (
 	shopProducerTable = "shop_producers"
 )
 
-// Deprecated: userモジュール側に移動
 type shop struct {
 	db  *mysql.Client
 	now func() time.Time
@@ -128,19 +127,6 @@ func (s *shop) GetByCoordinatorID(ctx context.Context, coordinatorID string, fie
 	return shop, nil
 }
 
-func (s *shop) Create(ctx context.Context, shop *entity.Shop) error {
-	now := s.now()
-	shop.CreatedAt, shop.UpdatedAt = now, now
-
-	internal, err := newInternalShop(shop)
-	if err != nil {
-		return err
-	}
-
-	err = s.db.DB.WithContext(ctx).Table(shopTable).Create(&internal).Error
-	return dbError(err)
-}
-
 func (s *shop) Update(ctx context.Context, shopID string, params *database.UpdateShopParams) error {
 	productTypeIDs, err := json.Marshal(params.ProductTypeIDs)
 	if err != nil {
@@ -160,18 +146,6 @@ func (s *shop) Update(ctx context.Context, shopID string, params *database.Updat
 	stmt := s.db.DB.WithContext(ctx).Table(shopTable).Where("id = ?", shopID)
 
 	err = stmt.Updates(updates).Error
-	return dbError(err)
-}
-
-func (s *shop) Delete(ctx context.Context, shopID string) error {
-	updates := map[string]interface{}{
-		"activated":  false,
-		"updated_at": s.now(),
-		"deleted_at": s.now(),
-	}
-	stmt := s.db.DB.WithContext(ctx).Table(shopTable).Where("id = ?", shopID)
-
-	err := stmt.Updates(updates).Error
 	return dbError(err)
 }
 

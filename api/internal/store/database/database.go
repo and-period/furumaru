@@ -612,6 +612,7 @@ type UpdateShippingParams struct {
 	FreeShippingRates int64
 }
 
+// Deprecated: userモジュール側に移動
 type Shop interface {
 	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
 	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)

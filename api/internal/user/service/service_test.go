@@ -49,6 +49,7 @@ type dbMocks struct {
 	Guest             *mock_database.MockGuest
 	Member            *mock_database.MockMember
 	Producer          *mock_database.MockProducer
+	Shop              *mock_database.MockShop
 	User              *mock_database.MockUser
 	UserNotification  *mock_database.MockUserNotification
 }
@@ -98,6 +99,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Guest:             mock_database.NewMockGuest(ctrl),
 		Member:            mock_database.NewMockMember(ctrl),
 		Producer:          mock_database.NewMockProducer(ctrl),
+		Shop:              mock_database.NewMockShop(ctrl),
 		User:              mock_database.NewMockUser(ctrl),
 		UserNotification:  mock_database.NewMockUserNotification(ctrl),
 	}
@@ -128,6 +130,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Guest:             mocks.db.Guest,
 			Member:            mocks.db.Member,
 			Producer:          mocks.db.Producer,
+			Shop:              mocks.db.Shop,
 			User:              mocks.db.User,
 			UserNotification:  mocks.db.UserNotification,
 		},

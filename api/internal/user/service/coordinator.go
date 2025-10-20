@@ -93,6 +93,7 @@ func (s *service) CreateCoordinator(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, "", internalError(err)
 	}
+
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
 		return nil, "", internalError(err)
@@ -100,8 +101,10 @@ func (s *service) CreateCoordinator(
 	if len(productTypes) != len(in.ProductTypeIDs) {
 		return nil, "", fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
 	}
+
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
+
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Type:          entity.AdminTypeCoordinator,
@@ -112,7 +115,7 @@ func (s *service) CreateCoordinator(
 		FirstnameKana: in.FirstnameKana,
 		Email:         in.Email,
 	}
-	params := &entity.NewCoordinatorParams{
+	coordinatorParams := &entity.NewCoordinatorParams{
 		Admin:             entity.NewAdmin(adminParams),
 		Username:          in.Username,
 		Profile:           in.Profile,
@@ -129,18 +132,29 @@ func (s *service) CreateCoordinator(
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
 	}
-	coordinator, err := entity.NewCoordinator(params)
+	coordinator, err := entity.NewCoordinator(coordinatorParams)
 	if err != nil {
 		return nil, "", fmt.Errorf("service: failed to new coordinator: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
+
+	shopParams := &entity.ShopParams{
+		CoordinatorID:  coordinator.ID,
+		Name:           in.MarcheName,
+		ProductTypeIDs: in.ProductTypeIDs,
+		BusinessDays:   in.BusinessDays,
+	}
+	shop := entity.NewShop(shopParams)
+
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
-	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
+	if err := s.db.Coordinator.Create(ctx, coordinator, shop, auth); err != nil {
 		return nil, "", internalError(err)
 	}
+
 	slog.DebugContext(ctx, "Create coordinator", slog.String("coordinatorId", coordinator.ID), slog.String("password", password))
 	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
+		// Deprecated: 移行が完了し次第削除
 		in := &store.CreateShopInput{
 			CoordinatorID:  coordinator.ID,
 			Name:           in.MarcheName,
@@ -268,6 +282,7 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 	if err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID)); err != nil {
 		return internalError(err)
 	}
+	// Deprecated: 移行が完了し次第削除
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()

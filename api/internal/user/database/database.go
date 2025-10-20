@@ -36,6 +36,7 @@ type Database struct {
 	Guest             Guest
 	Member            Member
 	Producer          Producer
+	Shop              Shop
 	User              User
 	UserNotification  UserNotification
 }
@@ -201,7 +202,7 @@ type Coordinator interface {
 	MultiGetWithDeleted(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	GetWithDeleted(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
-	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
+	Create(ctx context.Context, coordinator *entity.Coordinator, shop *entity.Shop, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
 }
@@ -284,7 +285,7 @@ type Producer interface {
 	MultiGetWithDeleted(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	GetWithDeleted(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
-	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
+	Create(ctx context.Context, producer *entity.Producer, shopID string, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
@@ -317,6 +318,38 @@ type UpdateProducerParams struct {
 	City              string
 	AddressLine1      string
 	AddressLine2      string
+}
+
+type Shop interface {
+	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
+	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
+	Count(ctx context.Context, params *ListShopsParams) (int64, error)
+	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
+	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error)
+	Update(ctx context.Context, shopID string, params *UpdateShopParams) error
+	RemoveProductType(ctx context.Context, productTypeID string) error
+	ListProducers(ctx context.Context, params *ListShopProducersParams) ([]string, error)
+	RelateProducer(ctx context.Context, shopID, producerID string) error
+	UnrelateProducer(ctx context.Context, shopID, producerID string) error
+}
+
+type ListShopsParams struct {
+	CoordinatorIDs []string
+	ProducerIDs    []string
+	Limit          int
+	Offset         int
+}
+
+type UpdateShopParams struct {
+	Name           string
+	ProductTypeIDs []string
+	BusinessDays   []time.Weekday
+}
+
+type ListShopProducersParams struct {
+	ShopID string
+	Limit  int
+	Offset int
 }
 
 type User interface {

@@ -383,8 +383,8 @@ func TestCreateCoordinator(t *testing.T) {
 				}
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().
-					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error {
+					Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, coordinator *entity.Coordinator, shop *entity.Shop, auth func(ctx context.Context) error) error {
 						expectCoordinator.ID = coordinator.ID
 						expectCoordinator.AdminID = coordinator.ID
 						expectCoordinator.CognitoID = coordinator.CognitoID
@@ -421,7 +421,7 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
+				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
@@ -539,7 +539,7 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
