@@ -28,10 +28,16 @@ func TestShop_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -103,10 +109,16 @@ func TestShop_Count(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -178,10 +190,16 @@ func TestShop_MultiGet(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -251,10 +269,16 @@ func TestShop_Get(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -334,10 +358,16 @@ func TestShop_GetByCoordinatorID(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -417,10 +447,16 @@ func TestShop_Update(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -485,10 +521,16 @@ func TestShop_RemoveProductType(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -547,10 +589,16 @@ func TestShop_ListProducers(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -621,10 +669,16 @@ func TestShop_RelateProducer(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
@@ -685,10 +739,16 @@ func TestShop_UnrelateProducer(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	cadmin := testAdmin("coordinator-id01", "coordinator-id01", "test-coordinator-id01@and-period.jp", now())
+	err = db.DB.Create(&cadmin).Error
+	require.NoError(t, err)
 	coordinator := testCoordinator("coordinator-id01", now())
 	err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
 	require.NoError(t, err)
 
+	padmin := testAdmin("producer-id01", "producer-id01", "test-producer-id01@and-period.jp", now())
+	err = db.DB.Create(&padmin).Error
+	require.NoError(t, err)
 	producer := testProducer("producer-id01", "coordinator-id01", now())
 	err = db.DB.Table(producerTable).Create(&producer).Error
 	require.NoError(t, err)
