@@ -1,5 +1,16 @@
 # Changelog
 
+## [v7.3.8](https://github.com/and-period/furumaru/compare/v7.3.7...v7.3.8) - 2025-10-20
+- chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3140
+- chore(deps): Update dependency golang to v1.25.3 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3139
+- chore(deps): Update API dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3122
+- chore(deps): Pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3084
+- [web/liff] 諸々修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3144
+- fix(api): Add missing ProductScopeLimited case in gateway handlers by @taba2424 in https://github.com/and-period/furumaru/pull/3145
+- chore(docker): Update Go version to 1.25.3 in all API Dockerfiles by @taba2424 in https://github.com/and-period/furumaru/pull/3147
+- feat(api): Migrate shop functionality from store to user service by @taba2424 in https://github.com/and-period/furumaru/pull/3148
+- refactor(api): shopテーブルをuser側に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3149
+
 ## [v7.3.7](https://github.com/and-period/furumaru/compare/v7.3.6...v7.3.7) - 2025-10-16
 - fix(store): 店舗に紐づく生産者一覧取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3141
 
