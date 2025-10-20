@@ -527,7 +527,7 @@ func TestCoordinator_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, coordinatorTable, adminTable)
+			err := delete(ctx, shopTable, coordinatorTable, adminTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
