@@ -394,10 +394,10 @@ func (h *handler) setShop(ctx *gin.Context, auth *service.Auth) error {
 		ctx.Request.Header.Set("Shopid", shop.ID)
 		return nil
 	case types.AdminTypeProducer:
-		in := &store.ListShopsInput{
+		in := &user.ListShopsInput{
 			ProducerIDs: []string{auth.AdminID},
 		}
-		shops, _, err := h.store.ListShops(ctx, in)
+		shops, _, err := h.user.ListShops(ctx, in)
 		if err != nil {
 			return err
 		}

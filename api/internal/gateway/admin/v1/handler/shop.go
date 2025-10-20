@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -125,13 +125,13 @@ func (h *handler) UpdateShop(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.UpdateShopInput{
+	in := &user.UpdateShopInput{
 		ShopID:         ctx.Param("shopId"),
 		Name:           req.Name,
 		ProductTypeIDs: req.ProductTypeIDs,
 		BusinessDays:   req.BusinessDays,
 	}
-	if err := h.store.UpdateShop(ctx, in); err != nil {
+	if err := h.user.UpdateShop(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -140,11 +140,11 @@ func (h *handler) UpdateShop(ctx *gin.Context) {
 }
 
 func (h *handler) listShopsByCoordinatorIDs(ctx context.Context, coordinatorIDs []string) (service.Shops, error) {
-	in := &store.ListShopsInput{
+	in := &user.ListShopsInput{
 		CoordinatorIDs: coordinatorIDs,
 		NoLimit:        true,
 	}
-	shops, _, err := h.store.ListShops(ctx, in)
+	shops, _, err := h.user.ListShops(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -152,11 +152,11 @@ func (h *handler) listShopsByCoordinatorIDs(ctx context.Context, coordinatorIDs 
 }
 
 func (h *handler) listShopsByProducerIDs(ctx context.Context, producerIDs []string) (service.Shops, error) {
-	in := &store.ListShopsInput{
+	in := &user.ListShopsInput{
 		ProducerIDs: producerIDs,
 		NoLimit:     true,
 	}
-	shops, _, err := h.store.ListShops(ctx, in)
+	shops, _, err := h.user.ListShops(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -167,10 +167,10 @@ func (h *handler) multiGetShops(ctx context.Context, shopIDs []string) (service.
 	if len(shopIDs) == 0 {
 		return service.Shops{}, nil
 	}
-	in := &store.MultiGetShopsInput{
+	in := &user.MultiGetShopsInput{
 		ShopIDs: shopIDs,
 	}
-	shops, err := h.store.MultiGetShops(ctx, in)
+	shops, err := h.user.MultiGetShops(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -178,10 +178,10 @@ func (h *handler) multiGetShops(ctx context.Context, shopIDs []string) (service.
 }
 
 func (h *handler) getShop(ctx context.Context, shopID string) (*service.Shop, error) {
-	in := &store.GetShopInput{
+	in := &user.GetShopInput{
 		ShopID: shopID,
 	}
-	shop, err := h.store.GetShop(ctx, in)
+	shop, err := h.user.GetShop(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -189,10 +189,10 @@ func (h *handler) getShop(ctx context.Context, shopID string) (*service.Shop, er
 }
 
 func (h *handler) getShopByCoordinatorID(ctx context.Context, coordinatorID string) (*service.Shop, error) {
-	in := &store.GetShopByCoordinatorIDInput{
+	in := &user.GetShopByCoordinatorIDInput{
 		CoordinatorID: coordinatorID,
 	}
-	shop, err := h.store.GetShopByCoordinatorID(ctx, in)
+	shop, err := h.user.GetShopByCoordinatorID(ctx, in)
 	if err != nil {
 		return nil, err
 	}

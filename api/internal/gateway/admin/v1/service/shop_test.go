@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
 

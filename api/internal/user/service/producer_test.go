@@ -367,10 +367,7 @@ func TestCreateProducer(t *testing.T) {
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
-	shopIn := &store.GetShopByCoordinatorIDInput{
-		CoordinatorID: "coordinator-id",
-	}
-	shop := &sentity.Shop{
+	shop := &entity.Shop{
 		ID:             "shop-id",
 		CoordinatorID:  "coordinator-id",
 		ProducerIDs:    []string{},
@@ -414,7 +411,7 @@ func TestCreateProducer(t *testing.T) {
 					AddressLine2:   "",
 				}
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Producer.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, producer *entity.Producer, shopID string, auth func(ctx context.Context) error) error {
@@ -509,7 +506,7 @@ func TestCreateProducer(t *testing.T) {
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -536,7 +533,7 @@ func TestCreateProducer(t *testing.T) {
 			name: "failed to new admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -563,7 +560,7 @@ func TestCreateProducer(t *testing.T) {
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{

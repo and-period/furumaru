@@ -2,8 +2,7 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Producer struct {
@@ -12,7 +11,7 @@ type Producer struct {
 
 type Producers []*Producer
 
-func NewProducer(producer *uentity.Producer, shops sentity.Shops) *Producer {
+func NewProducer(producer *entity.Producer, shops entity.Shops) *Producer {
 	var coordinatorID string
 	if len(shops) > 0 {
 		// クライアント側の実装互換のため、はじめのコーディネータのIDを設定
@@ -39,7 +38,7 @@ func (p *Producer) Response() *types.Producer {
 	return &p.Producer
 }
 
-func NewProducers(producers uentity.Producers, shops map[string]sentity.Shops) Producers {
+func NewProducers(producers entity.Producers, shops map[string]entity.Shops) Producers {
 	res := make(Producers, len(producers))
 	for i := range producers {
 		res[i] = NewProducer(producers[i], shops[producers[i].ID])

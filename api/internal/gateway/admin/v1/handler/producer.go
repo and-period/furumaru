@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
@@ -76,11 +75,11 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		total     int64
 	)
 	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
-		in := &store.ListShopProducersInput{
+		in := &user.ListShopProducersInput{
 			ShopID:  getShopID(ctx),
 			NoLimit: true, // それほど多くならない想定
 		}
-		producerIDs, err := h.store.ListShopProducers(ctx, in)
+		producerIDs, err := h.user.ListShopProducers(ctx, in)
 		if err != nil {
 			h.httpError(ctx, err)
 			return

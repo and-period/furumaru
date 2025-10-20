@@ -90,10 +90,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, internalError(err)
 	}
-	shopIn := &store.GetShopByCoordinatorIDInput{
-		CoordinatorID: in.CoordinatorID,
-	}
-	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
+	shop, err := s.db.Shop.GetByCoordinatorID(ctx, in.CoordinatorID)
 	if err != nil {
 		return nil, internalError(err)
 	}
