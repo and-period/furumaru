@@ -455,12 +455,8 @@ func TestCoordinator_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
-	err = db.DB.Create(&admin).Error
-	require.NoError(t, err)
 	c := testCoordinator("admin-id", now())
 	c.Admin = *admin
-	err = db.DB.Table(coordinatorTable).Create(&c).Error
-	require.NoError(t, err)
 
 	ishop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
 	shop := &ishop.Shop
