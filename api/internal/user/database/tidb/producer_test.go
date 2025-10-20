@@ -492,7 +492,7 @@ func TestProducer_Create(t *testing.T) {
 	p.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Create(&shop).Error
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	type args struct {
