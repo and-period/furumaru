@@ -2,8 +2,7 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Coordinator struct {
@@ -13,7 +12,7 @@ type Coordinator struct {
 
 type Coordinators []*Coordinator
 
-func NewCoordinator(coordinator *uentity.Coordinator, shop *sentity.Shop) *Coordinator {
+func NewCoordinator(coordinator *entity.Coordinator, shop *entity.Shop) *Coordinator {
 	return &Coordinator{
 		Coordinator: types.Coordinator{
 			ID:                coordinator.ID,
@@ -38,7 +37,7 @@ func (c *Coordinator) Response() *types.Coordinator {
 	return &c.Coordinator
 }
 
-func NewCoordinators(coordinators uentity.Coordinators, shops map[string]*sentity.Shop) Coordinators {
+func NewCoordinators(coordinators entity.Coordinators, shops map[string]*entity.Shop) Coordinators {
 	res := make(Coordinators, len(coordinators))
 	for i := range coordinators {
 		res[i] = NewCoordinator(coordinators[i], shops[coordinators[i].ID])

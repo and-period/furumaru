@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
-	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 )
 
@@ -22,11 +21,11 @@ func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (
 	if len(producers) == 0 {
 		return service.Producers{}, nil
 	}
-	shopsIn := &store.ListShopsInput{
+	shopsIn := &user.ListShopsInput{
 		ProducerIDs: producerIDs,
 		NoLimit:     true,
 	}
-	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	shops, _, err := h.user.ListShops(ctx, shopsIn)
 	if err != nil {
 		return nil, err
 	}
@@ -41,11 +40,11 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 	if err != nil {
 		return nil, err
 	}
-	shopsIn := &store.ListShopsInput{
+	shopsIn := &user.ListShopsInput{
 		ProducerIDs: []string{producerID},
 		NoLimit:     true,
 	}
-	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	shops, _, err := h.user.ListShops(ctx, shopsIn)
 	if err != nil {
 		return nil, err
 	}

@@ -5,8 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,19 +14,19 @@ func TestCoordinators(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name         string
-		coordinators uentity.Coordinators
-		shops        map[string]*sentity.Shop
+		coordinators entity.Coordinators
+		shops        map[string]*entity.Shop
 		expect       Coordinators
 		response     []*types.Coordinator
 	}{
 		{
 			name: "success",
-			coordinators: uentity.Coordinators{
+			coordinators: entity.Coordinators{
 				{
-					Admin: uentity.Admin{
+					Admin: entity.Admin{
 						ID:            "coordinator-id01",
-						Type:          uentity.AdminTypeCoordinator,
-						Status:        uentity.AdminStatusActivated,
+						Type:          entity.AdminTypeCoordinator,
+						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -52,10 +51,10 @@ func TestCoordinators(t *testing.T) {
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
-					Admin: uentity.Admin{
+					Admin: entity.Admin{
 						ID:            "coordinator-id02",
-						Type:          uentity.AdminTypeCoordinator,
-						Status:        uentity.AdminStatusActivated,
+						Type:          entity.AdminTypeCoordinator,
+						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -80,7 +79,7 @@ func TestCoordinators(t *testing.T) {
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
-			shops: map[string]*sentity.Shop{
+			shops: map[string]*entity.Shop{
 				"coordinator-id01": {
 					ID:             "shop-id01",
 					CoordinatorID:  "coordinator-id01",

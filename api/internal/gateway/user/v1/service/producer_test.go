@@ -4,8 +4,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,19 +13,19 @@ func TestProducers(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
-		producers uentity.Producers
-		shops     map[string]sentity.Shops
+		producers entity.Producers
+		shops     map[string]entity.Shops
 		expect    Producers
 		response  []*types.Producer
 	}{
 		{
 			name: "success",
-			producers: uentity.Producers{
+			producers: entity.Producers{
 				{
-					Admin: uentity.Admin{
+					Admin: entity.Admin{
 						ID:            "producer-id01",
-						Type:          uentity.AdminTypeProducer,
-						Status:        uentity.AdminStatusActivated,
+						Type:          entity.AdminTypeProducer,
+						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -47,10 +46,10 @@ func TestProducers(t *testing.T) {
 					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
-					Admin: uentity.Admin{
+					Admin: entity.Admin{
 						ID:            "producer-id02",
-						Type:          uentity.AdminTypeProducer,
-						Status:        uentity.AdminStatusActivated,
+						Type:          entity.AdminTypeProducer,
+						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -71,7 +70,7 @@ func TestProducers(t *testing.T) {
 					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
-			shops: map[string]sentity.Shops{
+			shops: map[string]entity.Shops{
 				"producer-id01": {
 					{
 						ID:            "shop-id01",
