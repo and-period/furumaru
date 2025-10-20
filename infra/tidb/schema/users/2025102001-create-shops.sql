@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `users`.`shops` (
   `deleted_at`       DATETIME(3) NULL DEFAULT NULL, -- 削除日時
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_shops_coordinator_id`
-    FOREIGN KEY (`coordinator_id`) REFERENCES `users`.`coordinators` (`id`)
+    FOREIGN KEY (`coordinator_id`) REFERENCES `users`.`coordinators` (`admin_id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -24,6 +24,6 @@ CREATE TABLE IF NOT EXISTS `users`.`shop_producers` (
     FOREIGN KEY (`shop_id`) REFERENCES `users`.`shops` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_shop_producers_producer_id`
-    FOREIGN KEY (`producer_id`) REFERENCES `users`.`producers` (`id`)
+    FOREIGN KEY (`producer_id`) REFERENCES `users`.`producers` (`admin_id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
