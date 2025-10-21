@@ -1115,6 +1115,26 @@ func checkoutProductMocks(
 			UpdatedAt:  now,
 		}, nil)
 	m.user.EXPECT().
+		GetShopByCoordinatorID(gomock.Any(), &user.GetShopByCoordinatorIDInput{
+			CoordinatorID: "coordinator-id",
+		}).
+		Return(&uentity.Shop{
+			ID:        "shop-id",
+			Activated: true,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}, nil)
+	m.user.EXPECT().
+		GetShop(gomock.Any(), &user.GetShopInput{
+			ShopID: "shop-id",
+		}).
+		Return(&uentity.Shop{
+			ID:        "shop-id",
+			Activated: true,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}, nil).AnyTimes()
+	m.user.EXPECT().
 		GetAddress(gomock.Any(), &user.GetAddressInput{
 			UserID:    "user-id",
 			AddressID: "address-id",
@@ -1706,6 +1726,9 @@ func TestCheckoutProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), &user.GetShopByCoordinatorIDInput{
+					CoordinatorID: "coordinator-id",
+				}).Return(nil, exception.ErrInternal)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
