@@ -281,6 +281,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{ID: "shop-id", CoordinatorID: "coordinator-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -328,6 +332,9 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(nil, exception.ErrInternal)
 			},
 			input: &store.CreateScheduleInput{
 				ShopID:          "shop-id",
@@ -346,6 +353,9 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to not found shop",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(nil, database.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
 				ShopID:          "shop-id",
@@ -364,6 +374,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{ID: "shop-id", CoordinatorID: "coordinator-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
@@ -383,6 +397,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{ID: "shop-id", CoordinatorID: "coordinator-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
@@ -402,6 +420,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "unmatch coordinator id",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{ID: "shop-id", CoordinatorID: "other-coordinator-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -421,6 +443,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{ID: "shop-id", CoordinatorID: "coordinator-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), &user.GetShopInput{
+					ShopID: "shop-id",
+				}).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
