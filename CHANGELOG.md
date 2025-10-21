@@ -1,5 +1,8 @@
 # Changelog
 
+## [v8.0.1](https://github.com/and-period/furumaru/compare/v8.0.0...v8.0.1) - 2025-10-21
+- fix(api): Add GetShop and GetShopByCoordinatorID mocks for store service tests by @taba2424 in https://github.com/and-period/furumaru/pull/3152
+
 ## [v7.3.8](https://github.com/and-period/furumaru/compare/v7.3.7...v7.3.8) - 2025-10-20
 - chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3140
 - chore(deps): Update dependency golang to v1.25.3 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3139
