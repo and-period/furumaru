@@ -60,8 +60,14 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 		return
 	}
 
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	in := &user.ListProducersInput{
-		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
+		CoordinatorID: coordinator.ID,
 		Limit:         limit,
 		Offset:        offset,
 	}
@@ -70,15 +76,10 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
 
 	res := &types.ProducersResponse{
 		Producers:    service.NewProducers(producers).Response(),
-		Coordinators: coordinators.Response(),
+		Coordinators: []*types.Coordinator{coordinator.Response()},
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
