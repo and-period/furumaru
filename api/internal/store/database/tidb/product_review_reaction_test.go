@@ -27,10 +27,6 @@ func TestProductReviewReaction_Upsert(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -114,10 +110,6 @@ func TestProductReviewReaction_Delete(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -191,10 +183,6 @@ func TestProductReviewReaction_GetUserReactions(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())

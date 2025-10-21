@@ -29,10 +29,6 @@ func TestOrder_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -141,10 +137,6 @@ func TestOrder_ListUserIDs(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -288,10 +280,6 @@ func TestOrder_Count(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -404,10 +392,6 @@ func TestOrder_Get(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -515,10 +499,6 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -633,10 +613,6 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -746,10 +722,6 @@ func TestOrder_Create(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -877,10 +849,6 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1019,10 +987,6 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -1157,10 +1121,6 @@ func TestOrder_UpdateFailed(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1300,10 +1260,6 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1462,10 +1418,6 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1633,10 +1585,6 @@ func TestOrder_Draft(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -1740,10 +1688,6 @@ func TestOrder_Complete(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1850,10 +1794,6 @@ func TestOrder_Aggregate(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -1972,10 +1912,6 @@ func TestOrder_AggregateByUser(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -2098,10 +2034,6 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -2219,10 +2151,6 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -2344,10 +2272,6 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)

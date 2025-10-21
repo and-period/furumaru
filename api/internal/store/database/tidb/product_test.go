@@ -28,10 +28,6 @@ func TestProduct_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -134,10 +130,6 @@ func TestProduct_Count(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -220,10 +212,6 @@ func TestProduct_MultiGet(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	categories := make(entity.Categories, 2)
 	categories[0] = testCategory("category-id01", "野菜", now())
 	categories[1] = testCategory("category-id02", "果物", now())
@@ -302,10 +290,6 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -388,10 +372,6 @@ func TestProduct_Get(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -459,10 +439,6 @@ func TestProduct_Create(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -543,10 +519,6 @@ func TestProduct_Update(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -642,10 +614,6 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -761,10 +729,6 @@ func TestProduct_Delete(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())

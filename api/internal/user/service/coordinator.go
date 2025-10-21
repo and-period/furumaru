@@ -12,7 +12,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/random"
@@ -151,29 +150,7 @@ func (s *service) CreateCoordinator(
 	}
 
 	slog.DebugContext(ctx, "Create coordinator", slog.String("coordinatorId", coordinator.ID), slog.String("password", password))
-	s.waitGroup.Add(2)
-	go func() {
-		defer s.waitGroup.Done()
-		// Deprecated: 移行が完了し次第削除
-		in := &store.CreateShopInput{
-			CoordinatorID:  coordinator.ID,
-			Name:           in.MarcheName,
-			ProductTypeIDs: in.ProductTypeIDs,
-			BusinessDays:   in.BusinessDays,
-		}
-		fn := func() error {
-			_, err := s.store.CreateShop(ctx, in)
-			return err
-		}
-		const maxRetires = 3
-		retry := backoff.NewExponentialBackoff(maxRetires)
-		opts := []backoff.Option{
-			backoff.WithRetryablel(exception.IsRetryable),
-		}
-		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			slog.WarnContext(ctx, "Failed to create shop", slog.String("coordinatorId", coordinator.ID), log.Error(err))
-		}
-	}()
+	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
@@ -272,36 +249,8 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	shopIn := &store.GetShopByCoordinatorIDInput{
-		CoordinatorID: in.CoordinatorID,
-	}
-	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
-	if err != nil {
-		return internalError(err)
-	}
-	if err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID)); err != nil {
-		return internalError(err)
-	}
-	// Deprecated: 移行が完了し次第削除
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		in := &store.DeleteShopInput{
-			ShopID: shop.ID,
-		}
-		fn := func() error {
-			return s.store.DeleteShop(ctx, in)
-		}
-		const maxRetires = 3
-		retry := backoff.NewExponentialBackoff(maxRetires)
-		opts := []backoff.Option{
-			backoff.WithRetryablel(exception.IsRetryable),
-		}
-		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			slog.WarnContext(ctx, "Failed to delete shop", slog.String("shopId", shop.ID), log.Error(err))
-		}
-	}()
-	return nil
+	err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID))
+	return internalError(err)
 }
 
 func (s *service) AggregateRealatedProducers(

@@ -562,6 +562,10 @@ type UnrelateShopProducerInput struct {
 	ProducerID string `validate:"required"`
 }
 
+type RemoveShopProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+}
+
 /**
  * User - 購入者
  */

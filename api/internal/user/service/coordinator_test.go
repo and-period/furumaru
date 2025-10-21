@@ -391,7 +391,6 @@ func TestCreateCoordinator(t *testing.T) {
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
-				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
@@ -422,7 +421,6 @@ func TestCreateCoordinator(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
-				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
@@ -916,21 +914,6 @@ func TestResetCoordinatorPassword(t *testing.T) {
 func TestDeleteCoordinator(t *testing.T) {
 	t.Parallel()
 
-	getShopIn := &store.GetShopByCoordinatorIDInput{
-		CoordinatorID: "coordinator-id",
-	}
-	shop := &sentity.Shop{
-		ID:             "shop-id",
-		CoordinatorID:  "coordinator-id",
-		ProducerIDs:    []string{"producer-id"},
-		ProductTypeIDs: []string{"product-type-id"},
-		Name:           "&.株式会社マルシェ",
-		Activated:      true,
-	}
-	deleteShopIn := &store.DeleteShopInput{
-		ShopID: "shop-id",
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -940,9 +923,7 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(nil)
-				mocks.store.EXPECT().DeleteShop(gomock.Any(), deleteShopIn).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",
@@ -956,19 +937,8 @@ func TestDeleteCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get shop",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(nil, assert.AnError)
-			},
-			input: &user.DeleteCoordinatorInput{
-				CoordinatorID: "coordinator-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{

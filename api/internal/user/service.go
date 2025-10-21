@@ -95,6 +95,7 @@ type Service interface {
 	UpdateShop(ctx context.Context, in *UpdateShopInput) error                                         // 更新
 	RelateShopProducer(ctx context.Context, in *RelateShopProducerInput) error                         // 関連付け(生産者)
 	UnrelateShopProducer(ctx context.Context, in *UnrelateShopProducerInput) error                     // 関連付け解除(生産者)
+	RemoveShopProductType(ctx context.Context, in *RemoveShopProductTypeInput) error                   // 店舗商品タイプ削除
 	// User - 購入者
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)             // サインイン
 	SignOutUser(ctx context.Context, in *SignOutUserInput) error                               // サインアウト

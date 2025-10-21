@@ -27,10 +27,6 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
@@ -108,10 +104,6 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
@@ -179,10 +171,6 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	experienceType := testExperienceType("type-id", "野菜", now())

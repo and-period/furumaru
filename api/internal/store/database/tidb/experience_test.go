@@ -29,10 +29,6 @@ func TestExperience_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	types := make(entity.ExperienceTypes, 2)
 	types[0] = testExperienceType("experience-type-id01", "じゃがいも収穫", now())
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
@@ -107,10 +103,6 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	types := make(entity.ExperienceTypes, 2)
@@ -191,10 +183,6 @@ func TestExperience_Count(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	types := make(entity.ExperienceTypes, 2)
 	types[0] = testExperienceType("experience-type-id01", "じゃがいも収穫", now())
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
@@ -264,10 +252,6 @@ func TestExperience_MultiGet(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	types := make(entity.ExperienceTypes, 2)
@@ -342,10 +326,6 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	types := make(entity.ExperienceTypes, 2)
 	types[0] = testExperienceType("experience-type-id01", "じゃがいも収穫", now())
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
@@ -416,10 +396,6 @@ func TestExperience_Get(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
@@ -495,10 +471,6 @@ func TestExperience_Create(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)
@@ -570,10 +542,6 @@ func TestExperience_Update(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
@@ -661,10 +629,6 @@ func TestExperience_Delete(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())

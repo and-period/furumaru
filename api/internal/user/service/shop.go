@@ -116,3 +116,11 @@ func (s *service) UnrelateShopProducer(ctx context.Context, in *user.UnrelateSho
 	err := s.db.Shop.UnrelateProducer(ctx, in.ShopID, in.ProducerID)
 	return internalError(err)
 }
+
+func (s *service) RemoveShopProductType(ctx context.Context, in *user.RemoveShopProductTypeInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	err := s.db.Shop.RemoveProductType(ctx, in.ProductTypeID)
+	return internalError(err)
+}

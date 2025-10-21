@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -420,7 +418,6 @@ func TestCreateProducer(t *testing.T) {
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
-				mocks.store.EXPECT().RelateShopProducer(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -720,25 +717,6 @@ func TestUpdateProducer(t *testing.T) {
 func TestDeleteProducer(t *testing.T) {
 	t.Parallel()
 
-	shopsIn := &store.ListShopsInput{
-		ProducerIDs: []string{"producer-id"},
-		NoLimit:     true,
-	}
-	shops := sentity.Shops{
-		{
-			ID:             "shop-id",
-			CoordinatorID:  "coordinator-id",
-			ProducerIDs:    []string{"producer-id"},
-			ProductTypeIDs: []string{"product-type-id"},
-			Name:           "&.株式会社マルシェ",
-			Activated:      true,
-		},
-	}
-	deleteIn := &store.UnrelateShopProducerInput{
-		ShopID:     "shop-id",
-		ProducerID: "producer-id",
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -748,8 +726,6 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
-				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(nil)
 			},
 			input: &user.DeleteProducerInput{
@@ -764,31 +740,8 @@ func TestDeleteProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to list shops",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(nil, int64(0), assert.AnError)
-			},
-			input: &user.DeleteProducerInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to unrelate shop producer",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
-				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(assert.AnError)
-			},
-			input: &user.DeleteProducerInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
-				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteProducerInput{

@@ -24,10 +24,6 @@ func TestLive_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -115,10 +111,6 @@ func TestLive_Count(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -203,10 +195,6 @@ func TestLive_Get(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -298,10 +286,6 @@ func TestLive_Update(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
-	require.NoError(t, err)
-
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -382,10 +366,6 @@ func TestLive_Delete(t *testing.T) {
 		return current
 	}
 	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
-	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())

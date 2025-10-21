@@ -549,3 +549,48 @@ func TestUnrelateShopProducer(t *testing.T) {
 		}))
 	}
 }
+
+func TestRemoveShopProductType(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.RemoveShopProductTypeInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
+			},
+			input: &user.RemoveShopProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.RemoveShopProductTypeInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to unrelate shop producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(assert.AnError)
+			},
+			input: &user.RemoveShopProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.RemoveShopProductType(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}

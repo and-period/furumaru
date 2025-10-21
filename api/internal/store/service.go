@@ -156,17 +156,6 @@ type Service interface {
 	UpdateShippingInUse(ctx context.Context, in *UpdateShippingInUseInput) error                                     // 更新(使用中)
 	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                 // 登録または更新(デフォルト設定)
 	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error                                               // 削除
-	// Deprecated: Shop - 店舗
-	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, int64, error)                    // Deprecated: 一覧取得
-	ListShopProducers(ctx context.Context, in *ListShopProducersInput) ([]string, error)               // Deprecated: 生産者ID一覧取得
-	MultiGetShops(ctx context.Context, in *MultiGetShopsInput) (entity.Shops, error)                   // Deprecated: 一覧取得(ID指定)
-	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)                               // Deprecated: １件取得
-	GetShopByCoordinatorID(ctx context.Context, in *GetShopByCoordinatorIDInput) (*entity.Shop, error) // Deprecated: １件取得(コーディネータID指定)
-	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)                         // Deprecated: 登録
-	UpdateShop(ctx context.Context, in *UpdateShopInput) error                                         // Deprecated: 更新
-	DeleteShop(ctx context.Context, in *DeleteShopInput) error                                         // Deprecated: 削除
-	RelateShopProducer(ctx context.Context, in *RelateShopProducerInput) error                         // Deprecated: 関連付け(生産者)
-	UnrelateShopProducer(ctx context.Context, in *UnrelateShopProducerInput) error                     // Deprecated: 関連付け解除(生産者)
 	// Spot - スポット
 	ListSpots(ctx context.Context, in *ListSpotsInput) (entity.Spots, int64, error)                    // 一覧取得
 	ListSpotsByGeolocation(ctx context.Context, in *ListSpotsByGeolocationInput) (entity.Spots, error) // 一覧取得（座標指定）

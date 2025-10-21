@@ -1062,64 +1062,6 @@ type DeleteShippingInput struct {
 }
 
 /**
- * Deprecated: Shop - 店舗
- */
-type ListShopsInput struct {
-	CoordinatorIDs []string `validate:""`
-	ProducerIDs    []string `validate:""`
-	Limit          int64    `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset         int64    `validate:"min=0"`
-	NoLimit        bool     `validate:""`
-}
-
-type ListShopProducersInput struct {
-	ShopID  string `validate:""`
-	Limit   int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset  int64  `validate:"min=0"`
-	NoLimit bool   `validate:""`
-}
-
-type MultiGetShopsInput struct {
-	ShopIDs []string `validate:"dive,required"`
-}
-
-type GetShopInput struct {
-	ShopID string `validate:"required"`
-}
-
-type GetShopByCoordinatorIDInput struct {
-	CoordinatorID string `validate:"required"`
-}
-
-type CreateShopInput struct {
-	CoordinatorID  string         `validate:"required"`
-	Name           string         `validate:"required,max=64"`
-	ProductTypeIDs []string       `validate:"dive,required"`
-	BusinessDays   []time.Weekday `validate:"max=7,unique"`
-}
-
-type UpdateShopInput struct {
-	ShopID         string         `validate:"required"`
-	Name           string         `validate:"required,max=64"`
-	ProductTypeIDs []string       `validate:"dive,required"`
-	BusinessDays   []time.Weekday `validate:"max=7,unique"`
-}
-
-type DeleteShopInput struct {
-	ShopID string `validate:"required"`
-}
-
-type RelateShopProducerInput struct {
-	ShopID     string `validate:"required"`
-	ProducerID string `validate:"required"`
-}
-
-type UnrelateShopProducerInput struct {
-	ShopID     string `validate:"required"`
-	ProducerID string `validate:"required"`
-}
-
-/**
  * Spot - スポット
  */
 type ListSpotsInput struct {

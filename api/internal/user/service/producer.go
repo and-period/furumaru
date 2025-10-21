@@ -4,16 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/backoff"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -134,28 +130,6 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.db.Producer.Create(ctx, producer, shop.ID, auth); err != nil {
 		return nil, internalError(err)
 	}
-
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		// Deprecated: 移行が完了し次第削除
-		in := &store.RelateShopProducerInput{
-			ShopID:     shop.ID,
-			ProducerID: producer.ID,
-		}
-		fn := func() error {
-			return s.store.RelateShopProducer(ctx, in)
-		}
-		const maxRetires = 3
-		retry := backoff.NewExponentialBackoff(maxRetires)
-		opts := []backoff.Option{
-			backoff.WithRetryablel(exception.IsRetryable),
-		}
-		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			slog.WarnContext(ctx, "Failed to relate shop producer",
-				slog.String("shopId", shop.ID), slog.String("producerId", producer.ID), log.Error(err))
-		}
-	}()
 	return producer, nil
 }
 
@@ -199,27 +173,9 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	shopsIn := &store.ListShopsInput{
-		ProducerIDs: []string{in.ProducerID},
-		NoLimit:     true,
-	}
-	shops, _, err := s.store.ListShops(ctx, shopsIn)
-	if err != nil {
-		return internalError(err)
-	}
-	for _, shop := range shops {
-		// Deprecated: 移行が完了し次第削除
-		deleteIn := &store.UnrelateShopProducerInput{
-			ShopID:     shop.ID,
-			ProducerID: in.ProducerID,
-		}
-		if err := s.store.UnrelateShopProducer(ctx, deleteIn); err != nil {
-			return internalError(err)
-		}
-	}
 	auth := func(_ context.Context) error {
 		return nil // 生産者は認証機能を持たないため何もしない
 	}
-	err = s.db.Producer.Delete(ctx, in.ProducerID, auth)
+	err := s.db.Producer.Delete(ctx, in.ProducerID, auth)
 	return internalError(err)
 }
