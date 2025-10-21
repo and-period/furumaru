@@ -515,17 +515,6 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	if params.payload.Pickup {
 		return "", fmt.Errorf("service: experience order cannot be pickup: %w", exception.ErrForbidden)
 	}
-	// 店舗の有効性検証
-	shopIn := &user.GetShopInput{
-		ShopID: experience.ShopID,
-	}
-	shop, err := s.user.GetShop(ctx, shopIn)
-	if err != nil {
-		return "", internalError(err)
-	}
-	if !shop.Enabled() {
-		return "", fmt.Errorf("service: shop is disabled: %w", exception.ErrForbidden)
-	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(experience.ShopID) {
 		slog.WarnContext(ctx, "Failed to disable promotion",
@@ -537,6 +526,17 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		slog.WarnContext(ctx, "Failed to checkout because the experience is not accepting",
 			slog.String("userId", params.payload.UserID), slog.String("experienceId", params.payload.ExperienceID))
 		return "", fmt.Errorf("service: the experience is not accepting: %w", exception.ErrFailedPrecondition)
+	}
+	// 店舗の有効性検証
+	shopIn := &user.GetShopInput{
+		ShopID: experience.ShopID,
+	}
+	shop, err := s.user.GetShop(ctx, shopIn)
+	if err != nil {
+		return "", internalError(err)
+	}
+	if !shop.Enabled() {
+		return "", fmt.Errorf("service: shop is disabled: %w", exception.ErrForbidden)
 	}
 	// 注文インスタンスの生成
 	oparams := &entity.NewExperienceOrderParams{

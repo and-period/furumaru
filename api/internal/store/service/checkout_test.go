@@ -1305,6 +1305,20 @@ func TestCheckoutProduct(t *testing.T) {
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
+	shopIn := &user.GetShopByCoordinatorIDInput{
+		CoordinatorID: "coordinator-id",
+	}
+	shop := &uentity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
+		Name:           "&.店舗",
+		Activated:      true,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
 	shipping := &entity.Shipping{
 		ShippingRevision: entity.ShippingRevision{
 			ShippingID:        "coordinator-id",
@@ -1459,6 +1473,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ordermocks(mocks, order(), nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -1514,6 +1529,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
@@ -1592,6 +1608,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ordermocks(mocks, order, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -1726,9 +1743,7 @@ func TestCheckoutProduct(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
-				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), &user.GetShopByCoordinatorIDInput{
-					CoordinatorID: "coordinator-id",
-				}).Return(nil, exception.ErrInternal)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1760,8 +1775,10 @@ func TestCheckoutProduct(t *testing.T) {
 		{
 			name: "failed to validate checkout",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &uentity.Shop{Activated: false}
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1796,6 +1813,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
@@ -1832,6 +1850,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(nil, assert.AnError)
 			},
@@ -1869,6 +1888,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
@@ -1905,6 +1925,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, &entity.Cart{}, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
@@ -1941,6 +1962,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
@@ -1978,6 +2000,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, nil)
@@ -2015,6 +2038,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(0), nil)
@@ -2052,6 +2076,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -2089,6 +2114,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -2128,6 +2154,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ordermocks(mocks, order(), assert.AnError)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -2167,6 +2194,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ordermocks(mocks, order(), nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -2203,6 +2231,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ordermocks(mocks, order(), nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -2252,6 +2281,7 @@ func TestCheckoutProduct(t *testing.T) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.user.EXPECT().GetShopByCoordinatorID(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
@@ -2404,6 +2434,20 @@ func TestCheckoutExperience(t *testing.T) {
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
+	shopIn := &user.GetShopInput{
+		ShopID: "shop-id",
+	}
+	shop := &uentity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
+		Name:           "&.店舗",
+		Activated:      true,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
 	session := &komoju.SessionResponse{
 		ID:        "transaction-id",
 		ReturnURL: "https://example.com",
@@ -2472,6 +2516,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -2527,6 +2572,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Order.EXPECT().Create(ctx, gomock.Any()).DoAndReturn(func(_ context.Context, in *entity.Order) error {
 					assert.Equal(t, int64(0), in.Total)
 					return nil
@@ -2837,12 +2883,55 @@ func TestCheckoutExperience(t *testing.T) {
 			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(nil, assert.AnError)
+			},
+			params: &checkoutParams{
+				payload: &store.CheckoutDetail{
+					CheckoutExperienceDetail: store.CheckoutExperienceDetail{
+						ExperienceID:          "experience-id",
+						AdultCount:            2,
+						JuniorHighSchoolCount: 2,
+						ElementarySchoolCount: 0,
+						PreschoolCount:        0,
+						SeniorCount:           0,
+						Transportation:        "車で伺います。",
+						RequestedDate:         "20240102",
+						RequestedTime:         "1830",
+					},
+					Type:             entity.OrderTypeExperience,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            10000,
+				},
+				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
+				},
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to checksum",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -2884,6 +2973,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
@@ -2927,6 +3017,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -2970,6 +3061,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -3010,6 +3102,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -3062,6 +3155,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.db.Order.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			params: &checkoutParams{
