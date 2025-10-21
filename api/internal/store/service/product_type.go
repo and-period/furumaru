@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -124,7 +125,10 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 	if total > 0 {
 		return fmt.Errorf("service: associated with product: %w", exception.ErrFailedPrecondition)
 	}
-	if err := s.db.Shop.RemoveProductType(ctx, in.ProductTypeID); err != nil {
+	shopIn := &user.RemoveShopProductTypeInput{
+		ProductTypeID: in.ProductTypeID,
+	}
+	if err := s.user.RemoveShopProductType(ctx, shopIn); err != nil {
 		return internalError(err)
 	}
 	if err := s.db.ProductType.Delete(ctx, in.ProductTypeID); err != nil {

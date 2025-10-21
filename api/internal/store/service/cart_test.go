@@ -9,6 +9,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/golang/mock/gomock"
@@ -285,17 +287,6 @@ func TestGetCart(t *testing.T) {
 func TestCalcCart(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
-	shop := &entity.Shop{
-		ID:             "shop-id",
-		CoordinatorID:  "coordinator-id",
-		ProducerIDs:    []string{"producer-id"},
-		ProductTypeIDs: []string{"product-type-id"},
-		BusinessDays:   []time.Weekday{time.Monday},
-		Name:           "テスト店舗",
-		Activated:      true,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
@@ -397,8 +388,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -424,8 +417,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "success without shipping and promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
@@ -450,8 +445,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "success with pickup",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
@@ -483,9 +480,10 @@ func TestCalcCart(t *testing.T) {
 			expectErr:     exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get shop",
+			name: "failed with empty coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(nil, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -501,8 +499,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "failed to get cart",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, assert.AnError)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
@@ -520,8 +520,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "failed to get shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
@@ -539,8 +541,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "failed to get promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(nil, assert.AnError)
 			},
@@ -558,8 +562,10 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "coordinator-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, assert.AnError)

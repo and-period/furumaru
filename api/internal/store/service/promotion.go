@@ -133,7 +133,10 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	switch admin.Type {
 	case uentity.AdminTypeAdministrator:
 	case uentity.AdminTypeCoordinator:
-		shop, err := s.db.Shop.GetByCoordinatorID(ctx, admin.ID)
+		in := &user.GetShopByCoordinatorIDInput{
+			CoordinatorID: admin.ID,
+		}
+		shop, err := s.user.GetShopByCoordinatorID(ctx, in)
 		if err != nil {
 			return nil, internalError(err)
 		}
@@ -189,7 +192,10 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 		switch admin.Type {
 		case uentity.AdminTypeAdministrator:
 		case uentity.AdminTypeCoordinator:
-			shop, err := s.db.Shop.GetByCoordinatorID(ctx, admin.ID)
+			in := &user.GetShopByCoordinatorIDInput{
+				CoordinatorID: admin.ID,
+			}
+			shop, err := s.user.GetShopByCoordinatorID(ctx, in)
 			if err != nil {
 				return internalError(err)
 			}

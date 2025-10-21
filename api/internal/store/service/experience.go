@@ -113,7 +113,10 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		_, err = s.db.Shop.Get(ectx, in.ShopID)
+		in := &user.GetShopInput{
+			ShopID: in.ShopID,
+		}
+		_, err = s.user.GetShop(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {

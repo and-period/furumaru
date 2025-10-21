@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -373,17 +372,6 @@ func TestCreatePromotion(t *testing.T) {
 			UpdatedAt:     now,
 		}
 	}
-	shop := &entity.Shop{
-		ID:             "shop-id",
-		CoordinatorID:  "coordinator-id",
-		ProducerIDs:    []string{"producer-id"},
-		ProductTypeIDs: []string{"product-type-id"},
-		BusinessDays:   []time.Weekday{time.Monday},
-		Name:           "テスト店舗",
-		Activated:      true,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
 
 	tests := []struct {
 		name      string
@@ -434,8 +422,10 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "success for only shop",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "admin-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				mocks.db.Promotion.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, promotion *entity.Promotion) error {
@@ -499,8 +489,9 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "admin-id"}
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreatePromotionInput{
 				AdminID:      "admin-id",
@@ -609,17 +600,6 @@ func TestUpdatePromotion(t *testing.T) {
 			UpdatedAt:     now,
 		}
 	}
-	shop := &entity.Shop{
-		ID:             "shop-id",
-		CoordinatorID:  "coordinator-id",
-		ProducerIDs:    []string{"producer-id"},
-		ProductTypeIDs: []string{"product-type-id"},
-		BusinessDays:   []time.Weekday{time.Monday},
-		Name:           "テスト店舗",
-		Activated:      true,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
 	params := &database.UpdatePromotionParams{
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
@@ -685,9 +665,11 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "success for only shop when coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "admin-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
 			},
 			input: &store.UpdatePromotionInput{
@@ -776,9 +758,10 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "admin-id"}
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(nil, assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
 				AdminID:      "admin-id",
@@ -798,10 +781,11 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "cannot update other shop promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				shop := &entity.Shop{ID: "invalid-id"}
+				shopIn := &user.GetShopByCoordinatorIDInput{CoordinatorID: "admin-id"}
+				shop := &uentity.Shop{ID: "other-shop-id"}
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+				mocks.user.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 			},
 			input: &store.UpdatePromotionInput{
 				AdminID:      "admin-id",

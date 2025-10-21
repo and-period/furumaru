@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -38,7 +39,10 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, internalError(err)
 	}
-	shop, err := s.db.Shop.GetByCoordinatorID(ctx, in.CoordinatorID)
+	shopIn := &user.GetShopByCoordinatorIDInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	shop, err := s.user.GetShopByCoordinatorID(ctx, shopIn)
 	if err != nil {
 		return nil, nil, internalError(err)
 	}

@@ -335,7 +335,10 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 
 func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (string, error) {
 	// 店舗の有効性検証
-	shop, err := s.db.Shop.GetByCoordinatorID(ctx, params.payload.CoordinatorID)
+	shopIn := &user.GetShopByCoordinatorIDInput{
+		CoordinatorID: params.payload.CoordinatorID,
+	}
+	shop, err := s.user.GetShopByCoordinatorID(ctx, shopIn)
 	if err != nil {
 		return "", internalError(err)
 	}
@@ -513,7 +516,10 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		return "", fmt.Errorf("service: experience order cannot be pickup: %w", exception.ErrForbidden)
 	}
 	// 店舗の有効性検証
-	shop, err := s.db.Shop.Get(ctx, experience.ShopID)
+	shopIn := &user.GetShopInput{
+		ShopID: experience.ShopID,
+	}
+	shop, err := s.user.GetShop(ctx, shopIn)
 	if err != nil {
 		return "", internalError(err)
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -369,8 +370,9 @@ func TestDeleteProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.RemoveShopProductTypeInput{ProductTypeID: "product-type-id"}
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
-				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
+				mocks.user.EXPECT().RemoveShopProductType(ctx, shopIn).Return(nil)
 				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(nil)
 			},
 			input: &store.DeleteProductTypeInput{
@@ -405,10 +407,21 @@ func TestDeleteProductType(t *testing.T) {
 			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
-			name: "failed to remove from shop",
+			name: "failed to validate product count",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(1), nil)
+			},
+			input: &store.DeleteProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to remove shop product type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.RemoveShopProductTypeInput{ProductTypeID: "product-type-id"}
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
-				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(assert.AnError)
+				mocks.user.EXPECT().RemoveShopProductType(ctx, shopIn).Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -418,8 +431,9 @@ func TestDeleteProductType(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
+				shopIn := &user.RemoveShopProductTypeInput{ProductTypeID: "product-type-id"}
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
-				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
+				mocks.user.EXPECT().RemoveShopProductType(ctx, shopIn).Return(nil)
 				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{

@@ -620,12 +620,6 @@ func TestCreateExperience(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
-	shop := &entity.Shop{
-		ID:            "shop-id",
-		Name:          "じゃがいも農園",
-		CoordinatorID: "coordinator-id",
-		ProducerIDs:   []string{"producer-id"},
-	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 	}
@@ -661,7 +655,9 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
+				shopIn := &user.GetShopInput{ShopID: "shop-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
@@ -803,7 +799,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, database.ErrNotFound)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
@@ -847,7 +842,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
@@ -891,7 +885,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 			},
@@ -935,7 +928,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "invalid prefecture validation",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
@@ -979,7 +971,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get geolocation",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
@@ -1024,7 +1015,9 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "invalid experience validation",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
+				shopIn := &user.GetShopInput{ShopID: "shop-id"}
+				shop := &uentity.Shop{ID: "shop-id"}
+				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				location := &geolocation.GetGeolocationOutput{
@@ -1073,7 +1066,6 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to create experience",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)

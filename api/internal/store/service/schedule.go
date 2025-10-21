@@ -73,7 +73,10 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	shop, err := s.db.Shop.Get(ctx, in.ShopID)
+	shopIn := &user.GetShopInput{
+		ShopID: in.ShopID,
+	}
+	shop, err := s.user.GetShop(ctx, shopIn)
 	if errors.Is(err, database.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
