@@ -164,8 +164,8 @@ github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.2 h1:scVnW+NLXasGOhy7HhkdT9AG
 github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.2/go.mod h1:FRNCY3zTEWZXBKm2h5UBUPvCVDOecTad9KhynDyGBc0=
 github.com/aws/aws-sdk-go-v2/service/sts v1.38.8 h1:xSL4IV19pKDASL2fjWXRfTGmZddPiPPZNPpbv6uZQZY=
 github.com/aws/aws-sdk-go-v2/service/sts v1.38.8/go.mod h1:L1xxV3zAdB+qVrVW/pBIrIAnHFWHo6FBbFe4xOGsG/o=
-github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.1 h1:Egrcl4cVopoMLK49ewn5/dTBoo5Xa50Hfa/0FyliKhU=
-github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.1/go.mod h1:6b2/xvKayfxid2QSp27xdSumzhWwBPlnm9rPnoIT/jU=
+github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2 h1:05xyuO9WcW3vVnHzkUwSFFtEXYjn5QFyWdZwhvJd7Z0=
+github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2/go.mod h1:YyJUP+wz/pbInre42CW6oDjyr9V2JWcFbseB/HmUxyU=
 github.com/aws/aws-sdk-go-v2/service/translate v1.33.8 h1:lkLigxu/JJdw/Go9i+VcOzA1OmMm1ZWhzmdawgumUa0=
 github.com/aws/aws-sdk-go-v2/service/translate v1.33.8/go.mod h1:AHFEW5OmwNpsiYc2C5aqMHXb9slSvIF/NjQTSDWnLQs=
 github.com/aws/smithy-go v1.23.1 h1:sLvcH6dfAFwGkHLZ7dGiYF7aK6mg4CgKA/iDKjLDt9M=
