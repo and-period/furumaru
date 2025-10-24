@@ -1,5 +1,8 @@
 # Changelog
 
+## [v9.0.1](https://github.com/and-period/furumaru/compare/v9.0.0...v9.0.1) - 2025-10-21
+- chore(deps): Update dependency vite to v7.1.11 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3150
+
 ## [v8.0.1](https://github.com/and-period/furumaru/compare/v8.0.0...v8.0.1) - 2025-10-21
 - fix(api): Add GetShop and GetShopByCoordinatorID mocks for store service tests by @taba2424 in https://github.com/and-period/furumaru/pull/3152
 
