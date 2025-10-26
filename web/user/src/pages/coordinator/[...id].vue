@@ -24,13 +24,19 @@ const pageTitle = computed<string>(() => {
   return coordinatorInfo.value ? coordinatorInfo.value.marcheName : 'コーディネーターページ'
 })
 
-// 商品がある生産者を先に、ない生産者を後に並び替え
+// 商品または体験がある生産者を先に、どちらもない生産者を後に並び替え
 const sortedProducers = computed(() => {
   return [...producers.value].sort((a, b) => {
     const aHasProducts = a.products && a.products.length > 0
+    const aHasExperiences = a.experiences && a.experiences.length > 0
     const bHasProducts = b.products && b.products.length > 0
-    if (aHasProducts && !bHasProducts) return -1
-    if (!aHasProducts && bHasProducts) return 1
+    const bHasExperiences = b.experiences && b.experiences.length > 0
+
+    const aHasContent = aHasProducts || aHasExperiences
+    const bHasContent = bHasProducts || bHasExperiences
+
+    if (aHasContent && !bHasContent) return -1
+    if (!aHasContent && bHasContent) return 1
     return 0
   })
 })
@@ -270,48 +276,6 @@ useSeoMeta({
               </div>
               <div class="my-8 px-4">
                 <div
-                  v-if="experiences.length > 0"
-                  class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-blue-400 to-blue-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
-                >
-                  <svg
-                    class="w-6 h-6 md:w-7 md:h-7"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                  </svg>
-                  <span class="tracking-wide">体験をする</span>
-                </div>
-              </div>
-              <div
-                v-if="experiences.length > 0"
-                class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
-              >
-                <div
-                  v-for="experience in experiences"
-                  :key="experience.id"
-                  class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
-                  @click="handleClickExperienceItem(experience.id)"
-                >
-                  <div class="aspect-video relative overflow-hidden">
-                    <img
-                      :src="experience.thumbnailUrl"
-                      :alt="experience.title"
-                      class="w-full h-full object-cover"
-                    >
-                  </div>
-                  <div class="p-4">
-                    <h3 class="text-[16px] font-bold tracking-[1.6px] line-clamp-2">
-                      {{ experience.title }}
-                    </h3>
-                    <p class="text-[14px] text-gray-600 mt-2 line-clamp-2">
-                      {{ experience.description }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="my-8 px-4">
-                <div
                   v-if="videos.length > 0"
                   class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-red-400 to-pink-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
                 >
@@ -403,7 +367,9 @@ useSeoMeta({
                 :profile="producer.profile"
                 :img-src="producer.thumbnailUrl"
                 :products="producer.products"
+                :experiences="producer.experiences"
                 @click:product-item="handleClickProductItem"
+                @click:experience-item="handleClickExperienceItem"
               />
             </div>
           </div>

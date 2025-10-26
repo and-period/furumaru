@@ -76,8 +76,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
           ...producer,
           products: state.coordinatorResponse.products.filter((product) => {
             return product.producerId === producer.id
-          },
-          ),
+          }),
+          experiences: state.coordinatorResponse.experiences?.filter((experience) => {
+            return experience.producerId === producer.id
+          }) ?? [],
         }
       })
     },

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from '~/types/api'
+import type { Product, Experience } from '~/types/api'
 
 interface Props {
   id: string | undefined
@@ -7,18 +7,24 @@ interface Props {
   profile: string | undefined
   imgSrc: string | undefined
   products: Product[] | undefined
+  experiences: Experience[] | undefined
 }
 
 defineProps<Props>()
 
 interface Emits {
   (e: 'click:product-item', id: string): void
+  (e: 'click:experience-item', id: string): void
 }
 
 const emits = defineEmits<Emits>()
 
 const handleClickProductItem = (productId: string) => {
   emits('click:product-item', productId)
+}
+
+const handleClickExperienceItem = (experienceId: string) => {
+  emits('click:experience-item', experienceId)
 }
 </script>
 
@@ -44,12 +50,12 @@ const handleClickProductItem = (productId: string) => {
       <div
         class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[14px] font-bold md:mx-auto md:text-[16px]"
       >
-        この生産者の商品
+        この生産者の商品・体験
       </div>
     </div>
     <div class="px-4 pt-10 pb-6">
       <div
-        v-if="!products || products.length === 0"
+        v-if="(!products || products.length === 0) && (!experiences || experiences.length === 0)"
         class="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100"
       >
         <div class="text-amber-500 text-2xl mb-2">
@@ -57,7 +63,7 @@ const handleClickProductItem = (productId: string) => {
         </div>
         <div class="text-center">
           <p class="text-amber-700 text-[14px] font-medium mb-1">
-            新商品を準備中
+            新商品・体験を準備中
           </p>
           <p class="text-amber-600 text-[11px] opacity-80">
             お楽しみに！
@@ -68,15 +74,27 @@ const handleClickProductItem = (productId: string) => {
         v-else
         class="grid grid-cols-2 gap-2"
       >
+        <!-- 商品一覧 -->
         <the-coordinator-product-list
           v-for="product in products"
           :id="product.id"
-          :key="product.id"
+          :key="`product-${product.id}`"
           :name="product.name"
           :inventory="product.inventory"
           :price="product.price"
           :thumbnail="product.media[0]"
           @click:item="handleClickProductItem"
+        />
+
+        <!-- 体験一覧 -->
+        <the-coordinator-experience-list
+          v-for="experience in experiences"
+          :id="experience.id"
+          :key="`experience-${experience.id}`"
+          :title="experience.title"
+          :price-adult="experience.priceAdult"
+          :thumbnail-url="experience.thumbnailUrl"
+          @click:item="handleClickExperienceItem"
         />
       </div>
     </div>
