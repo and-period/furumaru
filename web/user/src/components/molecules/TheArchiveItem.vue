@@ -58,7 +58,7 @@ const handleClick = () => {
 
 <template>
   <div
-    class="w-full text-main"
+    class="w-full text-main rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-white"
     @click="handleClick"
   >
     <div class="w-full">
@@ -71,7 +71,7 @@ const handleClick = () => {
         height="208px"
       />
     </div>
-    <div class="mt-2 flex w-full flex-col gap-2">
+    <div class="mt-2 flex w-full flex-col gap-2 p-3">
       <div class="flex items-center text-sm gap-2">
         <span
           class="rounded border border-main px-1 text-[10px] font-bold tracking-[10%] text-main"
