@@ -17,7 +17,7 @@ const coordinatorStore = useCoordinatorStore()
 const { fetchCoordinator } = coordinatorStore
 const { coordinatorFetchState } = storeToRefs(coordinatorStore)
 
-const { coordinatorInfo, archives, lives, producers, videos, experiences }
+const { coordinatorInfo, archives, lives, producers, videos }
   = storeToRefs(coordinatorStore)
 
 const pageTitle = computed<string>(() => {
