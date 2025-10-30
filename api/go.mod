@@ -5,7 +5,7 @@ go 1.25.3
 require (
 	firebase.google.com/go/v4 v4.18.0
 	github.com/aws/aws-lambda-go v1.50.0
-	github.com/aws/aws-sdk-go-v2 v1.39.4
+	github.com/aws/aws-sdk-go-v2 v1.39.5
 	github.com/aws/aws-sdk-go-v2/config v1.31.15
 	github.com/aws/aws-sdk-go-v2/credentials v1.18.19
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.20.18
@@ -20,7 +20,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.8
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.11
 	github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2
-	github.com/aws/aws-sdk-go-v2/service/translate v1.33.8
+	github.com/aws/aws-sdk-go-v2/service/translate v1.33.9
 	github.com/casbin/casbin/v2 v2.128.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/coreos/go-oidc/v3 v3.16.0
@@ -120,8 +120,8 @@ require (
 	github.com/ashanbrown/makezero/v2 v2.0.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.2 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.11 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.11 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.11 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.12 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.12 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.4 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.4.11 // indirect
 	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.31.3 // indirect
