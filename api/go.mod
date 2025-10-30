@@ -14,7 +14,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.52.3
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.48.0
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.82.7
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.84.1
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.85.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.7
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.10
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.8
