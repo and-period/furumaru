@@ -18,7 +18,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.7
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.10
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.8
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.11
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.12
 	github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2
 	github.com/aws/aws-sdk-go-v2/service/translate v1.33.9
 	github.com/casbin/casbin/v2 v2.128.0
