@@ -156,8 +156,8 @@ github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.10 h1:S5Mw93I9uFjXnHvk
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.10/go.mod h1:wW/JqWY6yVr88XZJq5wX22l8XNkDdhw+8eDgkN51Rlc=
 github.com/aws/aws-sdk-go-v2/service/sfn v1.39.8 h1:UvyfgVy6ZAnc73jZ+TO6Dpf/t+/OeydXW2V2+olzETM=
 github.com/aws/aws-sdk-go-v2/service/sfn v1.39.8/go.mod h1:FtvDIG9w6whdkGPyebpRejcyeH3Qg3WC42njMST/nsM=
-github.com/aws/aws-sdk-go-v2/service/sqs v1.42.11 h1:tt34G790giMoWqpqJOfvc5BD25hHRSjgvx1x1jtwi9w=
-github.com/aws/aws-sdk-go-v2/service/sqs v1.42.11/go.mod h1:tj8YTswoacIeRGjkYuHOkUd4ioQ4Of0m+gy09kuns9o=
+github.com/aws/aws-sdk-go-v2/service/sqs v1.42.12 h1:gKm7A7ShrL5Pn53ec5GqzQB2tWvk978bbasFEZfwu2U=
+github.com/aws/aws-sdk-go-v2/service/sqs v1.42.12/go.mod h1:tQRO8Q9JzfImAG5sG3TUyeF/EqCXwvZ7TA8gz5Whpec=
 github.com/aws/aws-sdk-go-v2/service/sso v1.30.0 h1:xHXvxst78wBpJFgDW07xllOx0IAzbryrSdM4nMVQ4Dw=
 github.com/aws/aws-sdk-go-v2/service/sso v1.30.0/go.mod h1:/e8m+AO6HNPPqMyfKRtzZ9+mBF5/x1Wk8QiDva4m07I=
 github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.4 h1:tBw2Qhf0kj4ZwtsVpDiVRU3zKLvjvjgIjHMKirxXg8M=
@@ -332,8 +332,8 @@ github.com/gabriel-vasile/mimetype v1.4.10 h1:zyueNbySn/z8mJZHLt6IPw0KoZsiQNszIp
 github.com/gabriel-vasile/mimetype v1.4.10/go.mod h1:d+9Oxyo1wTzWdyVUPMmXFvp4F9tea18J8ufA774AB3s=
 github.com/getkin/kin-openapi v0.133.0 h1:pJdmNohVIJ97r4AUFtEXRXwESr8b0bD721u/Tz6k8PQ=
 github.com/getkin/kin-openapi v0.133.0/go.mod h1:boAciF6cXk5FhPqe/NQeBTeenbjqU4LhWBf09ILVvWE=
-github.com/getsentry/sentry-go v0.36.1 h1:kMJt0WWsxWATUxkvFgVBZdIeHSk/Oiv5P0jZ9e5m/Lw=
-github.com/getsentry/sentry-go v0.36.1/go.mod h1:p5Im24mJBeruET8Q4bbcMfCQ+F+Iadc4L48tB1apo2c=
+github.com/getsentry/sentry-go v0.36.2 h1:uhuxRPTrUy0dnSzTd0LrYXlBYygLkKY0hhlG5LXarzM=
+github.com/getsentry/sentry-go v0.36.2/go.mod h1:p5Im24mJBeruET8Q4bbcMfCQ+F+Iadc4L48tB1apo2c=
 github.com/getsentry/sentry-go/slog v0.36.1 h1:j2jj9tty1LKo1gKzt/J3RGFQxSUqRHH8Ats+wSmP67Y=
 github.com/getsentry/sentry-go/slog v0.36.1/go.mod h1:HPUKI94BCV67ds6qVksPeszv5bEBLPEcr2YgNjvPbU8=
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
