@@ -200,7 +200,7 @@ const handleCancel = () => {
     </div>
 
     <!-- フォーム表示 -->
-    <div v-else-if="profile">
+    <div v-if="profile">
       <div class="grid grid-cols-2 gap-2 mt-8 max-w-md mx-auto">
         <div>
           <label class="inline-block text-xs px-2">名前(姓)</label>
