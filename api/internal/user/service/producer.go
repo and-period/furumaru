@@ -103,7 +103,6 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	}
 	params := &entity.NewProducerParams{
 		Admin:             entity.NewAdmin(adminParams),
-		CoordinatorID:     in.CoordinatorID,
 		PhoneNumber:       in.PhoneNumber,
 		Username:          in.Username,
 		Profile:           in.Profile,
