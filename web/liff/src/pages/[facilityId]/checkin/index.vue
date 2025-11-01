@@ -21,6 +21,50 @@ const firstName = ref('');
 const lastNameKana = ref('');
 const firstNameKana = ref('');
 const phoneNumber = ref('');
+const lastCheckInAtInput = ref('');
+
+function toUnixSecondsFromDateInput(input: string): number {
+  if (!input) return 0;
+
+  const [datePart, timePart = ''] = input.split('T');
+  if (!datePart) return 0;
+
+  const [yStr, mStr, dStr] = datePart.split('-');
+  const [hStr = '0', minStr = '0', sStr = '0'] = timePart.split(':');
+
+  const year = Number(yStr);
+  const monthIndex = Number(mStr) - 1;
+  const day = Number(dStr);
+  const hour = Number(hStr);
+  const minute = Number(minStr);
+  const second = Number(String(sStr).split('.')[0] || '0');
+
+  if (
+    Number.isNaN(year)
+    || Number.isNaN(monthIndex)
+    || Number.isNaN(day)
+    || Number.isNaN(hour)
+    || Number.isNaN(minute)
+    || Number.isNaN(second)
+  ) {
+    return 0;
+  }
+
+  return Math.floor(new Date(year, monthIndex, day, hour, minute, second, 0).getTime() / 1000);
+}
+
+function formatDatetimeLocalFromUnixSeconds(timestamp?: number): string {
+  if (!timestamp) return '';
+  const date = new Date(timestamp * 1000);
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
 
 // エラーメッセージ
 const formError = ref('');
@@ -35,6 +79,7 @@ onMounted(async () => {
       lastNameKana.value = profile.value.lastnameKana || '';
       firstNameKana.value = profile.value.firstnameKana || '';
       phoneNumber.value = profile.value.phoneNumber?.replace('+81', '0') || '';
+      lastCheckInAtInput.value = formatDatetimeLocalFromUnixSeconds(profile.value.lastCheckInAt);
     }
   }
   catch {
@@ -64,6 +109,10 @@ const validateForm = (): boolean => {
     formError.value = '電話番号を入力してください';
     return false;
   }
+  if (!lastCheckInAtInput.value.trim()) {
+    formError.value = 'チェックイン日時を入力してください';
+    return false;
+  }
 
   // 電話番号の簡単な形式チェック
   const phoneRegex = /^[0-9-]+$/;
@@ -88,6 +137,11 @@ const handleUpdate = async () => {
     const formattedPhoneNumber = phoneNumber.value.startsWith('0')
       ? phoneNumber.value.replace(/^0/, '+81')
       : phoneNumber.value;
+    const parsedLastCheckInAt = toUnixSecondsFromDateInput(lastCheckInAtInput.value);
+    if (!parsedLastCheckInAt) {
+      formError.value = 'チェックイン日時の形式が正しくありません';
+      return;
+    }
 
     const updateData: UpdateAuthUserRequest = {
       lastname: lastName.value.trim(),
@@ -95,8 +149,7 @@ const handleUpdate = async () => {
       lastnameKana: lastNameKana.value.trim(),
       firstnameKana: firstNameKana.value.trim(),
       phoneNumber: formattedPhoneNumber,
-      // lastCheckInAtは現在の値を保持
-      lastCheckInAt: profile.value?.lastCheckInAt || Math.floor(Date.now() / 1000),
+      lastCheckInAt: parsedLastCheckInAt,
     };
 
     await userStore.updateMe(facilityId.value, updateData);
@@ -147,7 +200,7 @@ const handleCancel = () => {
     </div>
 
     <!-- フォーム表示 -->
-    <div v-else-if="profile">
+    <div v-if="profile">
       <div class="grid grid-cols-2 gap-2 mt-8 max-w-md mx-auto">
         <div>
           <label class="inline-block text-xs px-2">名前(姓)</label>
@@ -190,6 +243,17 @@ const handleCancel = () => {
           <FmTextInput
             v-model="phoneNumber"
             name="phoneNumber"
+            class="w-full px-2"
+          />
+        </div>
+      </div>
+      <div class="mt-4 max-w-md mx-auto">
+        <div>
+          <label class="inline-block text-xs px-2">チェックイン日時</label>
+          <FmTextInput
+            v-model="lastCheckInAtInput"
+            name="lastCheckInAt"
+            type="datetime-local"
             class="w-full px-2"
           />
         </div>
