@@ -1,5 +1,44 @@
 # Changelog
 
+## [v9.0.1](https://github.com/and-period/furumaru/compare/v9.0.0...v9.0.1) - 2025-11-04
+- chore(deps): Update dependency vite to v7.1.11 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3150
+- build(deps): bump github.com/getsentry/sentry-go/slog from 0.36.0 to 0.36.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3156
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.15 to 1.20.16 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3158
+- build(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.31.13 to 1.31.14 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3160
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/sfn from 1.39.7 to 1.39.8 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3161
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/s3 from 1.88.5 to 1.88.6 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3164
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/secretsmanager from 1.39.7 to 1.39.8 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3163
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/dynamodb from 1.52.0 to 1.52.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3166
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/batch from 1.58.0 to 1.58.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3167
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.16 to 1.20.17 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3165
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/translate from 1.33.7 to 1.33.8 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3169
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/secretsmanager from 1.39.8 to 1.39.9 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3170
+- build(deps): bump github.com/aws/aws-sdk-go-v2 from 1.39.3 to 1.39.4 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3174
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/sqs from 1.42.9 to 1.42.11 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3175
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider from 1.57.8 to 1.57.9 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3176
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/transcribe from 1.53.1 to 1.53.2 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3172
+- build(deps): bump github.com/aws/aws-sdk-go-v2/credentials from 1.18.18 to 1.18.19 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3171
+- build(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.31.14 to 1.31.15 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3177
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.17 to 1.20.18 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3179
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/s3 from 1.88.6 to 1.88.7 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3181
+- Fix/top coordinator page by @hamachans in https://github.com/and-period/furumaru/pull/3185
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.18 to 1.20.20 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3187
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/secretsmanager from 1.39.9 to 1.39.10 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3188
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/batch from 1.58.1 to 1.58.2 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3182
+- build(deps): bump github.com/aws/aws-sdk-go-v2 from 1.39.4 to 1.39.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3190
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/translate from 1.33.8 to 1.33.9 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3191
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/ivs from 1.48.0 to 1.48.2 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3192
+- build(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.31.15 to 1.31.16 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3193
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider from 1.57.9 to 1.57.10 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3195
+- build(deps): bump github.com/getsentry/sentry-go from 0.36.1 to 0.36.2 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3197
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/sqs from 1.42.11 to 1.42.12 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3199
+- feat: チェックイン日時を更新できるようにする by @wf-yamaday in https://github.com/and-period/furumaru/pull/3196
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/sfn from 1.39.8 to 1.39.10 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3200
+- build(deps): bump github.com/getsentry/sentry-go/slog from 0.36.1 to 0.36.2 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3201
+- fix: 施設ユーザー更新APIのバリデーション修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3202
+- build(deps): bump google.golang.org/api from 0.252.0 to 0.254.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3186
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/mediaconvert from 1.82.7 to 1.84.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3198
+
 ## [v8.0.1](https://github.com/and-period/furumaru/compare/v8.0.0...v8.0.1) - 2025-10-21
 - fix(api): Add GetShop and GetShopByCoordinatorID mocks for store service tests by @taba2424 in https://github.com/and-period/furumaru/pull/3152
 
