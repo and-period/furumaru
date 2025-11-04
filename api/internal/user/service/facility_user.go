@@ -54,7 +54,7 @@ func (s *service) UpdateFacilityUser(ctx context.Context, in *user.UpdateFacilit
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	if s.now().Before(in.LastCheckInAt) {
+	if s.now().After(in.LastCheckInAt) {
 		return fmt.Errorf("user: invalid last checkin at: %w", exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateFacilityUserParams{
