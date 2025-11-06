@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.84.0
 	github.com/aws/aws-sdk-go-v2/service/medialive v1.84.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.7
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.10
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.11
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.10
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.13
 	github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2
