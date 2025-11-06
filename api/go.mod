@@ -20,7 +20,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.39.11
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.13
 	github.com/aws/aws-sdk-go-v2/service/transcribe v1.53.2
-	github.com/aws/aws-sdk-go-v2/service/translate v1.33.9
+	github.com/aws/aws-sdk-go-v2/service/translate v1.33.10
 	github.com/casbin/casbin/v2 v2.128.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/coreos/go-oidc/v3 v3.16.0
