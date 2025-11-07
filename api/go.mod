@@ -27,7 +27,7 @@ require (
 	github.com/dlclark/regexp2 v1.11.5
 	github.com/getsentry/sentry-go v0.36.2
 	github.com/getsentry/sentry-go/slog v0.36.2
-	github.com/gin-contrib/gzip v1.2.4
+	github.com/gin-contrib/gzip v1.2.5
 	github.com/gin-contrib/pprof v1.5.3
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-playground/validator/v10 v10.28.0
