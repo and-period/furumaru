@@ -144,8 +144,8 @@ github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.13 h1:kDqdFvMY
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.13/go.mod h1:lmKuogqSU3HzQCwZ9ZtcqOc5XGMqtDK7OIc2+DxiUEg=
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.19.11 h1:weapBOuuFIBEQ9OX/NVW3tFQCvSutyjZYk/ga5jDLPo=
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.19.11/go.mod h1:3C1gN4FmIVLwYSh8etngUS+f1viY6nLCDVtZmrFbDy0=
-github.com/aws/aws-sdk-go-v2/service/ivs v1.48.3 h1:hbSN4lzuMWMUM63kQuGZax6fUJUFHGqFsbTaTFbF49Q=
-github.com/aws/aws-sdk-go-v2/service/ivs v1.48.3/go.mod h1:LWpDgCXaAZgKF5EH2xincNziWa0GkknDhx+ig0pAWzo=
+github.com/aws/aws-sdk-go-v2/service/ivs v1.48.4 h1:DylBGsfFzrW39DF8kGoXeDluLmIfvizcxs8//Y4H1No=
+github.com/aws/aws-sdk-go-v2/service/ivs v1.48.4/go.mod h1:LWpDgCXaAZgKF5EH2xincNziWa0GkknDhx+ig0pAWzo=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.84.1 h1:wh6KarQYC3sOqSztbLclDsuzbFmnNSTLqxsjsMwA2UA=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.84.1/go.mod h1:69w+ev30uz0EQ+Z3brr3IecMA4D7Pkr3PtnQc0VGEZs=
 github.com/aws/aws-sdk-go-v2/service/medialive v1.84.1 h1:TdT9/Wb+dnS3msRGncneyL08NhlrhTGRpRwc2Ak03gw=
