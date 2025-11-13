@@ -1,5 +1,15 @@
 # Changelog
 
+## [v9.0.2](https://github.com/and-period/furumaru/compare/v9.0.1...v9.0.2) - 2025-11-13
+- chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3212
+- build(deps): bump github.com/gin-contrib/gzip from 1.2.4 to 1.2.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3225
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/mediaconvert from 1.84.0 to 1.84.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3226
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/ivs from 1.48.2 to 1.48.3 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3227
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/batch from 1.58.4 to 1.58.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3228
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/ivs from 1.48.3 to 1.48.4 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3230
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.21 to 1.20.22 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3233
+- fix: 商品詳細ページを直接リンクでも表示できるようにする by @wf-yamaday in https://github.com/and-period/furumaru/pull/3234
+
 ## [v9.0.1](https://github.com/and-period/furumaru/compare/v9.0.0...v9.0.1) - 2025-11-04
 - chore(deps): Update dependency vite to v7.1.11 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3150
 - build(deps): bump github.com/getsentry/sentry-go/slog from 0.36.0 to 0.36.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3156
