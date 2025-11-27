@@ -865,7 +865,6 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 	return &entity.Producer{
 		AdminID:           id,
-		CoordinatorID:     coordinatorID,
 		Username:          "&.農園",
 		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 		HeaderURL:         "https://and-period.jp/header.png",
