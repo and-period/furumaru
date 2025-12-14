@@ -140,13 +140,14 @@ func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	if err := c.bind(out, res); err != nil {
 		return err
 	}
-	slog.Info("Received komoju error",
+	slog.Warn("Received komoju error",
 		slog.Int("status", res.StatusCode),
 		slog.String("method", res.Request.Method),
 		slog.String("path", res.Request.URL.Path),
-		slog.String("param", out.Data.Param),
-		slog.String("code", out.Data.Code),
-		slog.String("detail", out.Data.Message),
+		slog.Any("input", params.Body),
+		slog.String("output.param", out.Data.Param),
+		slog.String("output.code", out.Data.Code),
+		slog.String("output.detail", out.Data.Message),
 	)
 	return &Error{
 		Method:  params.Method,
