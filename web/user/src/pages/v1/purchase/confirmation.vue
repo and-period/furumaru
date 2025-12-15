@@ -142,8 +142,42 @@ const handleClickPreviousStepButton = () => {
 /**
  * チェックアウト処理を実行するメソッド
  */
+const getPromotionCodeForCalcCart = () => {
+  if (checkoutFormData.value.promotionCode) {
+    return checkoutFormData.value.promotionCode
+  }
+  if (validPromotionCode.value && promotionCode.value) {
+    return promotionCode.value
+  }
+  return undefined
+}
+
+const applyCalcCartResultToForm = () => {
+  checkoutFormData.value.requestId
+    = calcCartResponseItem.value?.requestId ?? ''
+  checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
+
+  if (calcCartResponseItem.value?.promotion) {
+    validPromotionCode.value = true
+    checkoutFormData.value.promotionCode
+      = calcCartResponseItem.value.promotion.code
+  }
+}
+
+const refreshCheckoutSummary = async () => {
+  await calcCartItemByCoordinatorId(
+    coordinatorId.value,
+    cartNumber.value,
+    address.value?.prefectureCode,
+    getPromotionCodeForCalcCart(),
+  )
+  applyCalcCartResultToForm()
+}
+
 const doCheckout = async () => {
   try {
+    checkoutError.value = ''
+    await refreshCheckoutSummary()
     const url = await checkout({
       ...checkoutFormData.value,
       boxNumber: cartNumber.value ?? 0,
@@ -198,23 +232,9 @@ onMounted(async () => {
     }
   }
 
-  await calcCartItemByCoordinatorId(
-    coordinatorId.value,
-    cartNumber.value,
-    address.value?.prefectureCode,
-    validPromotionCode.value ? promotionCode.value : undefined,
-  )
-
-  checkoutFormData.value.requestId
-    = calcCartResponseItem.value?.requestId ?? ''
+  await refreshCheckoutSummary()
   checkoutFormData.value.coordinatorId = coordinatorId.value
-  checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
   checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
-
-  if (calcCartResponseItem.value?.promotion) {
-    checkoutFormData.value.promotionCode
-      = calcCartResponseItem.value.promotion.code
-  }
 })
 
 useSeoMeta({

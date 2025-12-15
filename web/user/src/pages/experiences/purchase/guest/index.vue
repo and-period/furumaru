@@ -80,6 +80,15 @@ const seniorCount = computed<number>(() => {
 /**
  * 体験情報取得処理
  */
+const buildCheckoutTargetPayload = () => ({
+  experienceId: experienceId.value,
+  adult: adultCount.value,
+  juniorHighSchool: juniorHighSchoolCount.value,
+  elementarySchool: elementarySchoolCount.value,
+  preschool: preschoolCount.value,
+  senior: seniorCount.value,
+})
+
 const {
   data: targetExperience,
   status: targetExperienceFetchStatus,
@@ -87,14 +96,7 @@ const {
   refresh,
 } = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
-    return await fetchCheckoutTarget({
-      experienceId: experienceId.value,
-      adult: adultCount.value,
-      juniorHighSchool: juniorHighSchoolCount.value,
-      elementarySchool: elementarySchoolCount.value,
-      preschool: preschoolCount.value,
-      senior: seniorCount.value,
-    })
+    return await fetchCheckoutTarget(buildCheckoutTargetPayload())
   }
 })
 
@@ -227,6 +229,31 @@ useAsyncData('payment-options', async () => {
 const submitErrorMessage = ref<string>('')
 const isSubmitting = ref<boolean>(false)
 
+const applyTargetExperienceToForm = () => {
+  if (targetExperience.value?.requestId) {
+    formData.value.requestId = targetExperience.value.requestId
+  }
+  else {
+    formData.value.requestId = ''
+  }
+
+  if (targetExperience.value) {
+    formData.value.total = targetExperience.value.total
+  }
+  else {
+    formData.value.total = 0
+  }
+}
+
+const refreshTargetExperienceSummary = async () => {
+  if (!experienceId.value) {
+    return
+  }
+  const latest = await fetchCheckoutTarget(buildCheckoutTargetPayload())
+  targetExperience.value = latest
+  applyTargetExperienceToForm()
+}
+
 /**
  * 体験購入フォーム送信時の処理
  */
@@ -237,6 +264,7 @@ const handleSubmit = async () => {
       return
     }
 
+    await refreshTargetExperienceSummary()
     const url = await checkoutByGuest(experienceId.value, formData.value)
     window.location.href = url
   }
@@ -264,15 +292,7 @@ onMounted(async () => {
     await refresh()
   }
 
-  // リクエストID
-  if (targetExperience.value && targetExperience.value.requestId) {
-    formData.value.requestId = targetExperience.value.requestId
-  }
-
-  // 合計金額
-  if (targetExperience.value) {
-    formData.value.total = targetExperience.value.total
-  }
+  applyTargetExperienceToForm()
 })
 
 useSeoMeta(

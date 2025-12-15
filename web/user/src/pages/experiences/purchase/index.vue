@@ -126,6 +126,15 @@ const isValidQueryParams = computed<boolean>(() => {
 /**
  * 体験情報取得処理
  */
+const buildCheckoutTargetPayload = () => ({
+  experienceId: experienceId.value,
+  adult: adultCount.value,
+  juniorHighSchool: juniorHighSchoolCount.value,
+  elementarySchool: elementarySchoolCount.value,
+  preschool: preschoolCount.value,
+  senior: seniorCount.value,
+})
+
 const {
   data: targetExperience,
   status: targetExperienceFetchStatus,
@@ -133,14 +142,7 @@ const {
   refresh,
 } = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
-    return await fetchCheckoutTarget({
-      experienceId: experienceId.value,
-      adult: adultCount.value,
-      juniorHighSchool: juniorHighSchoolCount.value,
-      elementarySchool: elementarySchoolCount.value,
-      preschool: preschoolCount.value,
-      senior: seniorCount.value,
-    })
+    return await fetchCheckoutTarget(buildCheckoutTargetPayload())
   }
 })
 
@@ -239,6 +241,31 @@ const isSubmitting = ref<boolean>(false)
 /**
  * フォーム送信処理
  */
+const applyTargetExperienceToForm = () => {
+  if (targetExperience.value?.requestId) {
+    formData.value.requestId = targetExperience.value.requestId
+  }
+  else {
+    formData.value.requestId = ''
+  }
+
+  if (targetExperience.value) {
+    formData.value.total = targetExperience.value.total
+  }
+  else {
+    formData.value.total = 0
+  }
+}
+
+const refreshTargetExperienceSummary = async () => {
+  if (!experienceId.value) {
+    return
+  }
+  const latest = await fetchCheckoutTarget(buildCheckoutTargetPayload())
+  targetExperience.value = latest
+  applyTargetExperienceToForm()
+}
+
 const handleSubmit = async () => {
   isSubmitting.value = true
   if (defaultAddress.value && targetAddress.value === 'default') {
@@ -268,6 +295,9 @@ const handleSubmit = async () => {
     }
   }
 
+  // チェックアウト前に最新のリクエストIDを取得
+  await refreshTargetExperienceSummary()
+
   // チェックアウト処理
   try {
     const url = await checkout(experienceId.value, formData.value)
@@ -295,15 +325,7 @@ onMounted(async () => {
     await refresh()
   }
 
-  // リクエストID
-  if (targetExperience.value && targetExperience.value.requestId) {
-    formData.value.requestId = targetExperience.value.requestId
-  }
-
-  // 合計金額
-  if (targetExperience.value) {
-    formData.value.total = targetExperience.value.total
-  }
+  applyTargetExperienceToForm()
 })
 
 useSeoMeta(
