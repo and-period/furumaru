@@ -91,16 +91,6 @@ jobs:
       with:
         working-directory: ./api
 
-    - name: Cache Build
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      with:
-        path: |
-          ~/.cache/go-build
-        key: ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}-build-${{ matrix.service || github.job }}
-        restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}
-          ${{ runner.os }}-go-
-
     - name: Build
       run: make build SERVICE=${{ matrix.service }}
 
@@ -125,16 +115,6 @@ jobs:
         working-directory: ./api
 
     - uses: ./.github/actions/setup-tidb
-
-    - name: Cache Build
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      with:
-        path: |
-          ~/.cache/go-build
-        key: ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}-test
-        restore-keys: |
-          ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}
-          ${{ runner.os }}-go-
 
     - name: Database Migration
       run: |
