@@ -20,11 +20,9 @@ runs:
     uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
     with:
       path: |
+        ~/.cache/go-build
         ~/go/pkg/mod
-      key: ${{ runner.os }}-go-${{ hashFiles(format('{0}/go.mod', inputs.working-directory), format('{0}/go.sum', inputs.working-directory)) }}
-      restore-keys: |
-        ${{ runner.os }}-go-${{ hashFiles(format('{0}/go.mod', inputs.working-directory), format('{0}/go.sum', inputs.working-directory)) }}
-        ${{ runner.os }}-go-
+      key: ${{ runner.os }}-go-${{ format('{0}/go.sum', inputs.working-directory) }}
 
   - name: Download modules
     shell: bash
