@@ -73,12 +73,27 @@ func (w *wrapResponseWriter) WriteString(s string) (int, error) {
 }
 
 func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
-	r, err := gzip.NewReader(w.body)
-	if err != nil {
-		return nil, err
+	body := w.body.Bytes()
+	if len(body) == 0 {
+		return nil, nil
 	}
+
+	var reader io.Reader
+
+	// Check for gzip magic number (0x1f, 0x8b)
+	if len(body) >= 2 && body[0] == 0x1f && body[1] == 0x8b {
+		r, err := gzip.NewReader(bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+		defer r.Close()
+		reader = r
+	} else {
+		reader = bytes.NewReader(body)
+	}
+
 	var res *util.ErrorResponse
-	return res, json.NewDecoder(r).Decode(&res)
+	return res, json.NewDecoder(reader).Decode(&res)
 }
 
 func (a *app) accessLogger() gin.HandlerFunc {
