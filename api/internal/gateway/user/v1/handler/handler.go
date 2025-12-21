@@ -349,14 +349,18 @@ func (h *handler) getSessionID(ctx *gin.Context) string {
 	if err == nil && sessionID != "" {
 		return sessionID
 	}
-	domain := h.cookieBaseDomain
-	if strings.HasPrefix(ctx.Request.Host, "localhost") {
-		domain = "localhost" // ローカル環境の動作確認用
+
+	sameSite := http.SameSiteNoneMode
+
+	// 本番環境のみCookieのドメインを設定する
+	if strings.Contains(h.env, "prd") {
+		sameSite = http.SameSiteLaxMode
 	}
+
 	// セッションIDが取得できない場合、新規IDを生成してCookieへ保存する
 	sessionID = h.generateID()
-	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", domain, true, true)
+	ctx.SetSameSite(sameSite)
+	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", h.cookieBaseDomain, true, true)
 	return sessionID
 }
 
