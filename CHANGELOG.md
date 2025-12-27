@@ -1,5 +1,31 @@
 # Changelog
 
+## [v9.0.2](https://github.com/and-period/furumaru/compare/v9.0.1...v9.0.2) - 2025-12-22
+- chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3212
+- build(deps): bump github.com/gin-contrib/gzip from 1.2.4 to 1.2.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3225
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/mediaconvert from 1.84.0 to 1.84.1 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3226
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/ivs from 1.48.2 to 1.48.3 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3227
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/batch from 1.58.4 to 1.58.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3228
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/ivs from 1.48.3 to 1.48.4 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3230
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.21 to 1.20.22 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3233
+- fix: 商品詳細ページを直接リンクでも表示できるようにする by @wf-yamaday in https://github.com/and-period/furumaru/pull/3234
+- build(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.31.17 to 1.31.20 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3235
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/transcribe from 1.53.4 to 1.53.6 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3236
+- fix: publicディレクトリの位置を変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3244
+- fix: publicディレクトリ位置を戻す by @wf-yamaday in https://github.com/and-period/furumaru/pull/3246
+- build(deps): bump google.golang.org/api from 0.254.0 to 0.256.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3231
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/medialive from 1.84.1 to 1.85.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3237
+- build(deps): bump github.com/casbin/casbin/v2 from 2.128.0 to 2.134.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3240
+- chore(deps): Update GitHub Actions dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3242
+- chore(deps): Update dependency golang to v1.25.4 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3241
+- chore(deps): Update Node.js to v20.19.6 by @renovate[bot] in https://github.com/and-period/furumaru/pull/3248
+- chore(deps): Update LIFF Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3247
+- build(deps): bump github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider from 1.57.11 to 1.57.15 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3250
+- build(deps): bump github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue from 1.20.23 to 1.20.26 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3251
+- feat: Cookieの設定を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/3256
+- fix(api): Cookie周りの設定変更 by @taba2424 in https://github.com/and-period/furumaru/pull/3264
+- fix(api): 5xxエラー時のアクセスログでresponseが出力されない問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3265
+
 ## [v9.0.2](https://github.com/and-period/furumaru/compare/v9.0.1...v9.0.2) - 2025-11-13
 - chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3212
 - build(deps): bump github.com/gin-contrib/gzip from 1.2.4 to 1.2.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3225
