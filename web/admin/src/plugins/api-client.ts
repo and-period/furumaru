@@ -1,6 +1,6 @@
 import type { PiniaPluginContext } from 'pinia'
 import { useAuthStore } from '~/store'
-import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi, VideoCommentApi } from '~/types/api/v1'
+import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductReviewApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi, VideoCommentApi } from '~/types/api/v1'
 import type { BaseAPI, Middleware, RequestContext } from '~/types/api/v1/runtime'
 
 /**
@@ -81,6 +81,8 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.producerApi = (token?: string): ProducerApi => apiClientFactory.create<ProducerApi>(ProducerApi, token)
 
   store.productApi = (token?: string): ProductApi => apiClientFactory.create<ProductApi>(ProductApi, token)
+
+  store.productReviewApi = (token?: string): ProductReviewApi => apiClientFactory.create<ProductReviewApi>(ProductReviewApi, token)
 
   store.productTagApi = (token?: string): ProductTagApi => apiClientFactory.create<ProductTagApi>(ProductTagApi, token)
 
