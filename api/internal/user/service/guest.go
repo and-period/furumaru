@@ -9,6 +9,15 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
+func (s *service) GetDummyGuest(ctx context.Context, in *user.GetDummyGuestInput) (*entity.Guest, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+
+	guest, err := s.db.Guest.GetDummy(ctx)
+	return guest, internalError(err)
+}
+
 func (s *service) UpsertGuest(ctx context.Context, in *user.UpsertGuestInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)

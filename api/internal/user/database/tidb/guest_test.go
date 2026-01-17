@@ -13,6 +13,56 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestGuest_GetDummy(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+	err := deleteAll(t.Context())
+	require.NoError(t, err)
+
+	u := testGuestUser("user-id", "test-user@example.com", now())
+	err = db.DB.Create(&u).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&u.Guest).Error
+	require.NoError(t, err)
+
+	type want struct {
+		user *entity.Guest
+		err  error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			want: want{
+				user: &u.Guest,
+				err:  nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := t.Context()
+			tt.setup(ctx, t, db)
+
+			db := &guest{db: db, now: now}
+			actual, err := db.GetDummy(ctx)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.user, actual)
+		})
+	}
+}
+
 func TestGuest_GetByEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

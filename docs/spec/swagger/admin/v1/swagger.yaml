@@ -4290,6 +4290,26 @@ components:
         - recommendedPoint3
         - weight
       type: object
+    CreateProductReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          maxLength: 2000
+          type: string
+        rate:
+          description: 評価
+          maximum: 5
+          minimum: 1
+          type: integer
+        title:
+          description: タイトル
+          maxLength: 64
+          type: string
+      required:
+        - comment
+        - title
+        - rate
+      type: object
     CreateProductTagRequest:
       properties:
         name:
@@ -10515,6 +10535,44 @@ paths:
       summary: 商品更新
       tags:
         - Product
+  /v1/products/{productId}/reviews:
+    post:
+      description: ダミーの商品レビューを作成します。
+      parameters:
+        - description: 商品ID
+          example: '"product_12345678"'
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductReviewRequest'
+        description: 商品レビュー作成リクエスト
+        required: true
+      responses:
+        "204":
+          description: 作成成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: リクエスト不正
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品が存在しない
+      security:
+        - bearerauth: []
+      summary: ダミー商品レビュー作成
+      tags:
+        - ProductReview
   /v1/promotions:
     get:
       description: プロモーションの一覧を取得します。ページネーション、ショップ・タイトルでのフィルタリング、ソート機能に対応しています。

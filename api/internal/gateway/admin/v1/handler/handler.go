@@ -176,6 +176,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.postalCodeRoutes(v1)
 	h.producerRoutes(v1)
 	h.productRoutes(v1)
+	h.productReviewRoutes(v1)
 	h.productTagRoutes(v1)
 	h.productTypeRoutes(v1)
 	h.promotionRoutes(v1)
