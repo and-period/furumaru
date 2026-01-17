@@ -56,6 +56,7 @@ export * from './CreateNotificationRequest';
 export * from './CreateProducerRequest';
 export * from './CreateProductMedia';
 export * from './CreateProductRequest';
+export * from './CreateProductReviewRequest';
 export * from './CreateProductTagRequest';
 export * from './CreateProductTypeRequest';
 export * from './CreatePromotionRequest';

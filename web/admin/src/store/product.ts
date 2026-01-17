@@ -6,6 +6,7 @@ import { useProductTagStore } from './product-tag'
 import { useProducerStore } from './producer'
 import type {
   CreateProductRequest,
+  CreateProductReviewRequest,
   ProductResponse,
   Product,
   UpdateProductRequest,
@@ -18,6 +19,7 @@ import type {
   V1ProductsPostRequest,
   V1ProductsProductIdPatchRequest,
   V1ProductsProductIdDeleteRequest,
+  V1ProductsProductIdReviewsPostRequest,
 } from '~/types/api/v1'
 
 export const useProductStore = defineStore('product', {
@@ -251,6 +253,28 @@ export const useProductStore = defineStore('product', {
       catch (err) {
         return this.errorHandler(err, {
           403: '商品を削除する権限がありません',
+          404: '対象の商品が存在しません',
+        })
+      }
+    },
+
+    /**
+     * ダミー商品レビューを作成する関数
+     * @param productId 商品ID
+     * @param payload レビュー情報
+     */
+    async createProductReview(productId: string, payload: CreateProductReviewRequest): Promise<void> {
+      try {
+        const params: V1ProductsProductIdReviewsPostRequest = {
+          productId,
+          createProductReviewRequest: payload,
+        }
+        await this.productReviewApi().v1ProductsProductIdReviewsPost(params)
+      }
+      catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          403: 'レビューを投稿する権限がありません',
           404: '対象の商品が存在しません',
         })
       }
