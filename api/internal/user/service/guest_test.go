@@ -13,6 +13,56 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetDummyGuest(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	guest := &entity.Guest{
+		UserID:        "user-id",
+		Lastname:      "&.",
+		Firstname:     "ゲスト",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "げすと",
+		Email:         "test@example.com",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.GetDummyGuestInput
+		expect    *entity.Guest
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Guest.EXPECT().GetDummy(ctx).Return(guest, nil)
+			},
+			input:     &user.GetDummyGuestInput{},
+			expect:    guest,
+			expectErr: nil,
+		},
+		{
+			name: "failed to get dummy guest",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Guest.EXPECT().GetDummy(ctx).Return(nil, assert.AnError)
+			},
+			input:     &user.GetDummyGuestInput{},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetDummyGuest(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestUpsertGuest(t *testing.T) {
 	t.Parallel()
 	now := time.Now()

@@ -37,6 +37,10 @@ func NewClient(params *common.Params) (common.Client, error) {
 
 func (a *app) Execute(ctx context.Context) error {
 	slog.Info("Executing users database seeds...")
+	if err := a.executeDummyUsers(ctx); err != nil {
+		return err
+	}
+	slog.Info("Completed dummy users table")
 	if err := a.executeAdminPolicies(ctx); err != nil {
 		return err
 	}
@@ -51,6 +55,45 @@ func (a *app) Execute(ctx context.Context) error {
 	slog.Info("Completed admin groups table")
 	slog.Info("Completed users database seeds")
 	return nil
+}
+
+func (a *app) executeDummyUsers(ctx context.Context) error {
+	return a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		for _, params := range master.DummyUsers {
+			now := a.now()
+
+			user := entity.NewUser(params)
+			user.CreatedAt = now
+			user.UpdatedAt = now
+			user.Guest.CreatedAt = now
+			user.Guest.UpdatedAt = now
+
+			updates := map[string]interface{}{
+				"lastname":       user.Guest.Lastname,
+				"firstname":      user.Guest.Firstname,
+				"lastname_kana":  user.Guest.LastnameKana,
+				"firstname_kana": user.Guest.FirstnameKana,
+				"updated_at":     now,
+			}
+
+			stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
+				Columns:   []clause.Column{{Name: "id"}},
+				DoNothing: true,
+			})
+			if err := stmt.Create(&user).Error; err != nil {
+				return fmt.Errorf("failed to create dummy user. email=%s: %w", params.Email, err)
+			}
+
+			stmt = tx.WithContext(ctx).Clauses(clause.OnConflict{
+				Columns:   []clause.Column{{Name: "user_id"}},
+				DoUpdates: clause.Assignments(updates),
+			})
+			if err := stmt.Create(&user.Guest).Error; err != nil {
+				return fmt.Errorf("failed to create dummy guest. email=%s: %w", params.Email, err)
+			}
+		}
+		return nil
+	})
 }
 
 func (a *app) executeAdminPolicies(ctx context.Context) error {

@@ -252,6 +252,7 @@ type UpdateFacilityUserParams struct {
 }
 
 type Guest interface {
+	GetDummy(ctx context.Context, fields ...string) (*entity.Guest, error)
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error)
 	Create(ctx context.Context, user *entity.User) error
 	Update(ctx context.Context, userID string, params *UpdateGuestParams) error

@@ -63,7 +63,8 @@ type Service interface {
 	CreateFacilityUser(ctx context.Context, in *CreateFacilityUserInput) (*entity.User, error) // 登録
 	UpdateFacilityUser(ctx context.Context, in *UpdateFacilityUserInput) error                 // 更新
 	// Guest - ゲスト
-	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error) // ゲスト登録・更新
+	GetDummyGuest(ctx context.Context, in *GetDummyGuestInput) (*entity.Guest, error) // ダミーゲストを取得（ランダムに１件）
+	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error)            // ゲスト登録・更新
 	// Member - 会員
 	CreateMember(ctx context.Context, in *CreateMemberInput) (string, error)                           // 登録 (メールアドレス/SMS認証)
 	VerifyMember(ctx context.Context, in *VerifyMemberInput) error                                     // 登録後の確認 (メールアドレス/SMS認証)
