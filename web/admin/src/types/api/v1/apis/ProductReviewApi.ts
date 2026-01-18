@@ -17,13 +17,30 @@ import * as runtime from '../runtime';
 import type {
   CreateProductReviewRequest,
   ErrorResponse,
+  ProductReviewResponse,
+  ProductReviewsResponse,
 } from '../models/index';
 import {
     CreateProductReviewRequestFromJSON,
     CreateProductReviewRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    ProductReviewResponseFromJSON,
+    ProductReviewResponseToJSON,
+    ProductReviewsResponseFromJSON,
+    ProductReviewsResponseToJSON,
 } from '../models/index';
+
+export interface ProductsProductIdReviewsGetRequest {
+    productId: string;
+    limit?: number;
+    offset?: number;
+}
+
+export interface ProductsProductIdReviewsReviewIdGetRequest {
+    productId: string;
+    reviewId: string;
+}
 
 export interface V1ProductsProductIdReviewsPostRequest {
     productId: string;
@@ -34,6 +51,100 @@ export interface V1ProductsProductIdReviewsPostRequest {
  * 
  */
 export class ProductReviewApi extends runtime.BaseAPI {
+
+    /**
+     * 指定した商品のレビュー一覧を取得します。
+     * 商品レビュー一覧取得
+     */
+    async productsProductIdReviewsGetRaw(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProductReviewsResponse>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling productsProductIdReviewsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/products/{productId}/reviews`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProductReviewsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 指定した商品のレビュー一覧を取得します。
+     * 商品レビュー一覧取得
+     */
+    async productsProductIdReviewsGet(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProductReviewsResponse> {
+        const response = await this.productsProductIdReviewsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 商品レビューの詳細情報を取得します。
+     * 商品レビュー詳細取得
+     */
+    async productsProductIdReviewsReviewIdGetRaw(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProductReviewResponse>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling productsProductIdReviewsReviewIdGet().'
+            );
+        }
+
+        if (requestParameters['reviewId'] == null) {
+            throw new runtime.RequiredError(
+                'reviewId',
+                'Required parameter "reviewId" was null or undefined when calling productsProductIdReviewsReviewIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/products/{productId}/reviews/{reviewId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProductReviewResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 商品レビューの詳細情報を取得します。
+     * 商品レビュー詳細取得
+     */
+    async productsProductIdReviewsReviewIdGet(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProductReviewResponse> {
+        const response = await this.productsProductIdReviewsReviewIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * ダミーの商品レビューを作成します。
