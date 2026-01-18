@@ -1149,10 +1149,28 @@ var AdminPolicies = entity.AdminPolicies{
 		Action:      entity.AdminPolicyActionAllow,
 	},
 	{
+		ID:          "product_review_list",
+		Name:        "商品レビュー 一覧取得",
+		Description: "商品レビューの一覧取得権限です。",
+		Priority:    128,
+		Path:        "/v1/products/*/reviews",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
+		ID:          "product_review_get",
+		Name:        "商品レビュー 詳細取得",
+		Description: "商品レビューの詳細取得権限です。",
+		Priority:    129,
+		Path:        "/v1/products/*/reviews/*",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
 		ID:          "product_review_create",
 		Name:        "商品レビュー ダミー作成",
 		Description: "ダミー商品レビューの作成権限です。",
-		Priority:    128,
+		Priority:    130,
 		Path:        "/v1/products/*/reviews",
 		Method:      "POST",
 		Action:      entity.AdminPolicyActionAllow,
@@ -1489,6 +1507,8 @@ var AdminRoles = []AdminRole{
 			Description: "商品レビューの編集者ロールです。",
 		},
 		PolicyIDs: []string{
+			"product_review_list",
+			"product_review_get",
 			"product_review_create",
 		},
 	},
@@ -1498,7 +1518,10 @@ var AdminRoles = []AdminRole{
 			Name:        "商品レビュー 閲覧者",
 			Description: "商品レビューの閲覧者ロールです。",
 		},
-		PolicyIDs: []string{},
+		PolicyIDs: []string{
+			"product_review_list",
+			"product_review_get",
+		},
 	},
 	{
 		AdminRole: entity.AdminRole{
