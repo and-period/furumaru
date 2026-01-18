@@ -1148,6 +1148,15 @@ var AdminPolicies = entity.AdminPolicies{
 		Method:      "GET",
 		Action:      entity.AdminPolicyActionAllow,
 	},
+	{
+		ID:          "product_review_create",
+		Name:        "商品レビュー ダミー作成",
+		Description: "ダミー商品レビューの作成権限です。",
+		Priority:    128,
+		Path:        "/v1/products/*/reviews",
+		Method:      "POST",
+		Action:      entity.AdminPolicyActionAllow,
+	},
 }
 
 type AdminRole struct {
@@ -1475,6 +1484,24 @@ var AdminRoles = []AdminRole{
 	},
 	{
 		AdminRole: entity.AdminRole{
+			ID:          "product_review_editor",
+			Name:        "商品レビュー 編集者",
+			Description: "商品レビューの編集者ロールです。",
+		},
+		PolicyIDs: []string{
+			"product_review_create",
+		},
+	},
+	{
+		AdminRole: entity.AdminRole{
+			ID:          "product_review_viewer",
+			Name:        "商品レビュー 閲覧者",
+			Description: "商品レビューの閲覧者ロールです。",
+		},
+		PolicyIDs: []string{},
+	},
+	{
+		AdminRole: entity.AdminRole{
 			ID:          "product_tag_editor",
 			Name:        "商品タグ 編集者",
 			Description: "商品タグの編集者ロールです。",
@@ -1773,6 +1800,7 @@ var AdminGroups = []AdminGroup{
 			"payment_system_editor",
 			"producer_editor",
 			"product_editor",
+			"product_review_editor",
 			"product_tag_editor",
 			"product_type_editor",
 			"promotion_editor",
@@ -1804,6 +1832,7 @@ var AdminGroups = []AdminGroup{
 			"order_editor",
 			"producer_editor",
 			"product_editor",
+			"product_review_editor",
 			"product_tag_viewer",
 			"product_type_viewer",
 			"promotion_editor",
@@ -1834,6 +1863,7 @@ var AdminGroups = []AdminGroup{
 			"notification_viewer",
 			"order_viewer",
 			"product_viewer",
+			"product_review_viewer",
 			"product_tag_viewer",
 			"product_type_viewer",
 			"schedule_viewer",
