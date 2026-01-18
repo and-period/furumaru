@@ -1,5 +1,11 @@
 # Changelog
 
+## [v9.0.3](https://github.com/and-period/furumaru/compare/v9.0.2...v9.0.3) - 2026-01-18
+- feat: ダミーレビューの投稿APIを実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3268
+- feat(web): 商品詳細ページにダミーレビュー投稿機能を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3270
+- feat: 商品レビュー取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3271
+- build(deps): bump google.golang.org/api from 0.256.0 to 0.257.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3259
+
 ## [v9.0.2](https://github.com/and-period/furumaru/compare/v9.0.1...v9.0.2) - 2025-12-22
 - chore(deps): Update Shared Web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3212
 - build(deps): bump github.com/gin-contrib/gzip from 1.2.4 to 1.2.5 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3225
