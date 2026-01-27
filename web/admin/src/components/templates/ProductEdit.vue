@@ -273,6 +273,7 @@ const thumbnailIndex = computed<number>({
   },
 })
 const producerIdValue = computed(() => props.product.producerId)
+const isAdministrator = computed(() => props.adminType === AdminType.AdminTypeAdministrator)
 
 const formDataValidate = useVuelidate(
   UpdateProductValidationRules,
@@ -442,6 +443,7 @@ const onSubmitReview = (): void => {
             基本情報
           </v-tab>
           <v-tab
+            v-if="isAdministrator"
             :value="1"
             class="tab-item"
           >
@@ -1199,7 +1201,10 @@ const onSubmitReview = (): void => {
           </v-window-item>
 
           <!-- レビュー投稿タブ -->
-          <v-window-item :value="1">
+          <v-window-item
+            v-if="isAdministrator"
+            :value="1"
+          >
             <div class="pa-6">
               <div class="mb-4">
                 <h3 class="text-h6 mb-2">
