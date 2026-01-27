@@ -1,5 +1,8 @@
 # Changelog
 
+## [v9.0.4](https://github.com/and-period/furumaru/compare/v9.0.3...v9.0.4) - 2026-01-27
+- fix: 管理者のみレビュー投稿タブを表示する条件を追加 by @hamachans in https://github.com/and-period/furumaru/pull/3277
+
 ## [v9.0.3](https://github.com/and-period/furumaru/compare/v9.0.2...v9.0.3) - 2026-01-18
 - feat: ダミーレビューの投稿APIを実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3268
 - feat(web): 商品詳細ページにダミーレビュー投稿機能を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3270
