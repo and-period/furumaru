@@ -1,5 +1,8 @@
 # Changelog
 
+## [v9.0.5](https://github.com/and-period/furumaru/compare/v9.0.4...v9.0.5) - 2026-02-07
+- fix(api): TiDB/TiProxy接続の安定性を改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3281
+
 ## [v9.0.4](https://github.com/and-period/furumaru/compare/v9.0.3...v9.0.4) - 2026-01-27
 - fix: 管理者のみレビュー投稿タブを表示する条件を追加 by @hamachans in https://github.com/and-period/furumaru/pull/3277
 
