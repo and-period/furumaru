@@ -6,6 +6,7 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
@@ -38,8 +39,13 @@ type options struct {
 	allowNativePasswords bool
 	maxAllowedPacket     int
 	maxRetries           int
+	maxOpenConns         int
+	maxIdleConns         int
 	maxConnLifetime      time.Duration
 	maxConnIdleTime      time.Duration
+	dialTimeout          time.Duration
+	readTimeout          time.Duration
+	writeTimeout         time.Duration
 }
 
 type Option func(opts *options)
@@ -101,6 +107,36 @@ func WithMaxConnLifetime(d time.Duration) Option {
 func WithMaxConnIdleTime(d time.Duration) Option {
 	return func(opts *options) {
 		opts.maxConnIdleTime = d
+	}
+}
+
+func WithMaxOpenConns(n int) Option {
+	return func(opts *options) {
+		opts.maxOpenConns = n
+	}
+}
+
+func WithMaxIdleConns(n int) Option {
+	return func(opts *options) {
+		opts.maxIdleConns = n
+	}
+}
+
+func WithDialTimeout(d time.Duration) Option {
+	return func(opts *options) {
+		opts.dialTimeout = d
+	}
+}
+
+func WithReadTimeout(d time.Duration) Option {
+	return func(opts *options) {
+		opts.readTimeout = d
+	}
+}
+
+func WithWriteTimeout(d time.Duration) Option {
+	return func(opts *options) {
+		opts.writeTimeout = d
 	}
 }
 
@@ -210,7 +246,20 @@ func (c *Client) Count(ctx context.Context, tx *gorm.DB, model interface{}, fn f
 
 // IsRetryable - リトライ対象のエラーかの判定
 func IsRetryable(err error) bool {
-	return errors.Is(err, driver.ErrBadConn)
+	if errors.Is(err, driver.ErrBadConn) {
+		return true
+	}
+	var e *dmysql.MySQLError
+	if errors.As(err, &e) {
+		switch e.Number {
+		case 1213: // デッドロック
+			return true
+		case 1105: // TiProxy 一時的エラー
+			return strings.Contains(e.Message, "No available TiDB instances") ||
+				strings.Contains(e.Message, "TiProxy fails to connect to TiDB")
+		}
+	}
+	return false
 }
 
 // Retryable - リトライ可能かの判定
