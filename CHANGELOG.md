@@ -1,5 +1,8 @@
 # Changelog
 
+## [v9.0.6](https://github.com/and-period/furumaru/compare/v9.0.5...v9.0.6) - 2026-02-09
+- fix(api): UpdateメソッドでJSONカラムがbase64エンコードされる問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3283
+
 ## [v9.0.5](https://github.com/and-period/furumaru/compare/v9.0.4...v9.0.5) - 2026-02-07
 - fix(api): TiDB/TiProxy接続の安定性を改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3281
 
