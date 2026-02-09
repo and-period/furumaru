@@ -246,7 +246,7 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 			"public":              params.Public,
 			"sold_out":            params.SoldOut,
 			"media":               nil,
-			"recommended_points":  points,
+			"recommended_points":  datatypes.JSON(points),
 			"promotion_video_url": params.PromotionVideoURL,
 			"duration":            params.Duration,
 			"direction":           params.Direction,
@@ -264,7 +264,7 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 			"updated_at":          now,
 		}
 		if len(media) > 0 {
-			updates["media"] = media
+			updates["media"] = datatypes.JSON(media)
 		}
 
 		stmt := tx.WithContext(ctx).Table(experienceTable).Where("id = ?", experienceID)
