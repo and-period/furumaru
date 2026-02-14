@@ -57,7 +57,7 @@ const closeSpMenu = () => {
   spMenuOpen.value = false
 }
 
-const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
+const handleClickMenuItem = () => {
   closeSpMenu()
 }
 

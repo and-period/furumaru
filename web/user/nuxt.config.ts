@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   srcDir: 'src',
   serverDir: 'src/server',
   publicDir: 'public',
+  compatibilityDate: 'latest',
   app: {
     head: {
       titleTemplate: '%s - 産地直送のお取り寄せ通販【ふるマル】',
@@ -54,6 +55,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
     'nuxt-gtag',
     [
       '@pinia/nuxt',
@@ -68,6 +71,10 @@ export default defineNuxtConfig({
   ],
   gtag: {
     id: process.env.NUXT_PUBLIC_GTAG_ID,
+  },
+  site: {
+    url: 'https://www.furumaru.and-period.co.jp',
+    name: '産地直送のお取り寄せ通販【ふるマル】',
   },
   eslint: {
     config: {
