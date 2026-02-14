@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/robots',
     '@nuxtjs/sitemap',
     'nuxt-gtag',
     [

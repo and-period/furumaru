@@ -767,6 +767,11 @@
   resolved "https://registry.yarnpkg.com/@fastify/accept-negotiator/-/accept-negotiator-1.1.0.tgz#c1c66b3b771c09742a54dd5bc87c582f6b0630ff"
   integrity sha512-OIHZrb2ImZ7XG85HXOONLcJWGosv7sIvM2ifAPQVhg9Lv7qdmMBNVaai4QTdyuaqbKM5eO6sLSQOYI7wEQeCJQ==
 
+"@fingerprintjs/botd@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@fingerprintjs/botd/-/botd-2.0.0.tgz#fc533621f4d96f28c36c8595dc8b6646cccc972c"
+  integrity sha512-yhuz23NKEcBDTHmGz/ULrXlGnbHenO+xZmVwuBkuqHUkqvaZ5TAA0kAgcRy4Wyo5dIBdkIf57UXX8/c9UlMLJg==
+
 "@fontsource/stix-two-text@4.5.16":
   version "4.5.16"
   resolved "https://registry.yarnpkg.com/@fontsource/stix-two-text/-/stix-two-text-4.5.16.tgz#98f7a4a42009e3a7b823642f3c244da21a7b23de"
@@ -1538,6 +1543,24 @@
     unstorage "^1.16.1"
     vue-i18n "^11.1.11"
     vue-router "^4.5.1"
+
+"@nuxtjs/robots@^5.7.0":
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/robots/-/robots-5.7.0.tgz#0df46d308d6a2b2d25d2990509be01c76e270351"
+  integrity sha512-pkGtOP88rzIalvYE3rTCkJ+f0TDHfB/sbSCcA7inVemFa17JVu8AFlO4e+y4zthj+Jh98Tkf7yCuaDU5w3C1vQ==
+  dependencies:
+    "@fingerprintjs/botd" "^2.0.0"
+    "@nuxt/devtools-kit" "^3.1.1"
+    "@nuxt/kit" "^4.3.0"
+    consola "^3.4.2"
+    defu "^6.1.4"
+    h3 "^1.15.5"
+    nuxt-site-config "^3.2.18"
+    pathe "^2.0.3"
+    pkg-types "^2.3.0"
+    sirv "^3.0.2"
+    std-env "^3.10.0"
+    ufo "^1.6.3"
 
 "@nuxtjs/sitemap@^7.6.0":
   version "7.6.0"

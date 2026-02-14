@@ -19,6 +19,7 @@
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.2",
     "@nuxt/image": "^1.11.0",
+    "@nuxtjs/robots": "^5.7.0",
     "@nuxtjs/sitemap": "^7.6.0",
     "@pinia/nuxt": "^0.11.3",
     "@sentry/node": "^7.120.4",
