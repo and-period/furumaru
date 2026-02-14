@@ -4,8 +4,8 @@ interface Props {
   title: string | undefined
   imgSrc: string | undefined
   width: number | undefined
-  endAt: number
   archivedStreamText: string
+  endAt?: number
 }
 
 defineProps<Props>()
