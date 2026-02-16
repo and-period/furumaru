@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface OrderMetadata {
     /**
+     * 要望・質問など自由入力
+     * @type {string}
+     * @memberof OrderMetadata
+     */
+    orderRequest: string;
+    /**
      * 受け取り日時
      * @type {number}
      * @memberof OrderMetadata
@@ -37,6 +43,7 @@ export interface OrderMetadata {
  * Check if a given object implements the OrderMetadata interface.
  */
 export function instanceOfOrderMetadata(value: object): value is OrderMetadata {
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('pickupAt' in value) || value['pickupAt'] === undefined) return false;
     if (!('pickupLocation' in value) || value['pickupLocation'] === undefined) return false;
     return true;
@@ -52,6 +59,7 @@ export function OrderMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'orderRequest': json['orderRequest'],
         'pickupAt': json['pickupAt'],
         'pickupLocation': json['pickupLocation'],
     };
@@ -68,6 +76,7 @@ export function OrderMetadataToJSONTyped(value?: OrderMetadata | null, ignoreDis
 
     return {
         
+        'orderRequest': value['orderRequest'],
         'pickupAt': value['pickupAt'],
         'pickupLocation': value['pickupLocation'],
     };
