@@ -34,6 +34,13 @@ import {
     ProducerToJSON,
     ProducerToJSONTyped,
 } from './Producer';
+import type { VideoSummary } from './VideoSummary';
+import {
+    VideoSummaryFromJSON,
+    VideoSummaryFromJSONTyped,
+    VideoSummaryToJSON,
+    VideoSummaryToJSONTyped,
+} from './VideoSummary';
 import type { ProductType } from './ProductType';
 import {
     ProductTypeFromJSON,
@@ -124,6 +131,12 @@ export interface CoordinatorResponse {
      * @memberof CoordinatorResponse
      */
     shipping: Shipping;
+    /**
+     * オンデマンド動画一覧
+     * @type {Array<VideoSummary>}
+     * @memberof CoordinatorResponse
+     */
+    videos: Array<VideoSummary>;
 }
 
 /**
@@ -138,6 +151,7 @@ export function instanceOfCoordinatorResponse(value: object): value is Coordinat
     if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
     if (!('products' in value) || value['products'] === undefined) return false;
     if (!('shipping' in value) || value['shipping'] === undefined) return false;
+    if (!('videos' in value) || value['videos'] === undefined) return false;
     return true;
 }
 
@@ -159,6 +173,7 @@ export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
         'shipping': ShippingFromJSON(json['shipping']),
+        'videos': ((json['videos'] as Array<any>).map(VideoSummaryFromJSON)),
     };
 }
 
@@ -181,6 +196,7 @@ export function CoordinatorResponseToJSONTyped(value?: CoordinatorResponse | nul
         'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
         'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'shipping': ShippingToJSON(value['shipping']),
+        'videos': ((value['videos'] as Array<any>).map(VideoSummaryToJSON)),
     };
 }
 

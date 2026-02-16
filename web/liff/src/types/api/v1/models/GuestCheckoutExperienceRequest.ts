@@ -77,6 +77,12 @@ export interface GuestCheckoutExperienceRequest {
      */
     juniorHighSchoolCount: number;
     /**
+     * 要望・質問など自由入力
+     * @type {string}
+     * @memberof GuestCheckoutExperienceRequest
+     */
+    orderRequest: string;
+    /**
      * 支払い方法
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
@@ -143,6 +149,7 @@ export function instanceOfGuestCheckoutExperienceRequest(value: object): value i
     if (!('elementarySchoolCount' in value) || value['elementarySchoolCount'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
     if (!('juniorHighSchoolCount' in value) || value['juniorHighSchoolCount'] === undefined) return false;
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
     if (!('preschoolCount' in value) || value['preschoolCount'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
@@ -172,6 +179,7 @@ export function GuestCheckoutExperienceRequestFromJSONTyped(json: any, ignoreDis
         'elementarySchoolCount': json['elementarySchoolCount'],
         'email': json['email'],
         'juniorHighSchoolCount': json['juniorHighSchoolCount'],
+        'orderRequest': json['orderRequest'],
         'paymentMethod': json['paymentMethod'],
         'preschoolCount': json['preschoolCount'],
         'promotionCode': json['promotionCode'],
@@ -202,6 +210,7 @@ export function GuestCheckoutExperienceRequestToJSONTyped(value?: GuestCheckoutE
         'elementarySchoolCount': value['elementarySchoolCount'],
         'email': value['email'],
         'juniorHighSchoolCount': value['juniorHighSchoolCount'],
+        'orderRequest': value['orderRequest'],
         'paymentMethod': value['paymentMethod'],
         'preschoolCount': value['preschoolCount'],
         'promotionCode': value['promotionCode'],

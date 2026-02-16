@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { TimeWeekday } from './TimeWeekday';
-import {
-    TimeWeekdayFromJSON,
-    TimeWeekdayFromJSONTyped,
-    TimeWeekdayToJSON,
-    TimeWeekdayToJSONTyped,
-} from './TimeWeekday';
-
 /**
  * コーディネータ情報
  * @export
@@ -29,10 +21,10 @@ import {
 export interface Coordinator {
     /**
      * 営業曜日(発送可能日)
-     * @type {Array<TimeWeekday>}
+     * @type {Array<number>}
      * @memberof Coordinator
      */
-    businessDays: Array<TimeWeekday>;
+    businessDays: Array<number>;
     /**
      * 市区町村
      * @type {string}
@@ -137,7 +129,7 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'businessDays': ((json['businessDays'] as Array<any>).map(TimeWeekdayFromJSON)),
+        'businessDays': json['businessDays'],
         'city': json['city'],
         'facebookId': json['facebookId'],
         'headerUrl': json['headerUrl'],
@@ -164,7 +156,7 @@ export function CoordinatorToJSONTyped(value?: Coordinator | null, ignoreDiscrim
 
     return {
         
-        'businessDays': ((value['businessDays'] as Array<any>).map(TimeWeekdayToJSON)),
+        'businessDays': value['businessDays'],
         'city': value['city'],
         'facebookId': value['facebookId'],
         'headerUrl': value['headerUrl'],

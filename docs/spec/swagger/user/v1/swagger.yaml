@@ -440,6 +440,10 @@ components:
           maximum: 99
           minimum: 0
           type: integer
+        orderRequest:
+          description: 要望・質問など自由入力
+          maxLength: 256
+          type: string
         paymentMethod:
           description: 支払い方法
           type: integer
@@ -509,6 +513,7 @@ components:
         - creditCard
         - elementarySchoolCount
         - juniorHighSchoolCount
+        - orderRequest
         - preschoolCount
         - promotionCode
         - requestedDate
@@ -534,6 +539,10 @@ components:
           type: string
         creditCard:
           $ref: '#/components/schemas/CheckoutCreditCard'
+        orderRequest:
+          description: 要望・質問など自由入力
+          maxLength: 256
+          type: string
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethodType'
         promotionCode:
@@ -558,6 +567,7 @@ components:
         - shippingAddressId
         - boxNumber
         - creditCard
+        - orderRequest
         - promotionCode
         - total
       type: object
@@ -1573,6 +1583,10 @@ components:
           maximum: 99
           minimum: 0
           type: integer
+        orderRequest:
+          description: 要望・質問など自由入力
+          maxLength: 256
+          type: string
         paymentMethod:
           description: 支払い方法
           type: integer
@@ -1643,6 +1657,7 @@ components:
         - creditCard
         - elementarySchoolCount
         - juniorHighSchoolCount
+        - orderRequest
         - preschoolCount
         - promotionCode
         - requestedDate
@@ -1673,6 +1688,10 @@ components:
         isSameAddress:
           description: 配送先住所を請求先住所と同一にする
           type: boolean
+        orderRequest:
+          description: 要望・質問など自由入力
+          maxLength: 256
+          type: string
         paymentMethod:
           description: 支払い方法
           type: integer
@@ -1725,6 +1744,7 @@ components:
         - boxNumber
         - creditCard
         - isSameAddress
+        - orderRequest
         - promotionCode
         - shippingAddress
         - total
