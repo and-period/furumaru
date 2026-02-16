@@ -65,6 +65,12 @@ export interface CheckoutProductRequest {
      */
     creditCard: CheckoutCreditCard;
     /**
+     * 要望・質問など自由入力
+     * @type {string}
+     * @memberof CheckoutProductRequest
+     */
+    orderRequest: string;
+    /**
      * 
      * @type {PaymentMethodType}
      * @memberof CheckoutProductRequest
@@ -107,6 +113,7 @@ export function instanceOfCheckoutProductRequest(value: object): value is Checko
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
     if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
@@ -130,6 +137,7 @@ export function CheckoutProductRequestFromJSONTyped(json: any, ignoreDiscriminat
         'callbackUrl': json['callbackUrl'],
         'coordinatorId': json['coordinatorId'],
         'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'orderRequest': json['orderRequest'],
         'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
         'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
@@ -154,6 +162,7 @@ export function CheckoutProductRequestToJSONTyped(value?: CheckoutProductRequest
         'callbackUrl': value['callbackUrl'],
         'coordinatorId': value['coordinatorId'],
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
+        'orderRequest': value['orderRequest'],
         'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
         'promotionCode': value['promotionCode'],
         'requestId': value['requestId'],

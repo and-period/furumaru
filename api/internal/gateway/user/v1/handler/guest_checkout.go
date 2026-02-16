@@ -97,6 +97,7 @@ func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
 		BillingAddressID: billingAddressID,
 		CallbackURL:      req.CallbackURL,
 		Total:            req.Total,
+		OrderRequest:     req.OrderRequest,
 		CheckoutProductDetail: store.CheckoutProductDetail{
 			CoordinatorID:     req.CoordinatorID,
 			BoxNumber:         req.BoxNumber,
@@ -152,6 +153,7 @@ func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
 		BillingAddressID: billingAddressID,
 		CallbackURL:      req.CallbackURL,
 		Total:            req.Total,
+		OrderRequest:     req.OrderRequest,
 		CheckoutExperienceDetail: store.CheckoutExperienceDetail{
 			ExperienceID:          util.GetParam(ctx, "experienceId"),
 			AdultCount:            req.AdultCount,

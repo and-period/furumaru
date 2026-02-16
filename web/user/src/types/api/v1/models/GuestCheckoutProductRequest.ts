@@ -77,6 +77,12 @@ export interface GuestCheckoutProductRequest {
      */
     isSameAddress: boolean;
     /**
+     * 要望・質問など自由入力
+     * @type {string}
+     * @memberof GuestCheckoutProductRequest
+     */
+    orderRequest: string;
+    /**
      * 支払い方法
      * @type {number}
      * @memberof GuestCheckoutProductRequest
@@ -119,6 +125,7 @@ export function instanceOfGuestCheckoutProductRequest(value: object): value is G
     if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
     if (!('isSameAddress' in value) || value['isSameAddress'] === undefined) return false;
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
@@ -144,6 +151,7 @@ export function GuestCheckoutProductRequestFromJSONTyped(json: any, ignoreDiscri
         'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
         'email': json['email'],
         'isSameAddress': json['isSameAddress'],
+        'orderRequest': json['orderRequest'],
         'paymentMethod': json['paymentMethod'],
         'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
@@ -170,6 +178,7 @@ export function GuestCheckoutProductRequestToJSONTyped(value?: GuestCheckoutProd
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
         'email': value['email'],
         'isSameAddress': value['isSameAddress'],
+        'orderRequest': value['orderRequest'],
         'paymentMethod': value['paymentMethod'],
         'promotionCode': value['promotionCode'],
         'requestId': value['requestId'],
