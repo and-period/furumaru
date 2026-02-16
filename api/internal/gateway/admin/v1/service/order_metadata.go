@@ -14,6 +14,7 @@ type OrderMetadata struct {
 func NewOrderMetadata(metadata *entity.OrderMetadata) *OrderMetadata {
 	return &OrderMetadata{
 		OrderMetadata: types.OrderMetadata{
+			OrderRequest:   metadata.OrderRequest,
 			PickupAt:       jst.Unix(metadata.PickupAt),
 			PickupLocation: metadata.PickupLocation,
 		},

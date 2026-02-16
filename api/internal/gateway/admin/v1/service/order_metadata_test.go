@@ -22,11 +22,13 @@ func TestNewOrderMetadata(t *testing.T) {
 			name: "success",
 			metadata: &entity.OrderMetadata{
 				OrderID:        "order-id",
+				OrderRequest:   "アレルギー対応をお願いします",
 				PickupAt:       now,
 				PickupLocation: "東京都千代田区",
 			},
 			expect: &OrderMetadata{
 				OrderMetadata: types.OrderMetadata{
+					OrderRequest:   "アレルギー対応をお願いします",
 					PickupAt:       jst.Unix(now),
 					PickupLocation: "東京都千代田区",
 				},
@@ -85,12 +87,14 @@ func TestOrderMetadata_Response(t *testing.T) {
 			name: "success",
 			metadata: &OrderMetadata{
 				OrderMetadata: types.OrderMetadata{
+					OrderRequest:   "アレルギー対応をお願いします",
 					PickupAt:       jst.Unix(now),
 					PickupLocation: "東京都千代田区",
 				},
 				orderID: "order-id",
 			},
 			expect: &types.OrderMetadata{
+				OrderRequest:   "アレルギー対応をお願いします",
 				PickupAt:       jst.Unix(now),
 				PickupLocation: "東京都千代田区",
 			},
