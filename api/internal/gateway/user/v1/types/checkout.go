@@ -11,6 +11,7 @@ type CheckoutProductRequest struct {
 	CreditCard        *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`     // クレジットカード決済情報
 	CallbackURL       string              `json:"callbackUrl" validate:"required,http_url"` // 決済完了後のリダイレクト先URL
 	Total             int64               `json:"total" validate:"min=0"`                   // 支払い合計金額（誤り検出用）
+	OrderRequest      string              `json:"orderRequest" validate:"omitempty,max=256"` // 要望・質問など自由入力
 }
 
 type CheckoutExperienceRequest struct {
@@ -29,6 +30,7 @@ type CheckoutExperienceRequest struct {
 	CreditCard            *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`          // クレジットカード決済情報
 	CallbackURL           string              `json:"callbackUrl" validate:"required,http_url"`      // 決済完了後のリダイレクト先URL
 	Total                 int64               `json:"total" validate:"min=0"`                        // 支払い合計金額（誤り検出用）
+	OrderRequest          string              `json:"orderRequest" validate:"omitempty,max=256"`     // 要望・質問など自由入力
 }
 
 type CheckoutCreditCard struct {
@@ -66,6 +68,7 @@ type GuestCheckoutProductRequest struct {
 	CreditCard      *CheckoutCreditCard   `json:"creditCard" validate:"omitempty,dive"`                                     // クレジットカード決済情報
 	CallbackURL     string                `json:"callbackUrl" validate:"required,http_url"`                                 // 決済完了後のリダイレクト先URL
 	Total           int64                 `json:"total" validate:"min=0"`                                                   // 支払い合計金額（誤り検出用）
+	OrderRequest    string                `json:"orderRequest" validate:"omitempty,max=256"`                                // 要望・質問など自由入力
 	Email           string                `json:"email" validate:"required,email"`                                          // メールアドレス
 	IsSameAddress   bool                  `json:"isSameAddress"`                                                            // 配送先住所を請求先住所と同一にする
 	BillingAddress  *GuestCheckoutAddress `json:"billingAddress" validate:"required,dive"`                                  // 請求先住所
@@ -87,6 +90,7 @@ type GuestCheckoutExperienceRequest struct {
 	CreditCard            *CheckoutCreditCard   `json:"creditCard" validate:"omitempty,dive"`          // クレジットカード決済情報
 	CallbackURL           string                `json:"callbackUrl" validate:"required,http_url"`      // 決済完了後のリダイレクト先URL
 	Total                 int64                 `json:"total" validate:"min=0"`                        // 支払い合計金額（誤り検出用）
+	OrderRequest          string                `json:"orderRequest" validate:"omitempty,max=256"`     // 要望・質問など自由入力
 	Email                 string                `json:"email" validate:"required,email"`               // メールアドレス
 	BillingAddress        *GuestCheckoutAddress `json:"billingAddress" validate:"required,dive"`       // 請求先住所
 }

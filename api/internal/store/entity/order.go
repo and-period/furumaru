@@ -209,7 +209,8 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 		return nil, err
 	}
 	mparams := &NewOrderMetadataParams{
-		OrderID: params.OrderID,
+		OrderID:      params.OrderID,
+		OrderRequest: params.OrderRequest,
 	}
 	metadata := NewOrderMetadata(mparams)
 	return &Order{
