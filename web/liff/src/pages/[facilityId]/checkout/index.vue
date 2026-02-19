@@ -196,7 +196,10 @@ const handlePay = async () => {
           />
 
           <!-- 受け取り日時選択 -->
-          <div class="flex flex-col px-2 gap-1">
+          <div
+            v-if="false"
+            class="flex flex-col px-2 gap-1"
+          >
             <label class=" font-semibold text-sm block mb-2">配達時間</label>
             <div>
               <input

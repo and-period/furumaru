@@ -159,7 +159,10 @@ const itemThumbnailAlt = (itemName: string): string => {
         </div>
 
         <!-- Price Breakdown -->
-        <div class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]">
+        <div
+          v-if="false"
+          class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
+        >
           <!-- Subtotal -->
           <div class="col-span-2 md:col-span-1">
             {{ texts.itemTotalPriceLabel }}
@@ -169,7 +172,9 @@ const itemThumbnailAlt = (itemName: string): string => {
           </div>
 
           <!-- Shipping Fee -->
-          <div class="col-span-2 md:col-span-1">
+          <div
+            class="col-span-2 md:col-span-1"
+          >
             {{ texts.shippingFeeLabel }}
           </div>
           <div class="col-span-3 text-right md:col-span-1">
