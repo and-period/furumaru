@@ -1,5 +1,9 @@
 # Changelog
 
+## [v9.0.8](https://github.com/and-period/furumaru/compare/v9.0.7...v9.0.8) - 2026-02-19
+- feat(api): 決済APIにorderRequestフィールドを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3288
+- [web/liff] 注文内容確認画面で送料の部分の表示を無くす&&配達時間を常に`checkin`で送信するように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3290
+
 ## [v9.0.7](https://github.com/and-period/furumaru/compare/v9.0.6...v9.0.7) - 2026-02-14
 - [web/user] sitemap.xml関連を修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3285
 
