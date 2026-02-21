@@ -19,7 +19,7 @@ const { schedules, total } = storeToRefs(scheduleStore)
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('schedules', async (): Promise<void> => {
   await fetchSchedules()
 })
 

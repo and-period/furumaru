@@ -11,7 +11,7 @@ const { providers } = storeToRefs(authStore)
 
 const loading = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('account-providers', async (): Promise<void> => {
   await fetchAuthProviders()
 })
 

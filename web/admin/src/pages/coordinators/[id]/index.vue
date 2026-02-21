@@ -108,7 +108,7 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('coordinator-detail', async (): Promise<void> => {
   try {
     await coordinatorStore.getCoordinator(coordinatorId)
     await Promise.all([

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
@@ -22,7 +22,7 @@ watch(sortBy, (): void => {
   fetchState.refresh()
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('contacts', async (): Promise<void> => {
   await fetchContacts()
 })
 

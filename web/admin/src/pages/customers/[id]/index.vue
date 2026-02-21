@@ -28,7 +28,7 @@ const {
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData('customer-detail', async () => {
   await fetchCustomerOrders()
 })
 

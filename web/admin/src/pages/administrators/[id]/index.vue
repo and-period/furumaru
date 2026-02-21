@@ -24,7 +24,7 @@ const formData = ref<UpdateAdministratorRequest>({
   phoneNumber: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('administrator-detail', async (): Promise<void> => {
   try {
     await administratorStore.getAdministrator(administratorId)
     formData.value = {

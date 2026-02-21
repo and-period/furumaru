@@ -32,18 +32,19 @@
     "firebase": "^10.14.1",
     "hls.js": "^1.6.13",
     "marked": "^12.0.2",
-    "nuxt": "^4.1.2",
+    "nuxt": "^4.3",
     "pinia": "^2.3.1",
     "sass": "^1.93.2",
     "sortablejs": "^1.15.6",
     "universal-cookie": "^7.2.2",
     "vue-chart-3": "^3.1.8",
     "vue-echarts": "^6.7.3",
-    "vuetify": "^3.10.4"
+    "vuetify": "^3.10.4",
+    "vuetify-nuxt-module": "^0.19.5"
   },
   "devDependencies": {
     "@mdi/js": "7.4.47",
-    "@nuxt/devtools": "2.6.5",
+    "@nuxt/devtools": "^3.2",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/types": "2.18.1",
     "@nuxtjs/eslint-config-typescript": "12.1.0",

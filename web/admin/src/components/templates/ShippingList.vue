@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiDelete } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { dateTimeFormatter } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'

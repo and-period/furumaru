@@ -21,14 +21,13 @@ export default defineNuxtConfig({
     },
   },
 
-  css: ['~/assets/main.scss', '~/assets/variables.scss'],
+  css: ['~/assets/main.scss'],
 
   plugins: [
     '~/plugins/chartjs.client',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
     '~/plugins/sentry.client',
-    '~/plugins/vuetify',
     '~/plugins/api-client',
   ],
 
@@ -39,7 +38,17 @@ export default defineNuxtConfig({
     '@nuxtjs/stylelint-module',
     ['@pinia/nuxt', { autoImports: ['defineStore', 'acceptHMRUpdate'] }],
     '@vueuse/nuxt',
+    'vuetify-nuxt-module',
   ],
+
+  vuetify: {
+    moduleOptions: {
+      styles: {
+        configFile: 'assets/variables.scss',
+      },
+    },
+    vuetifyOptions: './vuetify.config.ts',
+  },
 
   imports: {
     autoImport: true,

@@ -72,7 +72,7 @@ const formData = ref<UpdateProductRequest>({
   endAt: dayjs().unix(),
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('product-detail', async (): Promise<void> => {
   try {
     await productStore.getProduct(productId)
     selectedCategoryId.value = product.value.categoryId

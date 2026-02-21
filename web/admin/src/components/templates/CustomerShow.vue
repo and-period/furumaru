@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiAccountCircle, mdiDelete, mdiDotsVertical, mdiHistory, mdiShopping, mdiTimeline } from '@mdi/js'
 import { unix } from 'dayjs'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'

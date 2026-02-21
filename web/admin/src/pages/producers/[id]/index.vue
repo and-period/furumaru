@@ -58,7 +58,7 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('producer-detail', async (): Promise<void> => {
   try {
     await producerStore.getProducer(producerId)
     formData.value = {

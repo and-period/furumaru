@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPencil } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { paymentsList } from '~/constants'
 import type { PaymentListItem } from '~/constants'

@@ -32,7 +32,7 @@ const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('products', async (): Promise<void> => {
   await fetchProducts()
 })
 

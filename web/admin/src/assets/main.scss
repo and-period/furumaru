@@ -1,9 +1,4 @@
-$font: "BIZ UDPGothic", sans-serif;
-
-@use "vuetify/styles" with (
-  $body-font-family: $font,
-  $heading-font-family: $font,
-);
+@use "./styles/tokens/index";
 
 .v-data-table {
   white-space: nowrap;
@@ -16,7 +11,7 @@ $font: "BIZ UDPGothic", sans-serif;
 .v-field:has(input[required]) .v-label::after {
   position: absolute;
   content: "*";
-  color: rgb( 221, 44, 0);
+  color: rgb(221, 44, 0);
   top: 0;
   inset-inline-end: 0; /* to support also RTL direction */
 }

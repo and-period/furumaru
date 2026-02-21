@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
@@ -38,7 +38,7 @@ const exportFormData = ref<ExportOrdersRequest>({
   characterEncodingType: CharacterEncodingType.UTF8,
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('orders', async (): Promise<void> => {
   await fetchOrders()
 })
 

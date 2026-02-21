@@ -29,7 +29,7 @@ const formData = ref<UpdateContactRequest>({
   username: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('contact-detail', async (): Promise<void> => {
   try {
     await contactStore.getContact(contactId)
     formData.value = { ...contact.value }

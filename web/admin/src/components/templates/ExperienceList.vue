@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiContentCopy, mdiCalendarCheck, mdiAccount, mdiTent } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { experienceStatues, prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'

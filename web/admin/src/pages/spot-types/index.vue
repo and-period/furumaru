@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useSpotTypeStore } from '~/store'
@@ -26,7 +26,7 @@ const editFormData = ref<UpdateSpotTypeRequest>({
   name: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('spot-types', async (): Promise<void> => {
   await fetchSpotTypes()
 })
 

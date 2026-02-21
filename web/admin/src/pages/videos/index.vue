@@ -17,7 +17,7 @@ const { videoResponse } = storeToRefs(videoStore)
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('videos', async (): Promise<void> => {
   await fetchVideos()
 })
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiTagOutline } from '@mdi/js'
 import { unix } from 'dayjs'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import type { AlertType } from '~/lib/hooks'
 import {

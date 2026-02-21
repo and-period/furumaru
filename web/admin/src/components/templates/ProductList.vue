@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiContentCopy, mdiPackageVariant, mdiCoffee } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { productStatuses } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'

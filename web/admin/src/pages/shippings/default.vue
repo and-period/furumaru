@@ -72,7 +72,7 @@ const box100RateItemsSize = computed(() => {
 
 const validate = useVuelidate(UpdateDefaultShippingValidationRules, formData)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('shipping-default', async (): Promise<void> => {
   try {
     await shippingStore.fetchDefaultShipping()
     formData.value = { ...shipping.value }

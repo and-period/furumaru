@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus, mdiCalendarToday, mdiPlayCircle } from '@mdi/js'
 import { unix } from 'dayjs'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { scheduleStatuses } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'

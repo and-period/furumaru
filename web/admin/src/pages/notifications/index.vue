@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore } from '~/store'
 
@@ -20,7 +20,7 @@ const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('notifications', async (): Promise<void> => {
   await fetchNotifications()
 })
 
