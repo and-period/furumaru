@@ -11,7 +11,7 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 )
 
 var (
@@ -23,14 +23,14 @@ var (
 	ErrAlreadyExists     = errors.New("line: already exists")
 	ErrResourceExhausted = errors.New("line: resource exhausted")
 	ErrInternal          = errors.New("line: internal")
-	ErrCanceled          = errors.New("cognito: canceled")
+	ErrCanceled          = errors.New("line: canceled")
 	ErrUnavailable       = errors.New("line: unavailable")
 	ErrTimeout           = errors.New("line: timeout")
 	ErrUnknown           = errors.New("line: unknown")
 )
 
 type Client interface {
-	PushMessage(ctx context.Context, messages ...linebot.SendingMessage) error
+	PushMessage(ctx context.Context, messages ...messaging_api.MessageInterface) error
 }
 
 type Params struct {
@@ -41,7 +41,7 @@ type Params struct {
 
 type client struct {
 	now    func() time.Time
-	client *linebot.Client
+	api    *messaging_api.MessagingApiAPI
 	roomID string
 }
 
@@ -55,23 +55,27 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	bot, err := linebot.New(params.Secret, params.Token)
+	api, err := messaging_api.NewMessagingApiAPI(params.Token)
 	if err != nil {
 		return nil, err
 	}
 	return &client{
 		now:    jst.Now,
-		client: bot,
+		api:    api,
 		roomID: params.RoomID,
 	}, nil
 }
 
-func (c *client) PushMessage(_ context.Context, messages ...linebot.SendingMessage) error {
-	_, err := c.client.PushMessage(c.roomID, messages...).Do()
-	return c.lineError(err)
+func (c *client) PushMessage(ctx context.Context, messages ...messaging_api.MessageInterface) error {
+	req := &messaging_api.PushMessageRequest{
+		To:       c.roomID,
+		Messages: messages,
+	}
+	resp, _, err := c.api.WithContext(ctx).PushMessageWithHttpInfo(req, "")
+	return c.apiError(err, resp)
 }
 
-func (c *client) lineError(e error) error {
+func (c *client) apiError(e error, resp *http.Response) error {
 	if e == nil {
 		return nil
 	}
@@ -84,33 +88,36 @@ func (c *client) lineError(e error) error {
 		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	}
 
-	var aerr *linebot.APIError
-	if !errors.As(e, &aerr) {
-		return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
+	if resp != nil {
+		return c.mapStatusCode(resp.StatusCode, e)
 	}
 
-	switch aerr.Code {
+	return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
+}
+
+func (c *client) mapStatusCode(code int, e error) error {
+	switch code {
 	case http.StatusBadRequest:
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrInvalidArgument, e.Error())
 	case http.StatusUnauthorized:
-		return fmt.Errorf("%w: %s", ErrUnauthenticated, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, e.Error())
 	case http.StatusForbidden:
-		return fmt.Errorf("%w: %s", ErrPermissionDenied, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrPermissionDenied, e.Error())
 	case http.StatusNotFound:
-		return fmt.Errorf("%w: %s", ErrNotFound, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrNotFound, e.Error())
 	case http.StatusConflict:
-		return fmt.Errorf("%w: %s", ErrAlreadyExists, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrAlreadyExists, e.Error())
 	case http.StatusRequestEntityTooLarge:
-		return fmt.Errorf("%w: %s", ErrPayloadTooLong, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrPayloadTooLong, e.Error())
 	case http.StatusTooManyRequests:
-		return fmt.Errorf("%w: %s", ErrResourceExhausted, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrResourceExhausted, e.Error())
 	case http.StatusInternalServerError:
-		return fmt.Errorf("%w: %s", ErrInternal, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrInternal, e.Error())
 	case http.StatusBadGateway:
-		return fmt.Errorf("%w: %s", ErrUnavailable, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrUnavailable, e.Error())
 	case http.StatusGatewayTimeout:
-		return fmt.Errorf("%w: %s", ErrTimeout, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	default:
-		return fmt.Errorf("%w: %s", ErrUnknown, aerr.Error())
+		return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
 	}
 }

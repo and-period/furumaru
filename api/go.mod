@@ -38,7 +38,7 @@ require (
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/jinzhu/copier v0.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/line/line-bot-sdk-go/v7 v7.21.0
+	github.com/line/line-bot-sdk-go/v8 v8.19.0
 	github.com/newrelic/go-agent/v3 v3.41.0
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.4.2
 	github.com/prometheus/client_golang v1.23.2

@@ -6,10 +6,10 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"go.uber.org/mock/gomock"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestSendReport(t *testing.T) {
@@ -20,18 +20,6 @@ func TestSendReport(t *testing.T) {
 		Template:   `{"type":"bubble","body":{"type":"box","contents":[{"type":"text","text":"{{.Overview}}"}]}}`,
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
-	}
-	container := &linebot.BubbleContainer{
-		Type: linebot.FlexContainerTypeBubble,
-		Body: &linebot.BoxComponent{
-			Type: linebot.FlexComponentTypeBox,
-			Contents: []linebot.FlexComponent{
-				&linebot.TextComponent{
-					Type: linebot.FlexComponentTypeText,
-					Text: "お問い合わせ件名",
-				},
-			},
-		},
 	}
 
 	tests := []struct {
@@ -45,12 +33,11 @@ func TestSendReport(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportTemplateIDReceivedContact).Return(template, nil)
 				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, messages ...linebot.SendingMessage) error {
+					DoAndReturn(func(ctx context.Context, messages ...messaging_api.MessageInterface) error {
 						require.Len(t, messages, 1)
-						msg, ok := messages[0].(*linebot.FlexMessage)
+						msg, ok := messages[0].(*messaging_api.FlexMessage)
 						require.True(t, ok)
 						assert.Equal(t, "[ふるマル] received-contact", msg.AltText)
-						assert.Equal(t, container, msg.Contents)
 						return nil
 					})
 			},

@@ -2,11 +2,12 @@ package entity
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"text/template"
 	"time"
 
-	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 )
 
 // ReportTemplate - システムレポートテンプレート
@@ -17,11 +18,11 @@ type ReportTemplate struct {
 	UpdatedAt  time.Time        `gorm:""`                               // 更新日時
 }
 
-func (t *ReportTemplate) Build(fields map[string]string) (linebot.FlexContainer, error) {
+func (t *ReportTemplate) Build(fields map[string]string) (messaging_api.FlexContainerInterface, error) {
 	text := template.Must(template.New("report").Parse(t.Template))
 	var buf bytes.Buffer
 	if err := text.Execute(io.Writer(&buf), fields); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("entity: failed to execute report template: %w", err)
 	}
-	return linebot.UnmarshalFlexMessageJSON(buf.Bytes())
+	return messaging_api.UnmarshalFlexContainer(buf.Bytes())
 }
