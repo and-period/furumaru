@@ -43,7 +43,7 @@ func TestProducer_List(t *testing.T) {
 	require.NoError(t, err)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now().Add(time.Hour))
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
