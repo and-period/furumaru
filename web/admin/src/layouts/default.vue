@@ -16,9 +16,11 @@ import {
   mdiMagnify,
   mdiChevronDown,
   mdiChevronUp,
+  mdiHelpCircleOutline,
 } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
+import { useBreadcrumbs } from '~/composables/useBreadcrumbs'
 import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
 import { AdminType } from '~/types/api/v1'
 
@@ -232,9 +234,12 @@ const isGroupExpanded = (groupTitle: string) => {
 
 // Responsive drawer behavior based on Vuetify breakpoints
 // xs: <600px, sm: 600-959px, md: 960-1279px, lg: 1280-1919px, xl: >=1920px
-const isDesktop = computed(() => windowWidth.value >= 1280)
-const isTablet = computed(() => windowWidth.value >= 960 && windowWidth.value < 1280)
-const isMobile = computed(() => windowWidth.value < 960)
+const isDesktop = computed(() => windowWidth.value >= 1024)
+const isTablet = computed(() => windowWidth.value >= 600 && windowWidth.value < 1024)
+const isMobile = computed(() => windowWidth.value < 600)
+const isWide = computed(() => windowWidth.value >= 1440)
+
+const breadcrumbs = useBreadcrumbs()
 
 // Simple drawer state (like original)
 const drawer = ref<boolean>(true)
@@ -335,7 +340,7 @@ const calcStyle = (i: number) => {
       v-model="drawer"
       :permanent="drawerPermanent"
       :temporary="drawerTemporary"
-      width="280"
+      width="240"
       class="custom-drawer"
     >
       <!-- User Profile Section (Mobile/Tablet only) -->
@@ -458,6 +463,22 @@ const calcStyle = (i: number) => {
           「{{ searchQuery }}」に一致するメニューが見つかりません
         </div>
       </div>
+
+      <template #append>
+        <v-divider />
+        <v-list>
+          <v-list-item
+            href="https://help.furumaru.jp"
+            target="_blank"
+            :prepend-icon="mdiHelpCircleOutline"
+            class="rounded-lg mx-2 my-1"
+          >
+            <v-list-item-title class="text-body-2">
+              ヘルプ
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-navigation-drawer>
 
     <v-snackbar
@@ -482,8 +503,12 @@ const calcStyle = (i: number) => {
       </template>
     </v-snackbar>
 
-    <v-main class="bg-color">
-      <v-container>
+    <v-main>
+      <v-container :class="{ 'container-wide': isWide }">
+        <atoms-app-breadcrumbs
+          v-if="breadcrumbs.length > 1"
+          :items="breadcrumbs"
+        />
         <slot />
       </v-container>
     </v-main>
@@ -491,8 +516,8 @@ const calcStyle = (i: number) => {
 </template>
 
 <style lang="scss" scoped>
-.bg-color {
-  background-color: #eef5f9;
+.container-wide {
+  max-width: 1200px;
 }
 
 .cursor-pointer {
@@ -550,7 +575,7 @@ const calcStyle = (i: number) => {
   }
 
   // Mobile and tablet responsive adjustments
-  @media (max-width: 1279px) {
+  @media (max-width: 1023px) {
     .v-list-item {
       min-height: 48px;
     }
