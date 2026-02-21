@@ -48,7 +48,6 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/rs/cors/wrapper/gin v0.0.0-20240830163046-1084d89a1692
 	github.com/samber/slog-multi v1.5.0
-	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.16.1+incompatible
 	github.com/shopspring/decimal v1.4.0
 	github.com/slack-go/slack v0.17.3
