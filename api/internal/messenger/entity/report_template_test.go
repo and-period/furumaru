@@ -35,15 +35,15 @@ func TestReportTemplate_Build(t *testing.T) {
 				Body: &messaging_api.FlexBox{
 					FlexComponent: messaging_api.FlexComponent{Type: "box"},
 					Contents: []messaging_api.FlexComponentInterface{
-						&messaging_api.FlexText{
+						messaging_api.FlexText{
 							FlexComponent: messaging_api.FlexComponent{Type: "text"},
 							Text:          "レポートの概要です。",
 						},
-						&messaging_api.FlexText{
+						messaging_api.FlexText{
 							FlexComponent: messaging_api.FlexComponent{Type: "text"},
 							Text:          "レポートの詳細です。",
 						},
-						&messaging_api.FlexText{
+						messaging_api.FlexText{
 							FlexComponent: messaging_api.FlexComponent{Type: "text"},
 							Text:          "https://and-period.jp",
 						},
