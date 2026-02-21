@@ -47,8 +47,7 @@ func TestExperience_List(t *testing.T) {
 		err := db.DB.Create(&internal[i].ExperienceRevision).Error
 		require.NoError(t, err)
 	}
-	experiences, err := internal.entities()
-	require.NoError(t, err)
+	experiences := internal.entities()
 
 	type args struct {
 		params *database.ListExperiencesParams
@@ -123,8 +122,7 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 		err := db.DB.Create(&internal[i].ExperienceRevision).Error
 		require.NoError(t, err)
 	}
-	experiences, err := internal.entities()
-	require.NoError(t, err)
+	experiences := internal.entities()
 
 	type args struct {
 		params *database.ListExperiencesByGeolocationParams
@@ -272,8 +270,7 @@ func TestExperience_MultiGet(t *testing.T) {
 		err := db.DB.Create(&internal[i].ExperienceRevision).Error
 		require.NoError(t, err)
 	}
-	experiences, err := internal.entities()
-	require.NoError(t, err)
+	experiences := internal.entities()
 
 	type args struct {
 		experienceIDs []string
@@ -344,8 +341,7 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 		err := db.DB.Create(&internal[i].ExperienceRevision).Error
 		require.NoError(t, err)
 	}
-	experiences, err := internal.entities()
-	require.NoError(t, err)
+	experiences := internal.entities()
 
 	type args struct {
 		revisionIDs []int64
@@ -406,8 +402,7 @@ func TestExperience_Get(t *testing.T) {
 	require.NoError(t, err)
 	err = db.DB.Create(&internal.ExperienceRevision).Error
 	require.NoError(t, err)
-	e, err := internal.entity()
-	require.NoError(t, err)
+	e := internal.entity()
 
 	type args struct {
 		experienceID string
@@ -475,8 +470,7 @@ func TestExperience_Create(t *testing.T) {
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)
 	internal := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
-	e, err := internal.entity()
-	require.NoError(t, err)
+	e := internal.entity()
 
 	type args struct {
 		experience *entity.Experience
@@ -727,7 +721,7 @@ func testExperience(experienceID, typeID, shopID, coordinatorID, producerID stri
 		CreatedAt:          now,
 		UpdatedAt:          now,
 	}
-	internal, _ := newInternalExperience(experience)
+	internal := newInternalExperience(experience)
 	return internal
 }
 
