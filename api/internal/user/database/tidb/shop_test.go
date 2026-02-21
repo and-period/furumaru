@@ -45,8 +45,7 @@ func TestShop_List(t *testing.T) {
 	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	s, err := internal.entity()
-	require.NoError(t, err)
+	s := internal.entity()
 	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -126,8 +125,7 @@ func TestShop_Count(t *testing.T) {
 	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	s, err := internal.entity()
-	require.NoError(t, err)
+	s := internal.entity()
 	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -208,8 +206,7 @@ func TestShop_MultiGet(t *testing.T) {
 	internal[0] = testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	shops, err := internal.entities()
-	require.NoError(t, err)
+	shops := internal.entities()
 	shops[0].ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -286,8 +283,7 @@ func TestShop_Get(t *testing.T) {
 	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	s, err := internal.entity()
-	require.NoError(t, err)
+	s := internal.entity()
 	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -375,8 +371,7 @@ func TestShop_GetByCoordinatorID(t *testing.T) {
 	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	s, err := internal.entity()
-	require.NoError(t, err)
+	s := internal.entity()
 	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -606,8 +601,7 @@ func TestShop_ListProducers(t *testing.T) {
 	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
-	s, err := internal.entity()
-	require.NoError(t, err)
+	s := internal.entity()
 	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
@@ -815,8 +809,7 @@ func testShop(shopID, coordinatorID string, producerIDs, productTypeIDs []string
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
-	internal, _ := newInternalShop(shop)
-	return internal
+	return newInternalShop(shop)
 }
 
 func testShopProducer(shopID, producerID string, now time.Time) *entity.ShopProducer {

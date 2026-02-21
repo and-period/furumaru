@@ -34,8 +34,7 @@ func TestBroadcast_List(t *testing.T) {
 	internal[1] = testBroadcast("broadcast-id02", "schedule-id02", "coordinator-id", now())
 	err = db.DB.Table(broadcastTable).Create(&internal).Error
 	require.NoError(t, err)
-	broadcasts, err := internal.entities()
-	require.NoError(t, err)
+	broadcasts := internal.entities()
 
 	type args struct {
 		params *database.ListBroadcastsParams
@@ -196,8 +195,7 @@ func TestBroadcast_Get(t *testing.T) {
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 	err = db.DB.Table(broadcastTable).Create(&internal).Error
 	require.NoError(t, err)
-	b, err := internal.entity()
-	require.NoError(t, err)
+	b := internal.entity()
 
 	type args struct {
 		broadcastID string
@@ -266,8 +264,7 @@ func TestBroadcast_GetByScheduleID(t *testing.T) {
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 	err = db.DB.Table(broadcastTable).Create(&internal).Error
 	require.NoError(t, err)
-	b, err := internal.entity()
-	require.NoError(t, err)
+	b := internal.entity()
 
 	type args struct {
 		scheduleID string
@@ -334,8 +331,7 @@ func TestBroadcast_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	b, err := internal.entity()
-	require.NoError(t, err)
+	b := internal.entity()
 
 	type args struct {
 		broadcast *entity.Broadcast
@@ -600,6 +596,5 @@ func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time)
 		CreatedAt:       now,
 		UpdatedAt:       now,
 	}
-	internal, _ := newInternalBroadcast(broadcast)
-	return internal
+	return newInternalBroadcast(broadcast)
 }
