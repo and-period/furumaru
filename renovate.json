@@ -1,7 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
+    "config:best-practices",
+    ":semanticCommitTypeAll(chore)"
   ],
   "timezone": "Asia/Tokyo",
   "schedule": [
@@ -18,14 +19,13 @@
     "gomodTidy",
     "npmDedupe"
   ],
+  "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "labels": [
       "security"
     ],
     "automerge": false
   },
-  "semanticCommits": "enabled",
-  "commitMessagePrefix": "chore(deps):",
   "packageRules": [
     {
       "groupName": "GitHub Actions dependencies",
@@ -59,8 +59,12 @@
     },
     {
       "description": "Pin github.com/sv-tools/openapi to v0.2.1",
-      "matchManagers": ["gomod"],
-      "matchPackageNames": ["github.com/sv-tools/openapi"],
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchPackageNames": [
+        "github.com/sv-tools/openapi"
+      ],
       "allowedVersions": "<=0.2.1"
     },
     {
@@ -68,28 +72,11 @@
       "matchFileNames": [
         "func/**"
       ],
+      "matchManagers": [
+        "npm"
+      ],
       "labels": [
         "backend",
-        "dependencies"
-      ]
-    },
-    {
-      "groupName": "Documentation dependencies",
-      "matchFileNames": [
-        "docs/**"
-      ],
-      "labels": [
-        "docs",
-        "dependencies"
-      ]
-    },
-    {
-      "groupName": "Infrastructure dependencies",
-      "matchFileNames": [
-        "infra/**"
-      ],
-      "labels": [
-        "infrastructure",
         "dependencies"
       ]
     },
@@ -146,6 +133,13 @@
       ]
     },
     {
+      "description": "Ignore @nuxtjs/i18n updates",
+      "matchPackageNames": [
+        "@nuxtjs/i18n"
+      ],
+      "enabled": false
+    },
+    {
       "description": "Automatically merge minor and patch updates for dev dependencies",
       "matchDepTypes": [
         "devDependencies"
@@ -154,7 +148,8 @@
         "minor",
         "patch"
       ],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "description": "Disable major version updates by default",
