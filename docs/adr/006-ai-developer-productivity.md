@@ -139,8 +139,8 @@ func TestProductService_GetProduct(t *testing.T) {
 
 ## 関連
 
-- [全体設計書](../overview.md)
-- [詳細設計書 Phase 5](../detailed-design.md#phase-5-将来的検討事項)
-- [CLAUDE.md](../../../CLAUDE.md)
-- [エージェント運用ガイド](../../agents/README.md)
-- [コーディング規約](../../rules/coding.md)
+- [全体設計書](../architecture/api/backend-refactoring-overview.md)
+- [詳細設計書 Phase 5](../architecture/api/backend-refactoring-detailed-design.md#phase-5-将来的検討事項)
+- [CLAUDE.md](../../CLAUDE.md)
+- [エージェント運用ガイド](../agents/README.md)
+- [コーディング規約](../rules/coding.md)

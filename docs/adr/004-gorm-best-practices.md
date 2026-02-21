@@ -143,6 +143,6 @@ MySQL/TiDB 向けの適切なコネクションプール設定を追加する。
 
 ## 関連
 
-- [全体設計書](../overview.md)
-- [詳細設計書 Phase 4](../detailed-design.md#phase-4-gormdb-改善-1-2ヶ月)
-- [既存 DB 設計](../../api/database-design.md)
+- [全体設計書](../architecture/api/backend-refactoring-overview.md)
+- [詳細設計書 Phase 4](../architecture/api/backend-refactoring-detailed-design.md#phase-4-gormdb-改善-1-2ヶ月)
+- [既存 DB 設計](../architecture/api/database-design.md)

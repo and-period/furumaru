@@ -90,5 +90,5 @@ Furumaru プロジェクトの依存ライブラリに対するセキュリテ�
 
 ## 関連
 
-- [全体設計書](../overview.md)
-- [詳細設計書 Phase 1-2](../detailed-design.md#phase-1-セキュリティ緊急対応-1-2週間)
+- [全体設計書](../architecture/api/backend-refactoring-overview.md)
+- [詳細設計書 Phase 1-2](../architecture/api/backend-refactoring-detailed-design.md#phase-1-セキュリティ緊急対応-1-2週間)

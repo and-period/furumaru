@@ -115,6 +115,6 @@ func (r *registry) inject() {
 
 ## 関連
 
-- [全体設計書](../overview.md)
-- [詳細設計書 Phase 3](../detailed-design.md#phase-3-gateway構成改善-1-2ヶ月)
+- [全体設計書](../architecture/api/backend-refactoring-overview.md)
+- [詳細設計書 Phase 3](../architecture/api/backend-refactoring-detailed-design.md#phase-3-gateway構成改善-1-2ヶ月)
 - [ADR-002: モジュラモノリスアーキテクチャの継続](./002-modular-monolith-continuation.md)

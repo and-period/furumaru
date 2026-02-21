@@ -85,6 +85,6 @@ Gateway (Gin HTTP)
 
 ## 関連
 
-- [全体設計書](../overview.md)
-- [既存設計決定: なぜマイクロサービスアーキテクチャを採用したか](../../design-decisions.md)
-- [システム全体概要](../../overview.md)
+- [全体設計書](../architecture/api/backend-refactoring-overview.md)
+- [既存設計決定: なぜマイクロサービスアーキテクチャを採用したか](../architecture/design-decisions.md)
+- [システム全体概要](../architecture/overview.md)

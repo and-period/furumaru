@@ -1,6 +1,6 @@
 # バックエンドリファクタリング 詳細設計書
 
-本ドキュメントでは、[全体設計書](./overview.md) で定義した各フェーズの具体的な実装方針と ToDo を記載する。
+本ドキュメントでは、[全体設計書](./backend-refactoring-overview.md) で定義した各フェーズの具体的な実装方針と ToDo を記載する。
 
 ---
 
@@ -517,10 +517,10 @@ func TestMain(m *testing.M) {
 
 ### 関連ドキュメント
 
-- [全体設計書](./overview.md)
-- [ADR-001: 依存ライブラリのアップグレード戦略](./adr/001-dependency-upgrade-strategy.md)
-- [ADR-002: モジュラモノリスアーキテクチャの継続](./adr/002-modular-monolith-continuation.md)
-- [ADR-003: Gateway層のリストラクチャリング](./adr/003-gateway-restructuring.md)
-- [ADR-004: GORMベストプラクティスの適用](./adr/004-gorm-best-practices.md)
-- [ADR-005: コンテナベーステストへの移行](./adr/005-container-based-testing.md)
-- [ADR-006: AI活用を前提とした開発生産性向上](./adr/006-ai-developer-productivity.md)
+- [全体設計書](./backend-refactoring-overview.md)
+- [ADR-001: 依存ライブラリのアップグレード戦略](../../adr/001-dependency-upgrade-strategy.md)
+- [ADR-002: モジュラモノリスアーキテクチャの継続](../../adr/002-modular-monolith-continuation.md)
+- [ADR-003: Gateway層のリストラクチャリング](../../adr/003-gateway-restructuring.md)
+- [ADR-004: GORMベストプラクティスの適用](../../adr/004-gorm-best-practices.md)
+- [ADR-005: コンテナベーステストへの移行](../../adr/005-container-based-testing.md)
+- [ADR-006: AI活用を前提とした開発生産性向上](../../adr/006-ai-developer-productivity.md)

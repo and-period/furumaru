@@ -184,13 +184,13 @@ Phase 3 と Phase 4 は独立したモジュールに対する変更のため、
 
 ## 7. 関連ドキュメント
 
-- [詳細設計書](./detailed-design.md) - フェーズごとの具体的な実装方針と ToDo
-- [ADR一覧](./adr/) - アーキテクチャ決定記録
-  - [ADR-001: 依存ライブラリのアップグレード戦略](./adr/001-dependency-upgrade-strategy.md)
-  - [ADR-002: モジュラモノリスアーキテクチャの継続](./adr/002-modular-monolith-continuation.md)
-  - [ADR-003: Gateway層のリストラクチャリング](./adr/003-gateway-restructuring.md)
-  - [ADR-004: GORMベストプラクティスの適用](./adr/004-gorm-best-practices.md)
-  - [ADR-005: コンテナベーステストへの移行](./adr/005-container-based-testing.md)
-  - [ADR-006: AI活用を前提とした開発生産性向上](./adr/006-ai-developer-productivity.md)
+- [詳細設計書](./backend-refactoring-detailed-design.md) - フェーズごとの具体的な実装方針と ToDo
+- [ADR一覧](../../adr/) - アーキテクチャ決定記録
+  - [ADR-001: 依存ライブラリのアップグレード戦略](../../adr/001-dependency-upgrade-strategy.md)
+  - [ADR-002: モジュラモノリスアーキテクチャの継続](../../adr/002-modular-monolith-continuation.md)
+  - [ADR-003: Gateway層のリストラクチャリング](../../adr/003-gateway-restructuring.md)
+  - [ADR-004: GORMベストプラクティスの適用](../../adr/004-gorm-best-practices.md)
+  - [ADR-005: コンテナベーステストへの移行](../../adr/005-container-based-testing.md)
+  - [ADR-006: AI活用を前提とした開発生産性向上](../../adr/006-ai-developer-productivity.md)
 - [既存アーキテクチャ概要](../overview.md) - 現行システム構成
 - [設計決定記録](../design-decisions.md) - 既存のアーキテクチャ設計決定
