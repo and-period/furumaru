@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/stripe/stripe-go/v73"
+	"github.com/stripe/stripe-go/v82"
 )
 
 type OrderParams struct {
