@@ -2,7 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"golang.org/x/sync/errgroup"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -193,10 +191,7 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 			}
 		case entity.OrderTypeExperience:
 			order.OrderExperience.CreatedAt, order.OrderExperience.UpdatedAt = now, now
-			internal, err := newInternalOrderExperience(&order.OrderExperience)
-			if err != nil {
-				return err
-			}
+			internal := newInternalOrderExperience(&order.OrderExperience)
 			if err := tx.WithContext(ctx).Table(orderExperienceTable).Create(&internal).Error; err != nil {
 				return err
 			}
@@ -541,14 +536,14 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&items).Error
 	})
-	eg.Go(func() (err error) {
+	eg.Go(func() error {
 		var internal internalOrderExperiences
 		stmt := o.db.Statement(ectx, tx, orderExperienceTable).Where("order_id IN (?)", ids)
 		if err := stmt.Find(&internal).Error; err != nil {
 			return err
 		}
-		experiences, err = internal.entities()
-		return err
+		experiences = internal.entities()
+		return nil
 	})
 	eg.Go(func() (err error) {
 		stmt := o.db.Statement(ectx, tx, orderMetadataTable).Where("order_id IN (?)", ids)
@@ -620,52 +615,32 @@ func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string, s
 
 type internalOrderExperience struct {
 	entity.OrderExperience `gorm:"embedded"`
-	RemarksJSON            datatypes.JSON `gorm:"default:null;column:remarks"` // 備考(JSON)
+	RemarksJSON            mysql.JSONColumn[entity.OrderExperienceRemarks] `gorm:"default:null;column:remarks"` // 備考(JSON)
 }
 
 type internalOrderExperiences []*internalOrderExperience
 
-func newInternalOrderExperience(experience *entity.OrderExperience) (*internalOrderExperience, error) {
-	remarks, err := experience.Remarks.Marshal()
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal order experience remarks: %w", err)
-	}
-	internal := &internalOrderExperience{
+func newInternalOrderExperience(experience *entity.OrderExperience) *internalOrderExperience {
+	return &internalOrderExperience{
 		OrderExperience: *experience,
-		RemarksJSON:     remarks,
+		RemarksJSON:     mysql.NewJSONColumn(experience.Remarks),
 	}
-	return internal, nil
 }
 
-func (e *internalOrderExperience) entity() (*entity.OrderExperience, error) {
-	if err := e.unmarshalRemarks(); err != nil {
-		return nil, err
-	}
-	return &e.OrderExperience, nil
+func (e *internalOrderExperience) entity() *entity.OrderExperience {
+	exp := e.OrderExperience
+	exp.Remarks = e.RemarksJSON.Val
+	return &exp
 }
 
-func (e *internalOrderExperience) unmarshalRemarks() error {
-	if e == nil || e.RemarksJSON == nil {
-		return nil
-	}
-	var remarks *entity.OrderExperienceRemarks
-	if err := json.Unmarshal(e.RemarksJSON, &remarks); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal order experience remarks: %w", err)
-	}
-	e.Remarks = *remarks
-	return nil
-}
 
-func (es internalOrderExperiences) entities() (entity.OrderExperiences, error) {
+
+func (es internalOrderExperiences) entities() entity.OrderExperiences {
 	res := make(entity.OrderExperiences, len(es))
 	for i := range es {
-		e, err := es[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = e
+		res[i] = es[i].entity()
 	}
-	return res, nil
+	return res
 }
 
 type internalAggregatedPeriodOrder struct {

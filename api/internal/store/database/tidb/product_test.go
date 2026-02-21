@@ -53,8 +53,7 @@ func TestProduct_List(t *testing.T) {
 		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
-	products, err := internal.entities()
-	require.NoError(t, err)
+	products := internal.entities()
 
 	type args struct {
 		params *database.ListProductsParams
@@ -238,8 +237,7 @@ func TestProduct_MultiGet(t *testing.T) {
 		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
-	products, err := internal.entities()
-	require.NoError(t, err)
+	products := internal.entities()
 
 	type args struct {
 		productIDs []string
@@ -318,8 +316,7 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
-	products, err := internal.entities()
-	require.NoError(t, err)
+	products := internal.entities()
 
 	type args struct {
 		revisionIDs []int64
@@ -386,8 +383,7 @@ func TestProduct_Get(t *testing.T) {
 	require.NoError(t, err)
 	err = db.DB.Create(&internal.ProductRevision).Error
 	require.NoError(t, err)
-	p, err := internal.entity()
-	require.NoError(t, err)
+	p := internal.entity()
 
 	type args struct {
 		productID string
@@ -452,8 +448,7 @@ func TestProduct_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-	p, err := internal.entity()
-	require.NoError(t, err)
+	p := internal.entity()
 
 	type args struct {
 		product *entity.Product
@@ -830,7 +825,7 @@ func testProduct(productID, typeID, shopID, coordinatorID, producerID string, ta
 		CreatedAt:            now,
 		UpdatedAt:            now,
 	}
-	internal, _ := newInternalProduct(product)
+	internal := newInternalProduct(product)
 	return internal
 }
 
