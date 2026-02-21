@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +11,6 @@ import (
 type Producer struct {
 	Admin             `gorm:"-"`
 	AdminID           string         `gorm:"primaryKey;<-:create"`           // 管理者ID
-	CoordinatorID     string         `gorm:"default:null"`                   // Deprecated: コーディネータID
 	PhoneNumber       string         `gorm:"default:null"`                   // 電話番号
 	Username          string         `gorm:""`                               // 表示名
 	Profile           string         `gorm:""`                               // 紹介文
@@ -37,7 +35,6 @@ type Producers []*Producer
 
 type NewProducerParams struct {
 	Admin             *Admin
-	CoordinatorID     string
 	PhoneNumber       string
 	Username          string
 	Profile           string
@@ -57,7 +54,6 @@ type NewProducerParams struct {
 func NewProducer(params *NewProducerParams) (*Producer, error) {
 	producer := &Producer{
 		AdminID:           params.Admin.ID,
-		CoordinatorID:     params.CoordinatorID,
 		PhoneNumber:       params.PhoneNumber,
 		Username:          params.Username,
 		Profile:           params.Profile,
@@ -95,23 +91,6 @@ func (ps Producers) IDs() []string {
 	res := make([]string, len(ps))
 	for i := range ps {
 		res[i] = ps[i].AdminID
-	}
-	return res
-}
-
-func (ps Producers) CoordinatorIDs() []string {
-	return set.UniqBy(ps, func(p *Producer) string {
-		return p.CoordinatorID
-	})
-}
-
-func (ps Producers) Unrelated() Producers {
-	res := make(Producers, 0, len(ps))
-	for _, p := range ps {
-		if p.CoordinatorID != "" {
-			continue
-		}
-		res = append(res, p)
 	}
 	return res
 }

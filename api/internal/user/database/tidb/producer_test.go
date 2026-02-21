@@ -43,9 +43,19 @@ func TestProducer_List(t *testing.T) {
 	require.NoError(t, err)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
-	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1] = testProducer("admin-id02", "coordinator-id", now().Add(time.Hour))
 	producers[1].Admin = *admins[1]
 	err = db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{"admin-id01", "admin-id02"}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+	shopProducers := []*entity.ShopProducer{
+		testShopProducer("shop-id", "admin-id01", now()),
+		testShopProducer("shop-id", "admin-id02", now()),
+	}
+	err = db.DB.Table(shopProducerTable).Create(&shopProducers).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -809,6 +819,16 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{"admin-id01", "admin-id02"}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+	shopProducers := []*entity.ShopProducer{
+		testShopProducer("shop-id", "admin-id01", now()),
+		testShopProducer("shop-id", "admin-id02", now()),
+	}
+	err = db.DB.Table(shopProducerTable).Create(&shopProducers).Error
+	require.NoError(t, err)
+
 	type args struct {
 		coordinatorIDs []string
 	}
@@ -865,7 +885,6 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 	return &entity.Producer{
 		AdminID:           id,
-		CoordinatorID:     coordinatorID,
 		Username:          "&.農園",
 		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 		HeaderURL:         "https://and-period.jp/header.png",

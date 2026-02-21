@@ -27,7 +27,6 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "すたっふ",
 					Email:         "test-admin@and-period.jp",
 				},
-				CoordinatorID:     "coordinator-id",
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
@@ -45,7 +44,6 @@ func TestProducer(t *testing.T) {
 			},
 			expect: &Producer{
 				AdminID:           "admin-id",
-				CoordinatorID:     "coordinator-id",
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
@@ -84,7 +82,6 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "すたっふ",
 					Email:         "test-admin@and-period.jp",
 				},
-				CoordinatorID:     "coordinator-id",
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
@@ -102,7 +99,6 @@ func TestProducer(t *testing.T) {
 			},
 			expect: &Producer{
 				AdminID:           "admin-id",
-				CoordinatorID:     "coordinator-id",
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
@@ -141,7 +137,6 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "すたっふ",
 					Email:         "test-admin@and-period.jp",
 				},
-				CoordinatorID:     "coordinator-id",
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
@@ -200,67 +195,6 @@ func TestProducers_IDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.IDs())
-		})
-	}
-}
-
-func TestProducers_CoordinatorIDs(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		producers Producers
-		expect    []string
-	}{
-		{
-			name: "success",
-			producers: Producers{
-				{CoordinatorID: "coordinator-id"},
-				{CoordinatorID: "coordinator-id"},
-			},
-			expect: []string{
-				"coordinator-id",
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.producers.CoordinatorIDs())
-		})
-	}
-}
-
-func TestProducers_Unrelated(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		producers Producers
-		expect    Producers
-	}{
-		{
-			name: "success",
-			producers: Producers{
-				{
-					AdminID:       "admin-id01",
-					CoordinatorID: "coordinator-id",
-				},
-				{
-					AdminID:       "admin-id02",
-					CoordinatorID: "",
-				},
-			},
-			expect: Producers{
-				{
-					AdminID:       "admin-id02",
-					CoordinatorID: "",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.producers.Unrelated())
 		})
 	}
 }

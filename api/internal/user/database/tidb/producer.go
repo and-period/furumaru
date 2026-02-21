@@ -30,7 +30,10 @@ type listProducersParams database.ListProducersParams
 
 func (p listProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+		subQuery := "SELECT sp.producer_id FROM shop_producers sp " +
+			"INNER JOIN shops s ON s.id = sp.shop_id " +
+			"WHERE s.coordinator_id = ? AND s.deleted_at IS NULL"
+		stmt = stmt.Where("admin_id IN ("+subQuery+")", p.CoordinatorID)
 	}
 	if p.Name != "" {
 		stmt = stmt.Where("`username` LIKE ?", "%"+p.Name+"%").
@@ -263,15 +266,17 @@ func (p *producer) AggregateByCoordinatorID(
 	ctx context.Context, coordinatorIDs []string,
 ) (map[string]int64, error) {
 	fields := []string{
-		"producers.coordinator_id AS coordinator_id",
-		"COUNT(producers.admin_id) AS total",
+		"shops.coordinator_id AS coordinator_id",
+		"COUNT(DISTINCT shop_producers.producer_id) AS total",
 	}
 
-	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
-		Joins("INNER JOIN admins ON admins.id = producers.admin_id").
-		Where("producers.coordinator_id IN (?)", coordinatorIDs).
+	stmt := p.db.Statement(ctx, p.db.DB, "shops", fields...).
+		Joins("INNER JOIN shop_producers ON shop_producers.shop_id = shops.id").
+		Joins("INNER JOIN admins ON admins.id = shop_producers.producer_id").
+		Where("shops.coordinator_id IN (?)", coordinatorIDs).
+		Where("shops.deleted_at IS NULL").
 		Where("admins.deleted_at IS NULL").
-		Group("producers.coordinator_id")
+		Group("shops.coordinator_id")
 
 	rows, err := stmt.Rows()
 	if err != nil {
