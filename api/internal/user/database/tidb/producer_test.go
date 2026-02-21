@@ -48,6 +48,16 @@ func TestProducer_List(t *testing.T) {
 	err = db.DB.Create(&producers).Error
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{"admin-id01", "admin-id02"}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+	shopProducers := []*entity.ShopProducer{
+		testShopProducer("shop-id", "admin-id01", now()),
+		testShopProducer("shop-id", "admin-id02", now()),
+	}
+	err = db.DB.Table(shopProducerTable).Create(&shopProducers).Error
+	require.NoError(t, err)
+
 	type args struct {
 		params *database.ListProducersParams
 	}

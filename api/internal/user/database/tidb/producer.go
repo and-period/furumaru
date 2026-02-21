@@ -30,7 +30,10 @@ type listProducersParams database.ListProducersParams
 
 func (p listProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+		subQuery := "SELECT sp.producer_id FROM shop_producers sp " +
+			"INNER JOIN shops s ON s.id = sp.shop_id " +
+			"WHERE s.coordinator_id = ? AND s.deleted_at IS NULL"
+		stmt = stmt.Where("admin_id IN ("+subQuery+")", p.CoordinatorID)
 	}
 	if p.Name != "" {
 		stmt = stmt.Where("`username` LIKE ?", "%"+p.Name+"%").
