@@ -29,7 +29,6 @@ const { productTags } = storeToRefs(productTagStore)
 const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
 const fetchState = useAsyncData('products', async (): Promise<void> => {
@@ -90,7 +89,6 @@ const handleClickDelete = async (productId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -105,7 +103,6 @@ catch (err) {
 
 <template>
   <templates-product-list
-    v-model:delete-dialog="deleteDialog"
     v-model:selected-item-id="selectedItemId"
     :loading="isLoading()"
     :admin-type="adminType"

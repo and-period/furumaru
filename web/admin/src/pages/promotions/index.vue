@@ -18,7 +18,6 @@ const { promotions, total } = storeToRefs(promotionStore)
 const { shops } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
 const fetchState = useAsyncData('promotions', async (): Promise<void> => {
@@ -89,7 +88,6 @@ const handleClickDelete = async (promotionId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -104,7 +102,6 @@ catch (err) {
 
 <template>
   <templates-promotion-list
-    v-model:delete-dialog="deleteDialog"
     v-model:sort-by="sortBy"
     :loading="isLoading()"
     :shop-ids="shopIds"

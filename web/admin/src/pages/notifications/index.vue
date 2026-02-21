@@ -17,7 +17,6 @@ const { admins } = storeToRefs(adminStore)
 const { notifications, totalItems } = storeToRefs(notificationStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
 const fetchState = useAsyncData('notifications', async (): Promise<void> => {
@@ -76,7 +75,6 @@ const handleClickDelete = async (notificationId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -91,7 +89,6 @@ catch (err) {
 
 <template>
   <templates-notification-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :admin-type="adminType"
     :is-alert="isShow"
