@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"strings"
 
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
@@ -43,7 +42,6 @@ func NewGRPCOptions(opts ...Option) []grpc.ServerOption {
  */
 func grpcStreamServerInterceptors() []grpc.StreamServerInterceptor {
 	interceptors := []grpc.StreamServerInterceptor{
-		grpc_ctxtags.StreamServerInterceptor(),
 		grpc_recovery.StreamServerInterceptor(),
 	}
 
@@ -55,7 +53,6 @@ func grpcStreamServerInterceptors() []grpc.StreamServerInterceptor {
  */
 func grpcUnaryServerInterceptors() []grpc.UnaryServerInterceptor {
 	interceptors := []grpc.UnaryServerInterceptor{
-		grpc_ctxtags.UnaryServerInterceptor(),
 		accessLogUnaryServerInterceptor(),
 		grpc_recovery.UnaryServerInterceptor(),
 	}
