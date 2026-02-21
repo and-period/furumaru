@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
+	"sort"
+	"strings"
 	"time"
 
 	mysqlmodule "github.com/testcontainers/testcontainers-go/modules/mysql"
@@ -20,11 +23,12 @@ const (
 type ContainerDBOption func(*containerDBConfig)
 
 type containerDBConfig struct {
-	image    string
-	database string
-	username string
-	password string
-	now      func() time.Time
+	image     string
+	database  string
+	username  string
+	password  string
+	now       func() time.Time
+	schemaDir string
 }
 
 // WithContainerImage はコンテナイメージを指定する
@@ -59,6 +63,15 @@ func WithContainerPassword(password string) ContainerDBOption {
 func WithContainerNow(now func() time.Time) ContainerDBOption {
 	return func(c *containerDBConfig) {
 		c.now = now
+	}
+}
+
+// WithSchemaDir はスキーマSQLファイルのディレクトリパスを指定する。
+// 指定されたディレクトリ内の .sql ファイルをファイル名順（バージョン順）に読み込み、
+// コンテナDB起動後に自動的に実行してスキーマを初期化する。
+func WithSchemaDir(dir string) ContainerDBOption {
+	return func(c *containerDBConfig) {
+		c.schemaDir = dir
 	}
 }
 
@@ -127,11 +140,154 @@ func NewContainerDB(ctx context.Context, opts ...ContainerDBOption) (*Client, fu
 		return nil, nil, fmt.Errorf("mysql testcontainer: failed to create client: %w", err)
 	}
 
+	// スキーマディレクトリが指定されている場合、SQLファイルを実行してスキーマを初期化する
+	if conf.schemaDir != "" {
+		if err := execSchemaFiles(ctx, client, conf.schemaDir); err != nil {
+			_ = container.Terminate(ctx)
+			return nil, nil, fmt.Errorf("mysql testcontainer: failed to initialize schema: %w", err)
+		}
+	}
+
 	cleanup := func() {
 		_ = container.Terminate(context.Background())
 	}
 
 	return client, cleanup, nil
+}
+
+// execSchemaFiles は指定ディレクトリ内の .sql ファイルをファイル名順に読み込み実行する。
+// マルチステートメントSQLに対応するため、underlying *sql.DB を使って実行する。
+func execSchemaFiles(ctx context.Context, client *Client, dir string) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return fmt.Errorf("failed to read schema dir %q: %w", dir, err)
+	}
+
+	// .sql ファイルのみ抽出してファイル名順にソート
+	var sqlFiles []string
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		if strings.HasSuffix(entry.Name(), ".sql") {
+			sqlFiles = append(sqlFiles, entry.Name())
+		}
+	}
+	sort.Strings(sqlFiles)
+
+	if len(sqlFiles) == 0 {
+		return nil
+	}
+
+	// underlying *sql.DB を取得（multiStatements 対応の接続を作成）
+	sqlDB, err := client.DB.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get underlying sql.DB: %w", err)
+	}
+
+	for _, file := range sqlFiles {
+		path := filepath.Join(dir, file)
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return fmt.Errorf("failed to read schema file %q: %w", path, err)
+		}
+
+		sql := string(content)
+		if strings.TrimSpace(sql) == "" {
+			continue
+		}
+
+		// multiStatements=true が DSN に含まれていない場合でも動作するよう、
+		// セミコロンで分割して個別に実行する
+		statements := splitSQLStatements(sql)
+		for _, stmt := range statements {
+			stmt = strings.TrimSpace(stmt)
+			if stmt == "" {
+				continue
+			}
+			if _, err := sqlDB.ExecContext(ctx, stmt); err != nil {
+				return fmt.Errorf("failed to execute schema file %q: %w", file, err)
+			}
+		}
+	}
+
+	return nil
+}
+
+// splitSQLStatements はSQLテキストをセミコロンで分割する。
+// 文字列リテラル内のセミコロンは無視する簡易パーサー。
+func splitSQLStatements(sql string) []string {
+	var statements []string
+	var current strings.Builder
+	inSingleQuote := false
+	inDoubleQuote := false
+	inBacktick := false
+
+	for i := 0; i < len(sql); i++ {
+		ch := sql[i]
+
+		// エスケープ文字の処理
+		if (inSingleQuote || inDoubleQuote) && ch == '\\' && i+1 < len(sql) {
+			current.WriteByte(ch)
+			i++
+			current.WriteByte(sql[i])
+			continue
+		}
+
+		switch ch {
+		case '\'':
+			if !inDoubleQuote && !inBacktick {
+				inSingleQuote = !inSingleQuote
+			}
+		case '"':
+			if !inSingleQuote && !inBacktick {
+				inDoubleQuote = !inDoubleQuote
+			}
+		case '`':
+			if !inSingleQuote && !inDoubleQuote {
+				inBacktick = !inBacktick
+			}
+		case ';':
+			if !inSingleQuote && !inDoubleQuote && !inBacktick {
+				stmt := strings.TrimSpace(current.String())
+				if stmt != "" {
+					statements = append(statements, stmt)
+				}
+				current.Reset()
+				continue
+			}
+		}
+
+		current.WriteByte(ch)
+	}
+
+	// 最後のステートメント（セミコロンなしの場合）
+	if stmt := strings.TrimSpace(current.String()); stmt != "" {
+		statements = append(statements, stmt)
+	}
+
+	return statements
+}
+
+// FindProjectRoot はカレントディレクトリから親ディレクトリを辿り、
+// go.mod が存在するディレクトリをプロジェクトルートとして返す。
+// テストファイルからスキーマディレクトリの相対パスを解決するために使用する。
+func FindProjectRoot(start string) (string, error) {
+	dir, err := filepath.Abs(start)
+	if err != nil {
+		return "", fmt.Errorf("failed to get absolute path: %w", err)
+	}
+
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir, nil
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return "", fmt.Errorf("go.mod not found from %q", start)
+		}
+		dir = parent
+	}
 }
 
 // newExternalDB は環境変数ベースで外部DBに接続する（従来方式のフォールバック）
