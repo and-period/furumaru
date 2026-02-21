@@ -151,6 +151,8 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 		allowNativePasswords: true,
 		maxAllowedPacket:     4194304, // 4MiB
 		maxRetries:           3,
+		maxOpenConns:         25,
+		maxIdleConns:         25,
 		maxConnLifetime:      5 * time.Minute,
 		maxConnIdleTime:      5 * time.Minute,
 	}
@@ -167,6 +169,8 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	sql.SetMaxOpenConns(dopts.maxOpenConns)
+	sql.SetMaxIdleConns(dopts.maxIdleConns)
 	sql.SetConnMaxLifetime(dopts.maxConnLifetime)
 	sql.SetConnMaxIdleTime(dopts.maxConnIdleTime)
 

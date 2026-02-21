@@ -31,8 +31,7 @@ func TestReceivedQueue_Get(t *testing.T) {
 	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
 	err = db.DB.Table(receivedQueueTable).Create(&internal).Error
 	require.NoError(t, err)
-	q, err := internal.entity()
-	require.NoError(t, err)
+	q := internal.entity()
 
 	type args struct {
 		queueID    string
@@ -102,8 +101,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
-	q, err := internal.entity()
-	require.NoError(t, err)
+	q := internal.entity()
 
 	type args struct {
 		queue *entity.ReceivedQueue
@@ -223,6 +221,5 @@ func testReceivedQueue(id string, typ entity.NotifyType, now time.Time) *interna
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
-	internal, _ := newInternalReceivedQueue(queue)
-	return internal
+	return newInternalReceivedQueue(queue)
 }

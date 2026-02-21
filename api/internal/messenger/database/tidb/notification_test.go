@@ -34,8 +34,7 @@ func TestNotification_List(t *testing.T) {
 	internal[2] = testNotification("notification-id03", now())
 	err = db.DB.Table(notificationTable).Create(&internal).Error
 	require.NoError(t, err)
-	notifications, err := internal.entities()
-	require.NoError(t, err)
+	notifications := internal.entities()
 
 	type args struct {
 		params *database.ListNotificationsParams
@@ -173,8 +172,7 @@ func TestNotification_Get(t *testing.T) {
 	internal := testNotification("notification-id", now())
 	err = db.DB.Table(notificationTable).Create(&internal).Error
 	require.NoError(t, err)
-	n, err := internal.entity()
-	require.NoError(t, err)
+	n := internal.entity()
 
 	type args struct {
 		notificationID string
@@ -239,8 +237,7 @@ func TestNotification_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := testNotification("notification-id", now())
-	n, err := internal.entity()
-	require.NoError(t, err)
+	n := internal.entity()
 
 	type args struct {
 		notification *entity.Notification
@@ -439,6 +436,5 @@ func testNotification(id string, now time.Time) *internalNotification {
 		UpdatedAt:   now,
 		PublishedAt: now.AddDate(0, 0, 1),
 	}
-	internal, _ := newInternalNotification(notification)
-	return internal
+	return newInternalNotification(notification)
 }

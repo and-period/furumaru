@@ -215,8 +215,7 @@ func TestOrder_ListUserIDs(t *testing.T) {
 
 	einternal := make(internalOrderExperiences, 1)
 	einternal[0] = testOrderExperience("order-id03", 1, now())
-	oexperiences, err := einternal.entities()
-	require.NoError(t, err)
+	oexperiences := einternal.entities()
 	orders[2].OrderExperience = *oexperiences[0]
 	err = db.DB.Table(orderExperienceTable).Create(&einternal).Error
 	require.NoError(t, err)
@@ -774,8 +773,7 @@ func TestOrder_Create(t *testing.T) {
 	eorder.OrderPayment = *testOrderPayment("experience-order-id", 1, "transaction-id", "payment-id", now())
 	eorder.OrderMetadata = *testOrderMetadata("experience-order-id", now())
 	einternal := testOrderExperience("experience-order-id", 1, now())
-	oexperience, err := einternal.entity()
-	require.NoError(t, err)
+	oexperience := einternal.entity()
 	eorder.OrderExperience = *oexperience
 
 	type args struct {
@@ -2464,7 +2462,7 @@ func testOrderExperience(orderID string, experienceID int64, now time.Time) *int
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
-	internal, _ := newInternalOrderExperience(experience)
+	internal := newInternalOrderExperience(experience)
 	return internal
 }
 

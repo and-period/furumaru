@@ -2,7 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -10,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -99,10 +97,7 @@ func (p *product) List(ctx context.Context, params *database.ListProductsParams,
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	products, err := internal.entities()
-	if err != nil {
-		return nil, dbError(err)
-	}
+	products := internal.entities()
 
 	if err := p.fill(ctx, p.db.DB, products...); err != nil {
 		return nil, dbError(err)
@@ -162,10 +157,7 @@ func (p *product) Create(ctx context.Context, product *entity.Product) error {
 		product.CreatedAt, product.UpdatedAt = now, now
 		product.ProductRevision.CreatedAt, product.ProductRevision.UpdatedAt = now, now
 
-		internal, err := newInternalProduct(product)
-		if err != nil {
-			return err
-		}
+		internal := newInternalProduct(product)
 
 		if err := tx.WithContext(ctx).Table(productTable).Create(&internal).Error; err != nil {
 			return err
@@ -185,26 +177,13 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 	revision := entity.NewProductRevision(rparams)
 
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		tagIDs, err := json.Marshal(params.TagIDs)
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
-		media, err := params.Media.Marshal()
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
-		points, err := json.Marshal(params.RecommendedPoints)
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
-
 		updates := map[string]interface{}{
 			"product_type_id":     params.TypeID,
-			"product_tag_ids":     datatypes.JSON(tagIDs),
+			"product_tag_ids":     mysql.NewJSONColumn(params.TagIDs),
 			"name":                params.Name,
 			"description":         params.Description,
 			"media":               nil,
-			"recommended_points":  datatypes.JSON(points),
+			"recommended_points":  mysql.NewJSONColumn(params.RecommendedPoints),
 			"scope":               params.Scope,
 			"inventory":           params.Inventory,
 			"weight":              params.Weight,
@@ -225,7 +204,7 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"updated_at":          p.now(),
 		}
 		if len(params.Media) > 0 {
-			updates["media"] = datatypes.JSON(media)
+			updates["media"] = mysql.NewJSONColumn(params.Media)
 		}
 
 		stmt := tx.WithContext(ctx).Table(productTable).Where("id = ?", productID)
@@ -291,10 +270,7 @@ func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, err
 	}
-	products, err := internal.entities()
-	if err != nil {
-		return nil, err
-	}
+	products := internal.entities()
 
 	if err := p.fill(ctx, tx, products...); err != nil {
 		return nil, err
@@ -310,10 +286,7 @@ func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields
 	if err := stmt.First(&internal).Error; err != nil {
 		return nil, err
 	}
-	product, err := internal.entity()
-	if err != nil {
-		return nil, err
-	}
+	product := internal.entity()
 
 	if err := p.fill(ctx, tx, product); err != nil {
 		return nil, err
@@ -348,92 +321,36 @@ func (p *product) fill(ctx context.Context, tx *gorm.DB, products ...*entity.Pro
 
 type internalProduct struct {
 	entity.Product        `gorm:"embedded"`
-	TagIDsJSON            datatypes.JSON `gorm:"default:null;column:product_tag_ids"`    // 商品タグID一覧(JSON)
-	MediaJSON             datatypes.JSON `gorm:"default:null;column:media"`              // メディア一覧(JSON)
-	RecommendedPointsJSON datatypes.JSON `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
+	TagIDsJSON            mysql.JSONColumn[[]string]                  `gorm:"default:null;column:product_tag_ids"`    // 商品タグID一覧(JSON)
+	MediaJSON             mysql.JSONColumn[entity.MultiProductMedia]  `gorm:"default:null;column:media"`              // メディア一覧(JSON)
+	RecommendedPointsJSON mysql.JSONColumn[[]string]                  `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 }
 
 type internalProducts []*internalProduct
 
-func newInternalProduct(product *entity.Product) (*internalProduct, error) {
-	tagIDs, err := json.Marshal(product.TagIDs)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal tag ids: %w", err)
-	}
-	media, err := product.Media.Marshal()
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal media: %w", err)
-	}
-	points, err := json.Marshal(product.RecommendedPoints)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal recommended points: %w", err)
-	}
-	internal := &internalProduct{
+func newInternalProduct(product *entity.Product) *internalProduct {
+	return &internalProduct{
 		Product:               *product,
-		TagIDsJSON:            tagIDs,
-		MediaJSON:             media,
-		RecommendedPointsJSON: points,
+		TagIDsJSON:            mysql.NewJSONColumn(product.TagIDs),
+		MediaJSON:             mysql.NewJSONColumn(product.Media),
+		RecommendedPointsJSON: mysql.NewJSONColumn(product.RecommendedPoints),
 	}
-	return internal, nil
 }
 
-func (p *internalProduct) entity() (*entity.Product, error) {
-	if err := p.unmarshalTagIDs(); err != nil {
-		return nil, err
-	}
-	if err := p.unmarshalMedia(); err != nil {
-		return nil, err
-	}
-	if err := p.unmarshalRecommendedPoints(); err != nil {
-		return nil, err
-	}
-	return &p.Product, nil
+func (p *internalProduct) entity() *entity.Product {
+	e := p.Product
+	e.TagIDs = p.TagIDsJSON.Val
+	e.Media = p.MediaJSON.Val
+	e.RecommendedPoints = p.RecommendedPointsJSON.Val
+	return &e
 }
 
-func (p *internalProduct) unmarshalTagIDs() error {
-	if p == nil || p.TagIDsJSON == nil {
-		return nil
-	}
-	var tagIDs []string
-	if err := json.Unmarshal(p.TagIDsJSON, &tagIDs); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal tag ids: %w", err)
-	}
-	p.TagIDs = tagIDs
-	return nil
-}
 
-func (p *internalProduct) unmarshalMedia() error {
-	if p == nil || p.MediaJSON == nil {
-		return nil
-	}
-	var media entity.MultiProductMedia
-	if err := json.Unmarshal(p.MediaJSON, &media); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal media: %w", err)
-	}
-	p.Media = media
-	return nil
-}
 
-func (p *internalProduct) unmarshalRecommendedPoints() error {
-	if p == nil || p.RecommendedPointsJSON == nil {
-		return nil
-	}
-	var points []string
-	if err := json.Unmarshal(p.RecommendedPointsJSON, &points); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal recommended points: %w", err)
-	}
-	p.RecommendedPoints = points
-	return nil
-}
-
-func (ps internalProducts) entities() (entity.Products, error) {
+func (ps internalProducts) entities() entity.Products {
 	res := make(entity.Products, len(ps))
 	for i := range ps {
-		p, err := ps[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = p
+		res[i] = ps[i].entity()
 	}
-	return res, nil
+	return res
 }

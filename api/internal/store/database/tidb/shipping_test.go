@@ -36,8 +36,7 @@ func TestShipping_List(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
-		require.NoError(t, err)
+		internal := newInternalShippingRevision(&shippings[i].ShippingRevision)
 		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
@@ -107,8 +106,7 @@ func TestShipping_ListByShopIDs(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
-		require.NoError(t, err)
+		internal := newInternalShippingRevision(&shippings[i].ShippingRevision)
 		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
@@ -173,8 +171,7 @@ func TestShipping_MultiGet(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
-		require.NoError(t, err)
+		internal := newInternalShippingRevision(&shippings[i].ShippingRevision)
 		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
@@ -237,8 +234,7 @@ func TestShipping_MultiGetByRevision(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
-		require.NoError(t, err)
+		internal := newInternalShippingRevision(&shippings[i].ShippingRevision)
 		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
@@ -299,8 +295,7 @@ func TestShipping_Get(t *testing.T) {
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
-	internal, err := newInternalShippingRevision(&s.ShippingRevision)
-	require.NoError(t, err)
+	internal := newInternalShippingRevision(&s.ShippingRevision)
 	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -369,8 +364,7 @@ func TestShipping_GetDefault(t *testing.T) {
 	s := testShipping(entity.DefaultShippingID, "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
-	internal, err := newInternalShippingRevision(&s.ShippingRevision)
-	require.NoError(t, err)
+	internal := newInternalShippingRevision(&s.ShippingRevision)
 	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -428,8 +422,7 @@ func TestShipping_GetByShopID(t *testing.T) {
 	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
-	internal, err := newInternalShippingRevision(&s.ShippingRevision)
-	require.NoError(t, err)
+	internal := newInternalShippingRevision(&s.ShippingRevision)
 	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -501,8 +494,7 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
-	internal, err := newInternalShippingRevision(&s.ShippingRevision)
-	require.NoError(t, err)
+	internal := newInternalShippingRevision(&s.ShippingRevision)
 	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -598,8 +590,7 @@ func TestShipping_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -657,8 +648,7 @@ func TestShipping_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -739,8 +729,7 @@ func TestShipping_UpdateInUse(t *testing.T) {
 				s.InUse = false
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -759,8 +748,7 @@ func TestShipping_UpdateInUse(t *testing.T) {
 				s.InUse = true
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -778,8 +766,7 @@ func TestShipping_UpdateInUse(t *testing.T) {
 				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -838,8 +825,7 @@ func TestShipping_Delete(t *testing.T) {
 				s.InUse = false
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				internal, err := newInternalShippingRevision(&s.ShippingRevision)
-				require.NoError(t, err)
+				internal := newInternalShippingRevision(&s.ShippingRevision)
 				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -904,7 +890,7 @@ func TestShipping_Delete(t *testing.T) {
 
 func testShipping(shippingID, shopID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
 	internal := testShippingRevision(revisionID, shippingID, now)
-	revision, _ := internal.entity()
+	revision := internal.entity()
 	return &entity.Shipping{
 		ID:               shippingID,
 		ShopID:           shopID,
@@ -950,6 +936,6 @@ func testShippingRevision(revisionID int64, shippingID string, now time.Time) *i
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
-	internal, _ := newInternalShippingRevision(revision)
+	internal := newInternalShippingRevision(revision)
 	return internal
 }

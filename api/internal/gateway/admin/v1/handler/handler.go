@@ -34,7 +34,7 @@ import (
 const (
 	sessionKey            = "session_id"
 	sessionTTL            = 24 * 60 * 60 // 1 day
-	defaultSyncInterval   = 5 * time.Minute
+	defaultSyncInterval   = 1 * time.Minute
 	defaultSyncMaxRetries = 3
 )
 

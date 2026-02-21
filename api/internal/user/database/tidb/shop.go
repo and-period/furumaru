@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -65,10 +64,7 @@ func (s *shop) List(ctx context.Context, params *database.ListShopsParams, field
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	shops, err := internal.entities()
-	if err != nil {
-		return nil, dbError(err)
-	}
+	shops := internal.entities()
 
 	if err := s.fill(ctx, s.db.DB, shops...); err != nil {
 		return nil, dbError(err)
@@ -91,10 +87,7 @@ func (s *shop) MultiGet(ctx context.Context, shopIDs []string, fields ...string)
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	shops, err := internal.entities()
-	if err != nil {
-		return nil, dbError(err)
-	}
+	shops := internal.entities()
 
 	if err := s.fill(ctx, s.db.DB, shops...); err != nil {
 		return nil, dbError(err)
@@ -116,10 +109,7 @@ func (s *shop) GetByCoordinatorID(ctx context.Context, coordinatorID string, fie
 	if err := stmt.First(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	shop, err := internal.entity()
-	if err != nil {
-		return nil, dbError(err)
-	}
+	shop := internal.entity()
 
 	if err := s.fill(ctx, s.db.DB, shop); err != nil {
 		return nil, dbError(err)
@@ -217,10 +207,7 @@ func (s *shop) get(ctx context.Context, tx *gorm.DB, shopID string, fields ...st
 	if err := stmt.First(&internal).Error; err != nil {
 		return nil, err
 	}
-	shop, err := internal.entity()
-	if err != nil {
-		return nil, err
-	}
+	shop := internal.entity()
 
 	if err := s.fill(ctx, tx, shop); err != nil {
 		return nil, err
@@ -250,22 +237,14 @@ func (s *shop) fill(ctx context.Context, tx *gorm.DB, shops ...*entity.Shop) err
 
 type internalShop struct {
 	entity.Shop        `gorm:"embedded"`
-	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い商品種別ID一覧
-	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
+	ProductTypeIDsJSON mysql.JSONColumn[[]string]       `gorm:"default:null;column:product_type_ids"` // 取り扱い商品種別ID一覧
+	BusinessDaysJSON   mysql.JSONColumn[[]time.Weekday] `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
 }
 
 type internalShops []*internalShop
 
-func newInternalShop(shop *entity.Shop) (*internalShop, error) {
-	productTypeIDs, err := json.Marshal(shop.ProductTypeIDs)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal product type ids: %w", err)
-	}
-	businessDays, err := json.Marshal(shop.BusinessDays)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal business days: %w", err)
-	}
-	internal := &internalShop{
+func newInternalShop(shop *entity.Shop) *internalShop {
+	return &internalShop{
 		Shop: entity.Shop{
 			ID:            shop.ID,
 			CoordinatorID: shop.CoordinatorID,
@@ -275,54 +254,21 @@ func newInternalShop(shop *entity.Shop) (*internalShop, error) {
 			UpdatedAt:     shop.UpdatedAt,
 			DeletedAt:     shop.DeletedAt,
 		},
-		ProductTypeIDsJSON: productTypeIDs,
-		BusinessDaysJSON:   businessDays,
+		ProductTypeIDsJSON: mysql.NewJSONColumn(shop.ProductTypeIDs),
+		BusinessDaysJSON:   mysql.NewJSONColumn(shop.BusinessDays),
 	}
-	return internal, nil
 }
 
-func (s *internalShop) entity() (*entity.Shop, error) {
-	if err := s.unmarshalProductTypeIDs(); err != nil {
-		return nil, err
-	}
-	if err := s.unmarshalBusinessDays(); err != nil {
-		return nil, err
-	}
-	return &s.Shop, nil
+func (s *internalShop) entity() *entity.Shop {
+	s.Shop.ProductTypeIDs = s.ProductTypeIDsJSON.Val
+	s.Shop.BusinessDays = s.BusinessDaysJSON.Val
+	return &s.Shop
 }
 
-func (s *internalShop) unmarshalProductTypeIDs() error {
-	if s == nil || s.ProductTypeIDsJSON == nil {
-		return nil
-	}
-	var productTypeIDs []string
-	if err := json.Unmarshal(s.ProductTypeIDsJSON, &productTypeIDs); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal product type ids: %w", err)
-	}
-	s.ProductTypeIDs = productTypeIDs
-	return nil
-}
-
-func (s *internalShop) unmarshalBusinessDays() error {
-	if s == nil || s.BusinessDaysJSON == nil {
-		return nil
-	}
-	var businessDays []time.Weekday
-	if err := json.Unmarshal(s.BusinessDaysJSON, &businessDays); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal business days: %w", err)
-	}
-	s.BusinessDays = businessDays
-	return nil
-}
-
-func (ss internalShops) entities() (entity.Shops, error) {
+func (ss internalShops) entities() entity.Shops {
 	res := make(entity.Shops, len(ss))
 	for i := range ss {
-		s, err := ss[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = s
+		res[i] = ss[i].entity()
 	}
-	return res, nil
+	return res
 }
