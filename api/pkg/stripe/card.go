@@ -3,7 +3,7 @@ package stripe
 import (
 	"context"
 
-	"github.com/stripe/stripe-go/v73"
+	"github.com/stripe/stripe-go/v82"
 )
 
 // reference: https://stripe.com/docs/api/payment_methods/customer_list

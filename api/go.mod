@@ -51,7 +51,7 @@ require (
 	github.com/slack-go/slack v0.17.3
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
-	github.com/stripe/stripe-go/v73 v73.16.0
+	github.com/stripe/stripe-go/v82 v82.5.1
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.46.0
