@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -73,10 +72,7 @@ func (n *notification) List(
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	notifications, err := internal.entities()
-	if err != nil {
-		return nil, dbError(err)
-	}
+	notifications := internal.entities()
 
 	notifications.Fill(n.now())
 	return notifications, nil
@@ -100,12 +96,9 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 	now := n.now()
 	notification.CreatedAt, notification.UpdatedAt = now, now
 
-	internal, err := newInternalNotification(notification)
-	if err != nil {
-		return dbError(err)
-	}
+	internal := newInternalNotification(notification)
 
-	err = n.db.DB.WithContext(ctx).Table(notificationTable).Create(&internal).Error
+	err := n.db.DB.WithContext(ctx).Table(notificationTable).Create(&internal).Error
 	return dbError(err)
 }
 
@@ -166,61 +159,35 @@ func (n *notification) get(
 	if err := stmt.First(&internal).Error; err != nil {
 		return nil, err
 	}
-	notification, err := internal.entity()
-	if err != nil {
-		return nil, err
-	}
 
+	notification := internal.entity()
 	notification.Fill(n.now())
 	return notification, nil
 }
 
 type internalNotification struct {
 	entity.Notification `gorm:"embedded"`
-	TargetsJSON         datatypes.JSON `gorm:"default:null;column:targets"` // お知らせ通知先一覧(JSON)
+	TargetsJSON         mysql.JSONColumn[[]entity.NotificationTarget] `gorm:"default:null;column:targets"` // お知らせ通知先一覧(JSON)
 }
 
 type internalNotifications []*internalNotification
 
-func newInternalNotification(notification *entity.Notification) (*internalNotification, error) {
-	targets, err := json.Marshal(notification.Targets)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal notification targets: %w", err)
-	}
-	internal := &internalNotification{
+func newInternalNotification(notification *entity.Notification) *internalNotification {
+	return &internalNotification{
 		Notification: *notification,
-		TargetsJSON:  targets,
+		TargetsJSON:  mysql.NewJSONColumn(notification.Targets),
 	}
-	return internal, nil
 }
 
-func (n *internalNotification) entity() (*entity.Notification, error) {
-	if err := n.unmarshalTargets(); err != nil {
-		return nil, err
-	}
-	return &n.Notification, nil
+func (n *internalNotification) entity() *entity.Notification {
+	n.Notification.Targets = n.TargetsJSON.Val
+	return &n.Notification
 }
 
-func (n *internalNotification) unmarshalTargets() error {
-	if n == nil || n.TargetsJSON == nil {
-		return nil
-	}
-	var targets []entity.NotificationTarget
-	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal notification targets: %w", err)
-	}
-	n.Targets = targets
-	return nil
-}
-
-func (ns internalNotifications) entities() (entity.Notifications, error) {
+func (ns internalNotifications) entities() entity.Notifications {
 	res := make(entity.Notifications, len(ns))
 	for i := range ns {
-		n, err := ns[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = n
+		res[i] = ns[i].entity()
 	}
-	return res, nil
+	return res
 }
