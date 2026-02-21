@@ -2,6 +2,7 @@ package entity
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"text/template"
 	"time"
@@ -21,7 +22,7 @@ func (t *ReportTemplate) Build(fields map[string]string) (messaging_api.FlexCont
 	text := template.Must(template.New("report").Parse(t.Template))
 	var buf bytes.Buffer
 	if err := text.Execute(io.Writer(&buf), fields); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("entity: failed to execute report template: %w", err)
 	}
 	return messaging_api.UnmarshalFlexContainer(buf.Bytes())
 }

@@ -21,18 +21,6 @@ func TestSendReport(t *testing.T) {
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
-	_ = messaging_api.FlexBubble{
-		FlexContainer: messaging_api.FlexContainer{Type: "bubble"},
-		Body: &messaging_api.FlexBox{
-			FlexComponent: messaging_api.FlexComponent{Type: "box"},
-			Contents: []messaging_api.FlexComponentInterface{
-				&messaging_api.FlexText{
-					FlexComponent: messaging_api.FlexComponent{Type: "text"},
-					Text:          "お問い合わせ件名",
-				},
-			},
-		},
-	}
 
 	tests := []struct {
 		name      string

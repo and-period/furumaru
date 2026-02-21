@@ -23,7 +23,7 @@ var (
 	ErrAlreadyExists     = errors.New("line: already exists")
 	ErrResourceExhausted = errors.New("line: resource exhausted")
 	ErrInternal          = errors.New("line: internal")
-	ErrCanceled          = errors.New("cognito: canceled")
+	ErrCanceled          = errors.New("line: canceled")
 	ErrUnavailable       = errors.New("line: unavailable")
 	ErrTimeout           = errors.New("line: timeout")
 	ErrUnknown           = errors.New("line: unknown")
@@ -66,16 +66,16 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 	}, nil
 }
 
-func (c *client) PushMessage(_ context.Context, messages ...messaging_api.MessageInterface) error {
+func (c *client) PushMessage(ctx context.Context, messages ...messaging_api.MessageInterface) error {
 	req := &messaging_api.PushMessageRequest{
 		To:       c.roomID,
 		Messages: messages,
 	}
-	_, err := c.api.PushMessage(req, "")
-	return c.apiError(err)
+	resp, _, err := c.api.WithContext(ctx).PushMessageWithHttpInfo(req, "")
+	return c.apiError(err, resp)
 }
 
-func (c *client) apiError(e error) error {
+func (c *client) apiError(e error, resp *http.Response) error {
 	if e == nil {
 		return nil
 	}
@@ -88,10 +88,8 @@ func (c *client) apiError(e error) error {
 		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	}
 
-	// v8 SDK returns standard HTTP errors; attempt to extract status code
-	var httpErr interface{ StatusCode() int }
-	if errors.As(e, &httpErr) {
-		return c.mapStatusCode(httpErr.StatusCode(), e)
+	if resp != nil {
+		return c.mapStatusCode(resp.StatusCode, e)
 	}
 
 	return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
