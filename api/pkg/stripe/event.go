@@ -7,7 +7,9 @@ import (
 
 // reference: https://stripe.com/docs/webhooks
 func (r *receiver) Receive(payload []byte, signature string) (*stripe.Event, error) {
-	event, err := webhook.ConstructEvent(payload, signature, r.webhookKey)
+	event, err := webhook.ConstructEventWithOptions(payload, signature, r.webhookKey, webhook.ConstructEventOptions{
+		IgnoreAPIVersionMismatch: true,
+	})
 	if err != nil {
 		return nil, err
 	}
