@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 

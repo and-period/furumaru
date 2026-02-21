@@ -33,7 +33,6 @@ require (
 	github.com/go-playground/validator/v10 v10.28.0
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/golang-jwt/jwt/v5 v5.3.0
-	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
@@ -217,6 +216,7 @@ require (
 	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/gohugoio/hugo v0.150.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golangci/asciicheck v0.5.0 // indirect
 	github.com/golangci/dupl v0.0.0-20250308024227-f665c8d69b32 // indirect
