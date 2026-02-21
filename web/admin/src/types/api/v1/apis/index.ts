@@ -20,6 +20,7 @@ export * from './PaymentSystemApi';
 export * from './PostalCodeApi';
 export * from './ProducerApi';
 export * from './ProductApi';
+export * from './ProductReviewApi';
 export * from './ProductTagApi';
 export * from './ProductTypeApi';
 export * from './PromotionApi';

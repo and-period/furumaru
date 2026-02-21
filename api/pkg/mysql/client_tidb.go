@@ -14,10 +14,15 @@ func NewTiDBClient(params *Params, opts ...Option) (*Client, error) {
 	options := &options{
 		now:              time.Now,
 		location:         time.UTC,
-		maxAllowedPacket: 4194304, // 4MiB
+		maxAllowedPacket: 4194304,        // 4MiB
 		maxRetries:       3,
+		maxOpenConns:     50,
+		maxIdleConns:     50,
 		maxConnLifetime:  5 * time.Minute,
 		maxConnIdleTime:  5 * time.Minute,
+		dialTimeout:      10 * time.Second,
+		readTimeout:      30 * time.Second,
+		writeTimeout:     30 * time.Second,
 	}
 	for _, opt := range opts {
 		opt(options)
@@ -31,6 +36,8 @@ func NewTiDBClient(params *Params, opts ...Option) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	sql.SetMaxOpenConns(options.maxOpenConns)
+	sql.SetMaxIdleConns(options.maxIdleConns)
 	sql.SetConnMaxLifetime(options.maxConnLifetime)
 	sql.SetConnMaxIdleTime(options.maxConnIdleTime)
 
@@ -68,7 +75,11 @@ func newTiDBDSN(params *Params, opts *options) string {
 		ParseTime:            true,
 		CheckConnLiveness:    true,
 		AllowNativePasswords: true,
+		InterpolateParams:    true,
 		TLSConfig:            "tidb",
+		Timeout:              opts.dialTimeout,
+		ReadTimeout:          opts.readTimeout,
+		WriteTimeout:         opts.writeTimeout,
 	}
 	return dsn.FormatDSN()
 }

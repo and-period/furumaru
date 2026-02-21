@@ -64,6 +64,12 @@ export interface CheckoutExperienceRequest {
      */
     juniorHighSchoolCount: number;
     /**
+     * 要望・質問など自由入力
+     * @type {string}
+     * @memberof CheckoutExperienceRequest
+     */
+    orderRequest: string;
+    /**
      * 支払い方法
      * @type {number}
      * @memberof CheckoutExperienceRequest
@@ -129,6 +135,7 @@ export function instanceOfCheckoutExperienceRequest(value: object): value is Che
     if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     if (!('elementarySchoolCount' in value) || value['elementarySchoolCount'] === undefined) return false;
     if (!('juniorHighSchoolCount' in value) || value['juniorHighSchoolCount'] === undefined) return false;
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
     if (!('preschoolCount' in value) || value['preschoolCount'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
@@ -157,6 +164,7 @@ export function CheckoutExperienceRequestFromJSONTyped(json: any, ignoreDiscrimi
         'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
         'elementarySchoolCount': json['elementarySchoolCount'],
         'juniorHighSchoolCount': json['juniorHighSchoolCount'],
+        'orderRequest': json['orderRequest'],
         'paymentMethod': json['paymentMethod'],
         'preschoolCount': json['preschoolCount'],
         'promotionCode': json['promotionCode'],
@@ -186,6 +194,7 @@ export function CheckoutExperienceRequestToJSONTyped(value?: CheckoutExperienceR
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
         'elementarySchoolCount': value['elementarySchoolCount'],
         'juniorHighSchoolCount': value['juniorHighSchoolCount'],
+        'orderRequest': value['orderRequest'],
         'paymentMethod': value['paymentMethod'],
         'preschoolCount': value['preschoolCount'],
         'promotionCode': value['promotionCode'],

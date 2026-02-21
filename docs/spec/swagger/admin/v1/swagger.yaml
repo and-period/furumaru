@@ -321,6 +321,26 @@ components:
         - productTypes
         - shops
         - total
+    CreateProductReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          maxLength: 2000
+          type: string
+        rate:
+          description: 評価
+          maximum: 5
+          minimum: 1
+          type: integer
+        title:
+          description: タイトル
+          maxLength: 64
+          type: string
+      required:
+        - comment
+        - title
+        - rate
+      type: object
     CreateSpotRequest:
       properties:
         description:
@@ -1770,6 +1790,81 @@ components:
         - product
         - productTags
         - productType
+    ProductReview:
+      description: 商品レビュー
+      properties:
+        accountId:
+          description: アカウントID
+          type: string
+        comment:
+          description: コメント
+          type: string
+        dislikeTotal:
+          description: いまいち数
+          type: integer
+        id:
+          description: 商品レビューID
+          type: string
+        likeTotal:
+          description: いいね数
+          type: integer
+        productId:
+          description: 商品ID
+          type: string
+        publishedAt:
+          description: 投稿日時
+          type: integer
+        rate:
+          description: 評価
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+        username:
+          description: ユーザー名
+          type: string
+      type: object
+      required:
+        - accountId
+        - comment
+        - dislikeTotal
+        - id
+        - likeTotal
+        - productId
+        - publishedAt
+        - rate
+        - thumbnailUrl
+        - title
+        - userId
+        - username
+    ProductReviewResponse:
+      properties:
+        review:
+          $ref: '#/components/schemas/ProductReview'
+      type: object
+      required:
+        - review
+    ProductReviewsResponse:
+      properties:
+        nextToken:
+          description: 次の取得開始位置
+          type: string
+        reviews:
+          description: 商品レビュー一覧
+          items:
+            $ref: '#/components/schemas/ProductReview'
+          type: array
+          uniqueItems: false
+      type: object
+      required:
+        - nextToken
+        - reviews
     ProductStatus:
       description: 販売状況
       type: integer
@@ -4978,6 +5073,9 @@ components:
     OrderMetadata:
       description: 注文付加情報
       properties:
+        orderRequest:
+          description: 要望・質問など自由入力
+          type: string
         pickupAt:
           description: 受け取り日時
           type: integer
@@ -4986,6 +5084,7 @@ components:
           type: string
       type: object
       required:
+        - orderRequest
         - pickupAt
         - pickupLocation
     ProductScope:
@@ -6932,6 +7031,76 @@ info:
   version: ""
 openapi: 3.1.0
 paths:
+  /products/{productId}/reviews:
+    get:
+      description: 指定した商品のレビュー一覧を取得します。
+      parameters:
+        - description: 商品ID
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+        - description: 取得件数
+          in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - description: 取得開始位置
+          in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReviewsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: バリデーションエラー
+      summary: 商品レビュー一覧取得
+      tags:
+        - ProductReview
+  /products/{productId}/reviews/{reviewId}:
+    get:
+      description: 商品レビューの詳細情報を取得します。
+      parameters:
+        - description: 商品ID
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+        - description: レビューID
+          in: path
+          name: reviewId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReviewResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: レビューが見つからない
+      summary: 商品レビュー詳細取得
+      tags:
+        - ProductReview
   /v1/administrators:
     get:
       description: システム管理者の一覧を取得します。
@@ -10515,6 +10684,44 @@ paths:
       summary: 商品更新
       tags:
         - Product
+  /v1/products/{productId}/reviews:
+    post:
+      description: ダミーの商品レビューを作成します。
+      parameters:
+        - description: 商品ID
+          example: '"product_12345678"'
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductReviewRequest'
+        description: 商品レビュー作成リクエスト
+        required: true
+      responses:
+        "204":
+          description: 作成成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: リクエスト不正
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品が存在しない
+      security:
+        - bearerauth: []
+      summary: ダミー商品レビュー作成
+      tags:
+        - ProductReview
   /v1/promotions:
     get:
       description: プロモーションの一覧を取得します。ページネーション、ショップ・タイトルでのフィルタリング、ソート機能に対応しています。

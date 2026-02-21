@@ -4,8 +4,8 @@ interface Props {
   title: string | undefined
   imgSrc: string | undefined
   width: number | undefined
-  endAt: number
   archivedStreamText: string
+  endAt?: number
 }
 
 defineProps<Props>()
@@ -23,7 +23,7 @@ const handleClick = () => {
 
 <template>
   <div
-    class="w-full text-main"
+    class="w-full text-main rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-white"
     @click="handleClick"
   >
     <div class="w-full">
@@ -36,8 +36,8 @@ const handleClick = () => {
         height="208px"
       />
     </div>
-    <div class="mt-2 flex w-full flex-col gap-2">
-      <p class="line-clamp-3 break-words text-[14px] md:text-[16px] pl-2 pb-2">
+    <div class="mt-2 flex w-full flex-col gap-2 p-3">
+      <p class="line-clamp-3 break-words text-[14px] md:text-[16px]">
         {{ title }}
       </p>
     </div>

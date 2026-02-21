@@ -337,6 +337,8 @@ type UpdateFacilityUserInput struct {
 /**
  * Guest - ゲスト
  */
+type GetDummyGuestInput struct{}
+
 type UpsertGuestInput struct {
 	Lastname      string `validate:"required,max=16"`
 	Firstname     string `validate:"required,max=16"`

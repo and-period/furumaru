@@ -7,6 +7,10 @@ const { isLoading, error, profile, phoneNumber, lastCheckInAt } = storeToRefs(us
 
 const route = useRoute();
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
+
+onMounted(() => {
+  userStore.fetchMe(facilityId.value);
+});
 </script>
 
 <template>

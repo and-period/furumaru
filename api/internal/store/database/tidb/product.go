@@ -200,11 +200,11 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 
 		updates := map[string]interface{}{
 			"product_type_id":     params.TypeID,
-			"product_tag_ids":     tagIDs,
+			"product_tag_ids":     datatypes.JSON(tagIDs),
 			"name":                params.Name,
 			"description":         params.Description,
 			"media":               nil,
-			"recommended_points":  points,
+			"recommended_points":  datatypes.JSON(points),
 			"scope":               params.Scope,
 			"inventory":           params.Inventory,
 			"weight":              params.Weight,
@@ -225,7 +225,7 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"updated_at":          p.now(),
 		}
 		if len(params.Media) > 0 {
-			updates["media"] = media
+			updates["media"] = datatypes.JSON(media)
 		}
 
 		stmt := tx.WithContext(ctx).Table(productTable).Where("id = ?", productID)

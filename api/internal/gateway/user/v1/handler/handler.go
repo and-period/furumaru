@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -348,9 +349,17 @@ func (h *handler) getSessionID(ctx *gin.Context) string {
 	if err == nil && sessionID != "" {
 		return sessionID
 	}
+
+	sameSite := http.SameSiteNoneMode
+
+	// 本番環境のみCookieのドメインを設定する
+	if strings.Contains(h.env, "prd") {
+		sameSite = http.SameSiteLaxMode
+	}
+
 	// セッションIDが取得できない場合、新規IDを生成してCookieへ保存する
 	sessionID = h.generateID()
-	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetSameSite(sameSite)
 	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", h.cookieBaseDomain, true, true)
 	return sessionID
 }

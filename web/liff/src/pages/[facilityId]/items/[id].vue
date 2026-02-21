@@ -19,6 +19,47 @@ const product = computed(() => {
   return productStore.getProductById(productId);
 });
 
+const isProductLoading = ref(true);
+const productFetchError = ref<string | null>(null);
+
+const loadProductDetail = async () => {
+  if (!facilityId.value || !productId) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: '商品が見つかりません',
+    });
+  }
+
+  isProductLoading.value = true;
+  productFetchError.value = null;
+
+  try {
+    await productStore.fetchFacilityProductDetail(facilityId.value, productId);
+
+    if (!product.value) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: '商品が見つかりません',
+      });
+    }
+  }
+  catch (e) {
+    console.error('Failed to fetch product detail', e);
+    if (e instanceof ResponseError && e.response.status === 404) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: '商品が見つかりません',
+      });
+    }
+    productFetchError.value = '商品情報の取得に失敗しました。時間をおいて再度お試しください。';
+  }
+  finally {
+    isProductLoading.value = false;
+  }
+};
+
+await loadProductDetail();
+
 // Transform product data for FmProductDetail component
 const mediaFiles = computed(() => {
   if (!product.value?.media) return [];
@@ -61,14 +102,6 @@ const rating = computed(() => {
     detail: product.value.rate.detail,
   };
 });
-
-// Handle case where product is not found
-if (!product.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: '商品が見つかりません',
-  });
-}
 </script>
 
 <template>
@@ -100,8 +133,20 @@ if (!product.value) {
 
     <!-- Product detail content -->
     <div class="px-4 py-6">
+      <div
+        v-if="isProductLoading"
+        class="text-center text-gray-500 py-10"
+      >
+        商品情報を読み込み中です...
+      </div>
+      <div
+        v-else-if="productFetchError"
+        class="text-center text-red-600 bg-red-50 border border-red-200 rounded px-4 py-6"
+      >
+        {{ productFetchError }}
+      </div>
       <fm-product-detail
-        v-if="product"
+        v-else-if="product"
         :media-files="mediaFiles"
         :name="product.name"
         :description="product.description"
@@ -120,7 +165,7 @@ if (!product.value) {
 
     <!-- Price and purchase section for mobile -->
     <div
-      v-if="product"
+      v-if="product && !isProductLoading && !productFetchError"
       class="fixed bottom-[56px] bg-white border-t border-gray-200 p-4 w-full"
     >
       <div class="flex items-center justify-between mb-4">

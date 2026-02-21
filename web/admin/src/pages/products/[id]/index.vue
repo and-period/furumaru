@@ -13,7 +13,7 @@ import {
 } from '~/store'
 import { Prefecture } from '~/types'
 import { DeliveryType, ProductScope, StorageMethodType } from '~/types/api/v1'
-import type { UpdateProductRequest, CreateProductMedia } from '~/types/api/v1'
+import type { UpdateProductRequest, CreateProductMedia, CreateProductReviewRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -36,7 +36,14 @@ const { product } = storeToRefs(productStore)
 const productId = route.params.id as string
 
 const loading = ref<boolean>(false)
+const reviewLoading = ref<boolean>(false)
+const currentTab = ref<number>(0)
 const selectedCategoryId = ref<string>()
+const reviewFormData = ref<CreateProductReviewRequest>({
+  title: '',
+  comment: '',
+  rate: 5,
+})
 const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
@@ -203,6 +210,37 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
+const handleSubmitReview = async (): Promise<void> => {
+  try {
+    reviewLoading.value = true
+    await productStore.createProductReview(productId, reviewFormData.value)
+    commonStore.addSnackbar({
+      color: 'success',
+      message: 'ダミーレビューを投稿しました。',
+    })
+    // フォームをリセット
+    reviewFormData.value = {
+      title: '',
+      comment: '',
+      rate: 5,
+    }
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+  finally {
+    reviewLoading.value = false
+  }
+}
+
 try {
   await fetchState.execute()
 }
@@ -215,8 +253,11 @@ catch (err) {
   <templates-product-edit
     ref="productEditRef"
     v-model:form-data="formData"
+    v-model:review-form-data="reviewFormData"
     v-model:selected-category-id="selectedCategoryId"
+    v-model:current-tab="currentTab"
     :loading="isLoading()"
+    :review-loading="reviewLoading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
@@ -232,5 +273,6 @@ catch (err) {
     @update:search-product-type="handleSearchProductType"
     @update:search-product-tag="handleSearchProductTag"
     @submit="handleSubmit"
+    @submit:review="handleSubmitReview"
   />
 </template>

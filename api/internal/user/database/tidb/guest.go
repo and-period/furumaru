@@ -26,6 +26,21 @@ func NewGuest(db *mysql.Client) database.Guest {
 	}
 }
 
+func (g *guest) GetDummy(ctx context.Context, fields ...string) (*entity.Guest, error) {
+	var guest *entity.Guest
+
+	stmt := g.db.Statement(ctx, g.db.DB, guestTable, fields...).
+		Joins("INNER JOIN users ON guests.user_id = users.id").
+		Where("email LIKE ?", "%@example.com").
+		Where("users.deleted_at IS NULL").
+		Order("RAND()")
+
+	if err := stmt.First(&guest).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return guest, nil
+}
+
 func (g *guest) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error) {
 	var guest *entity.Guest
 

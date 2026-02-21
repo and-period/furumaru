@@ -57,6 +57,7 @@ type Order struct {
 
 // OrderMetadata - 注文付加情報
 type OrderMetadata struct {
+	OrderRequest   string `json:"orderRequest"`   // 要望・質問など自由入力
 	PickupAt       int64  `json:"pickupAt"`       // 受け取り日時
 	PickupLocation string `json:"pickupLocation"` // 受け取り場所
 }
