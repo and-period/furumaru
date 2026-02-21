@@ -468,8 +468,7 @@ const calcStyle = (i: number) => {
         <v-divider />
         <v-list>
           <v-list-item
-            href="https://help.furumaru.jp"
-            target="_blank"
+            to="/help"
             :prepend-icon="mdiHelpCircleOutline"
             class="rounded-lg mx-2 my-1"
           >

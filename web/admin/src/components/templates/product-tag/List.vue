@@ -1,0 +1,336 @@
+<script lang="ts" setup>
+import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
+import type { VDataTable } from 'vuetify/components'
+import useVuelidate from '@vuelidate/core'
+
+import type { AlertType } from '~/lib/hooks'
+import { AdminType } from '~/types/api/v1'
+import type { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api/v1'
+import { getErrorMessage } from '~/lib/validations'
+import { CreateProductTagValidationRules, UpdateProductTagValidationRules } from '~/types/validations'
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.AdminTypeUnknown,
+  },
+  newDialog: {
+    type: Boolean,
+    default: false,
+  },
+  editDialog: {
+    type: Boolean,
+    default: false,
+  },
+  isAlert: {
+    type: Boolean,
+    default: false,
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined,
+  },
+  alertText: {
+    type: String,
+    default: '',
+  },
+  sortBy: {
+    type: Array as PropType<VDataTable['sortBy']>,
+    default: () => [],
+  },
+  tableItemsPerPage: {
+    type: Number,
+    default: 20,
+  },
+  tableItemsTotal: {
+    type: Number,
+    default: 0,
+  },
+  productTags: {
+    type: Array<ProductTag>,
+    default: () => [],
+  },
+  newFormData: {
+    type: Object as PropType<CreateProductTagRequest>,
+    default: (): CreateProductTagRequest => ({
+      name: '',
+    }),
+  },
+  editFormData: {
+    type: Object as PropType<UpdateProductTagRequest>,
+    default: (): UpdateProductTagRequest => ({
+      name: '',
+    }),
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'update:new-dialog', toggle: boolean): void
+  (e: 'update:edit-dialog', toggle: boolean): void
+  (e: 'update:new-form-data', formData: CreateProductTagRequest): void
+  (e: 'update:edit-form-data', formData: UpdateProductTagRequest): void
+  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
+  (e: 'submit:create'): void
+  (e: 'submit:update', productTagId: string): void
+  (e: 'submit:delete', productTagId: string): void
+}>()
+
+const headers: VDataTable['headers'] = [
+  {
+    title: '商品タグ',
+    key: 'name',
+  },
+  {
+    title: '',
+    key: 'actions',
+    width: 200,
+    align: 'end',
+    sortable: false,
+  },
+]
+
+const { dialogVisible, selectedItem, open: openDeleteDialog, close: closeDeleteDialog } = useDeleteDialog<ProductTag>()
+
+const newDialogValue = computed({
+  get: (): boolean => props.newDialog,
+  set: (toggle: boolean): void => emit('update:new-dialog', toggle),
+})
+const editDialogValue = computed({
+  get: (): boolean => props.editDialog,
+  set: (toggle: boolean): void => emit('update:edit-dialog', toggle),
+})
+const newFormDataValue = computed({
+  get: (): CreateProductTagRequest => props.newFormData,
+  set: (formData: CreateProductTagRequest): void => emit('update:new-form-data', formData),
+})
+const editFormDataValue = computed({
+  get: (): UpdateProductTagRequest => props.editFormData,
+  set: (formData: UpdateProductTagRequest): void => emit('update:edit-form-data', formData),
+})
+
+const newValidate = useVuelidate<CreateProductTagRequest>(CreateProductTagValidationRules, newFormDataValue)
+const editValidate = useVuelidate<UpdateProductTagRequest>(UpdateProductTagValidationRules, editFormDataValue)
+
+const isRegisterable = (): boolean => {
+  return props.adminType === AdminType.AdminTypeAdministrator
+}
+
+const isEditable = (): boolean => {
+  return props.adminType === AdminType.AdminTypeAdministrator
+}
+
+const onClickUpdatePage = (page: number): void => {
+  emit('click:update-page', page)
+}
+
+const onClickUpdateItemsPerPage = (page: number): void => {
+  emit('click:update-items-per-page', page)
+}
+
+const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
+  emit('update:sort-by', sortBy)
+}
+
+const onClickCloseNewDialog = (): void => {
+  newDialogValue.value = false
+}
+
+const onClickCloseEditDialog = (): void => {
+  editDialogValue.value = false
+}
+
+const onClickAdd = (): void => {
+  newDialogValue.value = true
+}
+
+const submitCreate = (): void => {
+  const valid = newValidate.value.$validate()
+  if (!valid) {
+    return
+  }
+
+  emit('submit:create')
+}
+
+const onClickEdit = (item: ProductTag): void => {
+  selectedItem.value = item
+  editDialogValue.value = true
+}
+
+const submitUpdate = (): void => {
+  const valid = editValidate.value.$validate()
+  if (!valid) {
+    return
+  }
+
+  emit('submit:update', selectedItem.value?.id || '')
+}
+
+const submitDelete = (): void => {
+  emit('submit:delete', selectedItem.value?.id || '')
+  closeDeleteDialog()
+}
+</script>
+
+<template>
+  <atoms-app-alert
+    :show="props.isAlert"
+    :type="props.alertType"
+    :text="props.alertText"
+  />
+
+  <v-dialog
+    v-model="newDialogValue"
+    width="500"
+  >
+    <v-card>
+      <v-card-title class="text-h6 primaryLight">
+        商品タグ登録
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="newValidate.name.$model"
+          :error-messages="getErrorMessage(newValidate.name.$errors)"
+          class="mx-4"
+          label="商品タグ名"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseNewDialog"
+        >
+          キャンセル
+        </v-btn>
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="submitCreate"
+        >
+          登録
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="editDialogValue"
+    width="500"
+  >
+    <v-card>
+      <v-card-title class="text-h6 primaryLight">
+        商品タグ編集
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="editValidate.name.$model"
+          :error-messages="getErrorMessage(editValidate.name.$errors)"
+          class="mx-4"
+          label="商品タグ名"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseEditDialog"
+        >
+          キャンセル
+        </v-btn>
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="submitUpdate"
+        >
+          更新
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <atoms-app-confirm-dialog
+    v-model="dialogVisible"
+    title="削除の確認"
+    :message="`「${selectedItem?.name || ''}」を削除しますか？`"
+    :loading="loading"
+    @confirm="submitDelete"
+  />
+
+  <v-card
+    class="mt-4"
+    flat
+  >
+    <v-card-title class="d-flex flex-row">
+      商品タグ管理
+      <v-spacer />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
+        商品タグ登録
+      </v-btn>
+    </v-card-title>
+
+    <v-card-text>
+      <v-data-table-server
+        :headers="headers"
+        :loading="loading"
+        :items="props.productTags"
+        :items-per-page="props.tableItemsPerPage"
+        :items-length="props.tableItemsTotal"
+        :sort-by="props.sortBy"
+        :multi-sort="true"
+        @update:page="onClickUpdatePage"
+        @update:items-per-page="onClickUpdateItemsPerPage"
+        @update:sort-by="onClickUpdateSortBy"
+      >
+        <template #[`item.actions`]="{ item }">
+          <v-btn
+            v-show="isEditable()"
+            class="mr-2"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click="onClickEdit(item)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiPencil"
+            />
+            編集
+          </v-btn>
+          <v-btn
+            v-show="isEditable()"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click="openDeleteDialog(item)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
+            削除
+          </v-btn>
+        </template>
+      </v-data-table-server>
+    </v-card-text>
+  </v-card>
+</template>

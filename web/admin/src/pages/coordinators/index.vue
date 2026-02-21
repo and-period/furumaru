@@ -17,7 +17,6 @@ const { productTypes } = storeToRefs(productTypeStore)
 const { shops } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('coordinators', async (): Promise<void> => {
   await fetchCoordinators()
@@ -77,8 +76,7 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
-    loading.value = true
+    loading.value = false
   }
 }
 
@@ -92,7 +90,6 @@ catch (err) {
 
 <template>
   <templates-coordinator-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"

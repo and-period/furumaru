@@ -23,7 +23,6 @@ const { experienceTypes } = storeToRefs(experienceTypeStore)
 const { producers } = storeToRefs(producerStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
 const fetchState = useAsyncData('experiences', async (): Promise<void> => {
@@ -84,7 +83,6 @@ const handleClickDelete = async (experienceId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -99,7 +97,6 @@ catch (err) {
 
 <template>
   <templates-experience-list
-    v-model:delete-dialog="deleteDialog"
     v-model:selected-item-id="selectedItemId"
     :loading="isLoading()"
     :admin-type="adminType"

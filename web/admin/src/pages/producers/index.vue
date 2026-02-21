@@ -19,7 +19,6 @@ const { producers, totalItems } = storeToRefs(producerStore)
 const { shops } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('producers', async (): Promise<void> => {
   await fetchProducers()
@@ -75,7 +74,6 @@ const handleClickDelete = async (producerId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -90,7 +88,6 @@ catch (err) {
 
 <template>
   <templates-producer-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :admin-type="adminType"
     :is-alert="isShow"
