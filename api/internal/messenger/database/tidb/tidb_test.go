@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"testing"
 	"time"
 
@@ -22,19 +24,41 @@ var (
 
 func TestMain(m *testing.M) {
 	setEnv()
+	ctx := context.Background()
 
-	client, err := newTestDBClient()
+	client, cleanup, err := newTestDBClient(ctx)
 	if err != nil {
 		panic(err)
 	}
+	defer cleanup()
 	dbClient = client
 
 	os.Exit(m.Run())
 }
 
-func newTestDBClient() (*mysql.Client, error) {
-	setEnv()
-	// テスト用Database接続用クライアントの生成
+func newTestDBClient(ctx context.Context) (*mysql.Client, func(), error) {
+	// DISABLE_CONTAINER_DB=true の場合は従来の外部DB接続を使用
+	if os.Getenv("DISABLE_CONTAINER_DB") == "true" {
+		return newExternalDBClient()
+	}
+
+	// コンテナベースのDB接続
+	schemaDir, err := schemaDir()
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to resolve schema dir: %w", err)
+	}
+
+	client, cleanup, err := mysql.NewContainerDB(ctx,
+		mysql.WithContainerDatabase("messengers"),
+		mysql.WithSchemaDir(schemaDir),
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+	return client, cleanup, nil
+}
+
+func newExternalDBClient() (*mysql.Client, func(), error) {
 	params := &mysql.Params{
 		Socket:   "tcp",
 		Host:     os.Getenv("DB_HOST"),
@@ -43,14 +67,48 @@ func newTestDBClient() (*mysql.Client, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
+	var client *mysql.Client
+	var err error
 	switch os.Getenv("DB_DRIVER") {
 	case "mysql":
-		return mysql.NewClient(params)
+		client, err = mysql.NewClient(params)
 	case "tidb":
-		return mysql.NewTiDBClient(params)
+		client, err = mysql.NewTiDBClient(params)
 	default:
-		return nil, fmt.Errorf("unsupported driver: %s", os.Getenv("DB_DRIVER"))
+		return nil, nil, fmt.Errorf("unsupported driver: %s", os.Getenv("DB_DRIVER"))
 	}
+	if err != nil {
+		return nil, nil, err
+	}
+	noop := func() {}
+	return client, noop, nil
+}
+
+// schemaDir はスキーマSQLファイルのディレクトリパスを返す。
+// runtime.Caller を使ってこのファイルの位置からプロジェクトルートを辿り、
+// infra/tidb/schema/messengers/ を解決する。
+func schemaDir() (string, error) {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		return "", fmt.Errorf("failed to get caller information")
+	}
+
+	// テストファイルの位置から api ディレクトリ（go.mod がある場所）を探す
+	apiRoot, err := mysql.FindProjectRoot(filepath.Dir(filename))
+	if err != nil {
+		return "", err
+	}
+
+	// api/ の親がリポジトリルート
+	repoRoot := filepath.Dir(apiRoot)
+	dir := filepath.Join(repoRoot, "infra", "tidb", "schema", "messengers")
+
+	// ディレクトリの存在確認
+	if _, err := os.Stat(dir); err != nil {
+		return "", fmt.Errorf("schema dir not found: %w", err)
+	}
+
+	return dir, nil
 }
 
 func deleteAll(ctx context.Context) error {
