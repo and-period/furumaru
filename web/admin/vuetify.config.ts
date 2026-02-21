@@ -1,6 +1,6 @@
 import { md3 } from 'vuetify/blueprints'
 import { ja } from 'vuetify/locale'
-import type { VuetifyOptions } from 'vuetify'
+import type { VOptions } from 'vuetify-nuxt-module'
 
 export default {
   locale: {
@@ -8,28 +8,40 @@ export default {
     messages: { ja },
   },
   blueprint: md3,
+  icons: {
+    defaultSet: 'mdi-svg',
+  },
   defaults: {
     VAutocomplete: {
-      variant: 'underlined',
+      variant: 'outlined',
+      density: 'comfortable',
     },
     VAvatar: {
       variant: 'outlined',
       color: 'grey-lighten-1',
     },
     VTextarea: {
-      variant: 'underlined',
+      variant: 'outlined',
+      density: 'comfortable',
     },
     VTextField: {
-      variant: 'underlined',
+      variant: 'outlined',
+      density: 'comfortable',
     },
     VSelect: {
-      variant: 'underlined',
+      variant: 'outlined',
+      density: 'comfortable',
     },
     VCombobox: {
-      variant: 'underlined',
+      variant: 'outlined',
+      density: 'comfortable',
     },
     VCard: {
       elevation: 0,
+      rounded: 'lg',
+    },
+    VBtn: {
+      rounded: 'lg',
     },
     VTab: {
       VBtn: {
@@ -52,30 +64,36 @@ export default {
       light: {
         dark: false,
         colors: {
-          primary: '#689f38',
-          primaryLight: '#c5e1a5',
+          primary: '#7cb342',
+          primaryLight: '#dcedc8',
           accent: '#ffb300',
-          secondary: '#ff8f00',
-          info: '#26a69a',
+          secondary: '#795548',
+          info: '#26c6da',
           warning: '#ffc107',
-          error: '#dd2c00',
+          error: '#ef5350',
           unknown: '#616161',
-          success: '#00e676',
+          success: '#66bb6a',
           white: '#ffffff',
+          surface: '#ffffff',
+          background: '#f1f8e9',
         },
       },
       dark: {
         dark: true,
         colors: {
-          primary: '#b9f6ca',
+          primary: '#9ccc65',
+          primaryLight: '#558b2f',
           accent: '#424242',
-          secondary: '#ff8f00',
-          info: '#26a69a',
+          secondary: '#a1887f',
+          info: '#00acc1',
           warning: '#ffc107',
-          error: '#dd2c00',
-          success: '#00e676',
+          error: '#ef9a9a',
+          unknown: '#9e9e9e',
+          success: '#81c784',
+          surface: '#1e1e1e',
+          background: '#121212',
         },
       },
     },
   },
-} satisfies VuetifyOptions
+} satisfies VOptions
