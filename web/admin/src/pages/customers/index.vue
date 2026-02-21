@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCommonStore, useCustomerStore } from '~/store'
@@ -15,7 +15,7 @@ const { customersToList, totalItems } = storeToRefs(customerStore)
 const loading = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 
-const fetchState = useAsyncData(async () => {
+const fetchState = useAsyncData('customers', async () => {
   await fetchUsers()
 })
 

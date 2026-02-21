@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VTabs } from 'vuetify/lib/components/index.mjs'
+import type { VTabs } from 'vuetify/components'
 import type { AlertType } from '~/lib/hooks'
 import { AdminType } from '~/types/api/v1'
 import type { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, UpdateCategoryRequest, UpdateProductTypeRequest } from '~/types/api/v1'

@@ -93,7 +93,7 @@ const openingVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('schedule-detail', async (): Promise<void> => {
   try {
     await Promise.all([
       scheduleStore.getSchedule(scheduleId),

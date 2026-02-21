@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiInformation, mdiCalculator, mdiPackageVariant, mdiCalendarStar, mdiCog, mdiAccount, mdiReceipt, mdiStore, mdiTruck, mdiPackageVariantClosed, mdiSend, mdiAlertCircle, mdiCreditCardRefund, mdiCheckCircle, mdiContentSave, mdiCancel, mdiUpdate, mdiCircle, mdiCurrencyJpy, mdiCreditCard, mdiCart, mdiTag, mdiPhone, mdiEmail, mdiMapMarker, mdiCalendar, mdiSchool, mdiAccountSchool, mdiAccountSupervisor, mdiBaby, mdiStoreClock, mdiAlert } from '@mdi/js'
 import { unix } from 'dayjs'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { findPrefecture, getResizedImages } from '~/lib/helpers'

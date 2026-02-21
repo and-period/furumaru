@@ -1,0 +1,19 @@
+// Design Tokens: Shadows & Border Radius
+// Soft shadows for a warm, approachable feel
+
+:root {
+  // === Shadows ===
+  --shadow-card: 0 2px 8px rgba(104, 159, 56, 0.08);
+  --shadow-card-hover: 0 4px 16px rgba(104, 159, 56, 0.14);
+  --shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-dialog: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  // === Border Radius ===
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  // === Overlay ===
+  --overlay-dialog: rgba(0, 0, 0, 0.3);
+}

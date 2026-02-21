@@ -16,7 +16,7 @@ const startAt = ref<number>(dayjs().add(-7, 'day').unix())
 const endAt = ref<number>(dayjs().unix())
 const periodType = ref<TopOrderPeriodType>(TopOrderPeriodType.DAY)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('home', async (): Promise<void> => {
   try {
     await fetchOrders()
   }

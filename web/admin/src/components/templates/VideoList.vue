@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiPlayCircle } from '@mdi/js'
 import { unix } from 'dayjs'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'

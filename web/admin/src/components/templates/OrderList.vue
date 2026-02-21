@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiImport, mdiExport, mdiContentCopy, mdiFileDocumentOutline } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'

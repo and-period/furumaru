@@ -19,7 +19,7 @@ const { shops } = storeToRefs(shopStore)
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('coordinators', async (): Promise<void> => {
   await fetchCoordinators()
 })
 

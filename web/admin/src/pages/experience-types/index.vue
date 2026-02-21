@@ -24,7 +24,7 @@ const editFormData = ref<UpdateExperienceTypeRequest>({
   name: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('experience-types', async (): Promise<void> => {
   await fetchExperienceTypes()
 })
 

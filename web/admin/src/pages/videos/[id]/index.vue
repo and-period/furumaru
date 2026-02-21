@@ -42,7 +42,7 @@ const formData = ref<UpdateVideoRequest>({
 const selectedProducts = ref<Product[]>([])
 const selectedExperiences = ref<Experience[]>([])
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('video-detail', async (): Promise<void> => {
   try {
     await Promise.all([
       videoStore.fetchVideo(videoId),

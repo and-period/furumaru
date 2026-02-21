@@ -1,0 +1,38 @@
+// Design Tokens: Colors
+// Based on the Hatake (畑) Theme Design Guidelines
+
+:root {
+  // === Primary Colors (畑の緑) ===
+  --color-green-50: #f1f8e9;
+  --color-green-100: #dcedc8;
+  --color-green-200: #c5e1a5;
+  --color-green-400: #9ccc65;
+  --color-green-600: #7cb342;
+  --color-green-800: #558b2f;
+  --color-green-900: #33691e;
+
+  // === Accent Colors (収穫の橙) ===
+  --color-harvest-100: #ffecb3;
+  --color-harvest-400: #ffca28;
+  --color-harvest-600: #ffb300;
+
+  // === Earth Colors (大地の茶) ===
+  --color-earth-50: #efebe9;
+  --color-earth-100: #d7ccc8;
+  --color-earth-300: #a1887f;
+
+  // === Semantic Colors ===
+  --color-success: #66bb6a;
+  --color-warning: #ffc107;
+  --color-error: #ef5350;
+  --color-info: #26c6da;
+
+  // === Neutral Colors ===
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #616161;
+  --color-text-hint: #9e9e9e;
+  --color-border: #e0e0e0;
+  --color-divider: #eeeeee;
+  --color-surface: #ffffff;
+  --color-background: #f1f8e9;
+}

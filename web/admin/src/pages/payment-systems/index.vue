@@ -13,7 +13,7 @@ const { systems } = storeToRefs(paymentSystemStore)
 
 const loading = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('payment-systems', async (): Promise<void> => {
   try {
     await paymentSystemStore.fetchPaymentSystems()
   }

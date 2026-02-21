@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VTabs } from 'vuetify/lib/components/index.mjs'
+import type { VTabs } from 'vuetify/components'
 import {
   mdiAccount,
   mdiStore,

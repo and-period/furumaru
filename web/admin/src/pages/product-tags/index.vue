@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useProductTagStore } from '~/store'
@@ -27,7 +27,7 @@ const editFormData = ref<UpdateProductTagRequest>({
   name: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('product-tags', async (): Promise<void> => {
   await fetchProductTags()
 })
 

@@ -26,7 +26,7 @@ declare module 'pinia' {
      */
     errorHandler: (
       error: unknown,
-      customObject?: CustomErrorMessage
+      customObject?: CustomErrorMessage,
     ) => Promise<never>
     administratorApi: (token?: string | undefined) => AdministratorApi
     authApi: (token?: string | undefined) => AuthApi

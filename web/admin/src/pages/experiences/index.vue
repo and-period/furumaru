@@ -26,7 +26,7 @@ const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('experiences', async (): Promise<void> => {
   await fetchExperiences()
 })
 

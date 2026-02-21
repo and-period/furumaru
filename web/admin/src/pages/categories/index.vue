@@ -81,7 +81,7 @@ watch(selector, (): void => {
   fetchState.refresh()
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('categories', async (): Promise<void> => {
   switch (selector.value) {
     case 'categories':
       await handleUpdateCategoryPage(1)

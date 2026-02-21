@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiAccountGroup } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { prefecturesList } from '~/constants'
 import type { PrefecturesListItem } from '~/constants'

@@ -32,7 +32,7 @@ const formData = ref<UpdatePromotionRequest>({
   endAt: dayjs().unix(),
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('promotion-detail', async (): Promise<void> => {
   try {
     await promotionStore.getPromotion(promotionId)
     formData.value = { ...promotion.value }

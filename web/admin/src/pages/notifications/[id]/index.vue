@@ -31,7 +31,7 @@ const formData = ref<UpdateNotificationRequest>({
   publishedAt: 0,
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('notification-detail', async (): Promise<void> => {
   try {
     await notificationStore.getNotification(notificationId)
     if (notification.value.type === NotificationType.NotificationTypePromotion) {

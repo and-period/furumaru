@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 import useVuelidate from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'

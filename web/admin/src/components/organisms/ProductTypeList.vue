@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/components'
 
 import { AdminType } from '~/types/api/v1'
 import type { Category, CreateProductTypeRequest, ProductType, UpdateProductTypeRequest } from '~/types/api/v1'

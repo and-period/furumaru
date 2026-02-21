@@ -61,7 +61,7 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('coordinator-new', async (): Promise<void> => {
   await productTypeStore.fetchProductTypes(200)
 })
 

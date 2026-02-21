@@ -21,7 +21,7 @@ const { shops } = storeToRefs(shopStore)
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('producers', async (): Promise<void> => {
   await fetchProducers()
 })
 

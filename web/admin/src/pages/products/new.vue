@@ -121,7 +121,7 @@ const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
   }
 }
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('product-new', async (): Promise<void> => {
   if (copyFromProductId.value) {
     fetchAndSetFormDataByCopyFromProduct(copyFromProductId.value)
   }

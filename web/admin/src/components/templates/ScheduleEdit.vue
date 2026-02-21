@@ -10,7 +10,7 @@ import {
   mdiPlay,
 } from '@mdi/js'
 import dayjs from 'dayjs'
-import { VTabs } from 'vuetify/lib/components/index.mjs'
+import type { VTabs } from 'vuetify/components'
 import type { AlertType } from '~/lib/hooks'
 import {
 

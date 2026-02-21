@@ -27,7 +27,7 @@ const handleClickMessage = async (messageId: string) => {
 }
 
 // 初期化処理
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('messages', async (): Promise<void> => {
   try {
     await messageStore.fetchMessages(50, 0) // 最大50件のメッセージを取得
   }

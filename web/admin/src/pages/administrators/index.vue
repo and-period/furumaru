@@ -14,7 +14,7 @@ const { administrators, total } = storeToRefs(administratorStore)
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('administrators', async (): Promise<void> => {
   await fetchAdministrators()
 })
 
