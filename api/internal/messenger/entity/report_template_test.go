@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestReportTemplate_Build(t *testing.T) {
 		name     string
 		template *ReportTemplate
 		fields   map[string]string
-		expect   linebot.FlexContainer
+		expect   messaging_api.FlexContainerInterface
 		hasErr   bool
 	}{
 		{
@@ -30,22 +30,22 @@ func TestReportTemplate_Build(t *testing.T) {
 				"Detail":   "レポートの詳細です。",
 				"Link":     "https://and-period.jp",
 			},
-			expect: &linebot.BubbleContainer{
-				Type: linebot.FlexContainerTypeBubble,
-				Body: &linebot.BoxComponent{
-					Type: linebot.FlexComponentTypeBox,
-					Contents: []linebot.FlexComponent{
-						&linebot.TextComponent{
-							Type: linebot.FlexComponentTypeText,
-							Text: "レポートの概要です。",
+			expect: messaging_api.FlexBubble{
+				FlexContainer: messaging_api.FlexContainer{Type: "bubble"},
+				Body: &messaging_api.FlexBox{
+					FlexComponent: messaging_api.FlexComponent{Type: "box"},
+					Contents: []messaging_api.FlexComponentInterface{
+						&messaging_api.FlexText{
+							FlexComponent: messaging_api.FlexComponent{Type: "text"},
+							Text:          "レポートの概要です。",
 						},
-						&linebot.TextComponent{
-							Type: linebot.FlexComponentTypeText,
-							Text: "レポートの詳細です。",
+						&messaging_api.FlexText{
+							FlexComponent: messaging_api.FlexComponent{Type: "text"},
+							Text:          "レポートの詳細です。",
 						},
-						&linebot.TextComponent{
-							Type: linebot.FlexComponentTypeText,
-							Text: "https://and-period.jp",
+						&messaging_api.FlexText{
+							FlexComponent: messaging_api.FlexComponent{Type: "text"},
+							Text:          "https://and-period.jp",
 						},
 					},
 				},

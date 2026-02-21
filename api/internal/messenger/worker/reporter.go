@@ -7,7 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
-	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 )
 
 func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) error {
@@ -21,8 +21,12 @@ func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) 
 		return err
 	}
 	slog.Debug("Send report", slog.String("templateId", string(payload.Report.TemplateID)), slog.Any("message", container))
+	msg := &messaging_api.FlexMessage{
+		AltText:  altText,
+		Contents: container,
+	}
 	sendFn := func() error {
-		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
+		return w.line.PushMessage(ctx, msg)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(w.isRetryable))
