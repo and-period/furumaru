@@ -1,5 +1,33 @@
 # Changelog
 
+## [v10.0.0](https://github.com/and-period/furumaru/compare/v9.0.8...v10.0.0) - 2026-02-21
+- chore: dependabotを削除しrenovateに一本化 by @taba2424 in https://github.com/and-period/furumaru/pull/3291
+- docs: 管理者Web UI/UX刷新の設計ドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3296
+- docs: バックエンドリファクタリング設計書・ADRを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3293
+- chore(deps): update dependency markdown-it to v14.1.1 [security] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3294
+- chore(deps): update dependency axios to v1.13.5 [security] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3295
+- fix(api): satori/go.uuid を google/uuid に移行 (CVE-2021-3538) by @taba2424 in https://github.com/and-period/furumaru/pull/3297
+- refactor(api): golang/mock を go.uber.org/mock に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3298
+- refactor(api): go-grpc-middleware v1 依存を完全削除 by @taba2424 in https://github.com/and-period/furumaru/pull/3299
+- fix(user): 生産者の不要なカラム削除 by @taba2424 in https://github.com/and-period/furumaru/pull/3154
+- chore(api): Go バージョンおよびマイナーライブラリを更新 by @taba2424 in https://github.com/and-period/furumaru/pull/3302
+- refactor(api): stripe-go を v73 から v82 に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3300
+- feat(web): 管理者Web Phase1 基盤整備 by @taba2424 in https://github.com/and-period/furumaru/pull/3303
+- chore: Go 1.26 に更新 by @taba2424 in https://github.com/and-period/furumaru/pull/3304
+- refactor(api): line-bot-sdk-go を v7 から v8 に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3301
+- fix(api): stripe-go v82移行に伴うレビュー指摘事項の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3305
+- feat(web): 管理者Web Phase2 畑テーマカラー・スタイル適用 by @taba2424 in https://github.com/and-period/furumaru/pull/3306
+- fix(api): RBAC同期間隔を5分から1分に短縮 by @taba2424 in https://github.com/and-period/furumaru/pull/3307
+- refactor(api): registry.go のDI初期化を責務ごとにファイル分割 by @taba2424 in https://github.com/and-period/furumaru/pull/3308
+- feat(web): 管理者Web Phase3 レイアウト改修 by @taba2424 in https://github.com/and-period/furumaru/pull/3309
+- fix(api): 汎用MySQLクライアントのコネクションプール設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3310
+- refactor(api): JSONカラム処理の統一のためジェネリック型を導入 by @taba2424 in https://github.com/and-period/furumaru/pull/3311
+- feat(api): testcontainers-goによるコンテナベーステスト基盤を導入 by @taba2424 in https://github.com/and-period/furumaru/pull/3312
+- refactor(api): user/mediaモジュールのJSONカラム処理をJSONColumn型に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3313
+- refactor(api): storeモジュールのJSONカラム処理をJSONColumn型に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3314
+- refactor(api): テストクリーンアップからforeign_key_checks無効化を除去 by @taba2424 in https://github.com/and-period/furumaru/pull/3315
+- chore: レガシースクリプト削除とリファクタリング設計書の進捗更新 by @taba2424 in https://github.com/and-period/furumaru/pull/3316
+
 ## [v9.0.8](https://github.com/and-period/furumaru/compare/v9.0.7...v9.0.8) - 2026-02-19
 - feat(api): 決済APIにorderRequestフィールドを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3288
 - [web/liff] 注文内容確認画面で送料の部分の表示を無くす&&配達時間を常に`checkin`で送信するように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3290
