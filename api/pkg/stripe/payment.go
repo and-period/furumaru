@@ -39,6 +39,7 @@ func (c *client) AttachPayment(ctx context.Context, customerID, paymentID string
 	if err := c.do(ctx, attachFn); err != nil {
 		slog.ErrorContext(ctx, "Failed to attach payment",
 			slog.String("customerId", customerID), slog.String("paymentMethodId", paymentID), log.Error(err))
+		return nil, err
 	}
 	return pm, nil
 }
@@ -126,7 +127,6 @@ func (c *client) GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.
 	}
 	if err := c.do(ctx, orderFn); err != nil {
 		slog.ErrorContext(ctx, "Failed to guest order",
-			slog.String("email", in.Email),
 			slog.String("paymentMethodType", string(in.PaymentMethodType)),
 			log.Error(err))
 		return nil, err
