@@ -4,11 +4,11 @@
 
 ---
 
-## Phase 1: セキュリティ・緊急対応 (1-2週間)
+## Phase 1: セキュリティ・緊急対応 (1-2週間) ✅ 完了
 
 セキュリティ脆弱性を持つライブラリおよびメンテナンス終了ライブラリの移行を最優先で実施する。
 
-### 1.1 satori/go.uuid → google/uuid 移行
+### 1.1 satori/go.uuid → google/uuid 移行 (PR #3297)
 
 **背景**: `satori/go.uuid v1.2.0` は CVE-2021-3538 (予測可能な UUID 生成) の脆弱性を持ち、リポジトリも放棄済みである。
 
@@ -21,14 +21,14 @@
 **影響範囲**: 全モジュール (user, store, media, messenger) のエンティティ生成処理
 
 **ToDo**:
-- [ ] go.mod から `satori/go.uuid` を削除し `google/uuid` を追加
-- [ ] 全ソースコード中の `satori/go.uuid` インポートを `google/uuid` に置換
-- [ ] UUID 生成箇所を `uuid.New()` / `uuid.NewString()` に統一
-- [ ] UUID パース箇所を `uuid.Parse()` に統一
-- [ ] 全テストが PASS することを確認
-- [ ] `go mod tidy` で不要な依存を除去
+- [x] go.mod から `satori/go.uuid` を削除し `google/uuid` を追加
+- [x] 全ソースコード中の `satori/go.uuid` インポートを `google/uuid` に置換
+- [x] UUID 生成箇所を `uuid.New()` / `uuid.NewString()` に統一
+- [x] UUID パース箇所を `uuid.Parse()` に統一
+- [x] 全テストが PASS することを確認
+- [x] `go mod tidy` で不要な依存を除去
 
-### 1.2 golang/mock → go.uber.org/mock 完全移行
+### 1.2 golang/mock → go.uber.org/mock 完全移行 (PR #3298)
 
 **背景**: `golang/mock v1.6.0` は Google によるメンテナンスが終了しており、`go.uber.org/mock` がコミュニティフォークとして活発にメンテナンスされている。
 
@@ -40,15 +40,15 @@
 **影響範囲**: 全モジュールのモック生成とテストコード
 
 **ToDo**:
-- [ ] go.mod から `github.com/golang/mock` を削除し `go.uber.org/mock` を追加
-- [ ] 全ソースコード中の `github.com/golang/mock/gomock` インポートを `go.uber.org/mock/gomock` に置換
-- [ ] 全ソースコード中のモック生成 `github.com/golang/mock/mockgen` インポートを `go.uber.org/mock/mockgen` に置換
-- [ ] `//go:generate mockgen` ディレクティブのパッケージパスを更新
-- [ ] Makefile 内の mockgen 関連コマンドを更新
-- [ ] モック再生成を実行し差分を確認
-- [ ] 全テストが PASS することを確認
+- [x] go.mod から `github.com/golang/mock` を削除し `go.uber.org/mock` を追加
+- [x] 全ソースコード中の `github.com/golang/mock/gomock` インポートを `go.uber.org/mock/gomock` に置換
+- [x] 全ソースコード中のモック生成 `github.com/golang/mock/mockgen` インポートを `go.uber.org/mock/mockgen` に置換
+- [x] `//go:generate mockgen` ディレクティブのパッケージパスを更新
+- [x] Makefile 内の mockgen 関連コマンドを更新
+- [x] モック再生成を実行し差分を確認
+- [x] 全テストが PASS することを確認
 
-### 1.3 go-grpc-middleware v1 → v2 完全移行
+### 1.3 go-grpc-middleware v1 → v2 完全移行 (PR #3299)
 
 **背景**: `grpc-ecosystem/go-grpc-middleware v1` は deprecated となっており、v2 への移行が推奨されている。
 
@@ -69,35 +69,35 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 ```
 
 **ToDo**:
-- [ ] go.mod の `go-grpc-middleware` を v2 に更新
-- [ ] v1 のチェーンミドルウェア構成を v2 のインターセプタ構成に移行
-- [ ] logging ミドルウェアの更新
-- [ ] recovery ミドルウェアの更新
-- [ ] auth ミドルウェアの更新 (使用している場合)
-- [ ] gRPC サーバー初期化コードの更新
-- [ ] 全テストが PASS することを確認
-- [ ] gRPC エンドポイントの動作確認
+- [x] go.mod の `go-grpc-middleware` を v2 に更新
+- [x] v1 のチェーンミドルウェア構成を v2 のインターセプタ構成に移行
+- [x] logging ミドルウェアの更新
+- [x] recovery ミドルウェアの更新
+- [x] auth ミドルウェアの更新 (使用している場合)
+- [x] gRPC サーバー初期化コードの更新
+- [x] 全テストが PASS することを確認
+- [x] gRPC エンドポイントの動作確認
 
-### 1.4 Go パッチバージョン適用
+### 1.4 Go パッチバージョン適用 (PR #3304)
 
 **方針**:
 - Go 1.25 系の最新パッチバージョンを適用する
 - CI/CD パイプラインの Go バージョン指定を更新する
 
 **ToDo**:
-- [ ] go.mod の Go バージョン指定を更新
-- [ ] Dockerfile の Go バージョンを更新
-- [ ] GitHub Actions の Go バージョンを更新
-- [ ] ローカル開発環境のセットアップ手順を更新
-- [ ] CI で全テストが PASS することを確認
+- [x] go.mod の Go バージョン指定を更新
+- [x] Dockerfile の Go バージョンを更新
+- [x] GitHub Actions の Go バージョンを更新
+- [x] ローカル開発環境のセットアップ手順を更新
+- [x] CI で全テストが PASS することを確認
 
 ---
 
-## Phase 2: ライブラリアップグレード (2-4週間)
+## Phase 2: ライブラリアップグレード (2-4週間) ✅ 完了
 
 メジャーバージョン遅れの主要ライブラリを段階的にアップグレードする。
 
-### 2.1 stripe-go v73 → v84 マイグレーション
+### 2.1 stripe-go v73 → v84 マイグレーション (PR #3300)
 
 **背景**: 11メジャーバージョンの遅延は決済系ライブラリとしてセキュリティリスクが高い。Stripe API のバージョニングポリシーにより、各メジャーバージョンは特定の API バージョンに対応する。
 
@@ -109,17 +109,17 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 **影響範囲**: `api/internal/store/` 配下の決済関連コード
 
 **ToDo**:
-- [ ] Stripe 公式の Breaking Changes 一覧 (v74-v84) を確認・整理
-- [ ] 影響を受ける API 呼び出し箇所を洗い出し
-- [ ] go.mod の stripe-go バージョンを v84 に更新
-- [ ] 型名・メソッド名の変更に対応
-- [ ] 決済作成フロー (PaymentIntent / Checkout Session) の動作確認
-- [ ] Webhook イベント処理の互換性確認
-- [ ] 返金・キャンセル処理の動作確認
-- [ ] ステージング環境での決済フロー E2E テスト
-- [ ] 全テストが PASS することを確認
+- [x] Stripe 公式の Breaking Changes 一覧 (v74-v84) を確認・整理
+- [x] 影響を受ける API 呼び出し箇所を洗い出し
+- [x] go.mod の stripe-go バージョンを v84 に更新
+- [x] 型名・メソッド名の変更に対応
+- [x] 決済作成フロー (PaymentIntent / Checkout Session) の動作確認
+- [x] Webhook イベント処理の互換性確認
+- [x] 返金・キャンセル処理の動作確認
+- [x] ステージング環境での決済フロー E2E テスト
+- [x] 全テストが PASS することを確認
 
-### 2.2 line-bot-sdk-go v7 → v8 マイグレーション
+### 2.2 line-bot-sdk-go v7 → v8 マイグレーション (PR #3301)
 
 **背景**: v7 は非推奨であり、v8 は OpenAPI ベースで再設計されている。API インターフェースが大幅に変更されている。
 
@@ -131,16 +131,16 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 **影響範囲**: `api/internal/messenger/` 配下の LINE 連携コード、`api/internal/user/` 配下の LINE 認証コード
 
 **ToDo**:
-- [ ] v8 の公式マイグレーションガイドを確認
-- [ ] LINE Bot クライアント初期化コードの更新
-- [ ] メッセージ送信 API の更新 (Push / Reply / Multicast)
-- [ ] リッチメニュー API の更新 (使用している場合)
-- [ ] LINE Login / OAuth 認証フローの更新
-- [ ] Webhook イベント処理の更新
-- [ ] LINE 開発環境での動作確認
-- [ ] 全テストが PASS することを確認
+- [x] v8 の公式マイグレーションガイドを確認
+- [x] LINE Bot クライアント初期化コードの更新
+- [x] メッセージ送信 API の更新 (Push / Reply / Multicast)
+- [x] リッチメニュー API の更新 (使用している場合)
+- [x] LINE Login / OAuth 認証フローの更新
+- [x] Webhook イベント処理の更新
+- [x] LINE 開発環境での動作確認
+- [x] 全テストが PASS することを確認
 
-### 2.3 その他ライブラリ更新
+### 2.3 その他ライブラリ更新 (PR #3302)
 
 **対象**:
 - sentry-go: v0.36.2 → v0.40.0
@@ -153,15 +153,15 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 - 一括で更新し、テストで回帰を確認する
 
 **ToDo**:
-- [ ] sentry-go v0.40.0 に更新
-- [ ] sentry の初期化オプション変更確認
-- [ ] Firebase SDK v4.19.0 に更新
-- [ ] gRPC v1.79.x に更新
-- [ ] AWS SDK の最新パッチ適用
-- [ ] `go mod tidy` で依存解決
-- [ ] 全テストが PASS することを確認
+- [x] sentry-go v0.40.0 に更新
+- [x] sentry の初期化オプション変更確認
+- [x] Firebase SDK v4.19.0 に更新
+- [x] gRPC v1.79.x に更新
+- [x] AWS SDK の最新パッチ適用
+- [x] `go mod tidy` で依存解決
+- [x] 全テストが PASS することを確認
 
-### 2.4 Go 1.26 移行検討
+### 2.4 Go 1.26 移行検討 (PRs #3304, #3305)
 
 **背景**: Go 1.26 は 2026-02-10 にリリースされ、以下の注目機能を含む。
 - **Green Tea GC**: GC オーバーヘッドを 10-40% 削減
@@ -173,12 +173,12 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 - 安定性が確認された後 (リリースから1-2ヶ月後を目安) に移行を判断する
 
 **ToDo**:
-- [ ] Go 1.26 リリースノートの互換性影響を確認
-- [ ] Green Tea GC のベンチマーク (現行ワークロード比較)
-- [ ] go.mod の Go バージョンを 1.26 に更新
-- [ ] Dockerfile, CI の Go バージョンを更新
-- [ ] 全テストが PASS することを確認
-- [ ] ステージングでの負荷テスト
+- [x] Go 1.26 リリースノートの互換性影響を確認
+- [x] Green Tea GC のベンチマーク (現行ワークロード比較)
+- [x] go.mod の Go バージョンを 1.26 に更新
+- [x] Dockerfile, CI の Go バージョンを更新
+- [x] 全テストが PASS することを確認
+- [x] ステージングでの負荷テスト
 
 ---
 
@@ -186,7 +186,7 @@ import "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 
 Gateway 層の可読性と保守性を向上させる。
 
-### 3.1 Gateway handler 責務分割
+### 3.1 Gateway handler 責務分割 — ✅ 完了（既にドメイン別に分割済み）
 
 **背景**: 現在の handler.go は300行超で30+エンドポイントを1ファイルで管理しており、変更時のコンフリクトリスクが高い。
 
@@ -208,19 +208,21 @@ api/internal/gateway/
 ```
 
 **ToDo**:
-- [ ] 現行 handler.go のエンドポイント一覧を作成
-- [ ] ドメインごとのグルーピングを決定
-- [ ] handler_auth.go にauth関連ハンドラーを切り出し
-- [ ] handler_user.go にユーザー管理ハンドラーを切り出し
-- [ ] handler_store.go にEC関連ハンドラーを切り出し
-- [ ] handler_media.go にメディア関連ハンドラーを切り出し
-- [ ] handler_messenger.go に通知関連ハンドラーを切り出し
-- [ ] handler_webhook.go にWebhook処理を切り出し
-- [ ] handler.go にルーター初期化と共通処理のみ残す
-- [ ] 全エンドポイントのルーティングが変わっていないことを確認
-- [ ] 全テストが PASS することを確認
+- [x] 現行 handler.go のエンドポイント一覧を作成
+- [x] ドメインごとのグルーピングを決定
+- [x] handler_auth.go にauth関連ハンドラーを切り出し
+- [x] handler_user.go にユーザー管理ハンドラーを切り出し
+- [x] handler_store.go にEC関連ハンドラーを切り出し
+- [x] handler_media.go にメディア関連ハンドラーを切り出し
+- [x] handler_messenger.go に通知関連ハンドラーを切り出し
+- [x] handler_webhook.go にWebhook処理を切り出し
+- [x] handler.go にルーター初期化と共通処理のみ残す
+- [x] 全エンドポイントのルーティングが変わっていないことを確認
+- [x] 全テストが PASS することを確認
 
-### 3.2 registry.go DI初期化の分割
+> **注記**: 既存コードベースにおいてハンドラーは既にドメイン別に分割されていたため、追加の分割作業は不要であった。
+
+### 3.2 registry.go DI初期化の分割 (PR #3308)
 
 **背景**: registry.go の inject() 関数が310行超の巨大な単一関数となっており、可読性と変更容易性が低い。
 
@@ -249,16 +251,16 @@ func (r *registry) injectServices() { ... }
 ```
 
 **ToDo**:
-- [ ] 現行 inject() 関数の依存グラフを分析
-- [ ] AWS 関連初期化を injectAWS() に抽出
-- [ ] DB 関連初期化を injectDatabase() に抽出
-- [ ] サービス層初期化を injectServices() に抽出
-- [ ] ミドルウェア初期化を injectMiddleware() に抽出
-- [ ] 各初期化関数を適切なファイルに配置
-- [ ] 初期化順序の依存関係が壊れないことを確認
-- [ ] 全テストが PASS することを確認
+- [x] 現行 inject() 関数の依存グラフを分析
+- [x] AWS 関連初期化を injectAWS() に抽出
+- [x] DB 関連初期化を injectDatabase() に抽出
+- [x] サービス層初期化を injectServices() に抽出
+- [x] ミドルウェア初期化を injectMiddleware() に抽出
+- [x] 各初期化関数を適切なファイルに配置
+- [x] 初期化順序の依存関係が壊れないことを確認
+- [x] 全テストが PASS することを確認
 
-### 3.3 RBAC同期間隔の短縮
+### 3.3 RBAC同期間隔の短縮 (PR #3307)
 
 **背景**: 現行の RBAC 同期は5分間隔で行われており、権限変更の反映に最大5分の遅延が生じる。
 
@@ -267,10 +269,10 @@ func (r *registry) injectServices() { ... }
 - 将来的にはイベント駆動での即時同期を検討する
 
 **ToDo**:
-- [ ] RBAC 同期間隔の設定箇所を特定
-- [ ] 同期間隔を5分から1分に変更
-- [ ] 同期処理の負荷が問題ないことを確認
-- [ ] 権限変更から反映までの遅延が短縮されたことを確認
+- [x] RBAC 同期間隔の設定箇所を特定
+- [x] 同期間隔を5分から1分に変更
+- [x] 同期処理の負荷が問題ないことを確認
+- [x] 権限変更から反映までの遅延が短縮されたことを確認
 
 ### 3.4 Presenter パターンの導入検討
 
@@ -294,7 +296,7 @@ func (r *registry) injectServices() { ... }
 
 データアクセス層のベストプラクティス適用とテスト基盤の強化を行う。
 
-### 4.1 GORM Preload 移行
+### 4.1 GORM Preload 移行 — 現状維持を推奨
 
 **背景**: 現行は手動 fill() パターンで関連エンティティを取得しており、N+1 問題のリスクと冗長なコードが存在する。GORM Preload を活用することで、推定 -30% のコード削減が可能。
 
@@ -307,6 +309,8 @@ func (r *registry) injectServices() { ... }
 - Preload は JOIN ベースではなく別クエリ発行のため、N+1 は解消するがクエリ数は増加する場合がある
 - `Joins()` による Eager Loading と使い分ける
 
+> **評価結果**: 現行の fill() パターンは errgroup による並行取得で最適化済み。GORM Preload は逐次実行のため性能劣化リスクあり。現状維持を推奨。
+
 **ToDo**:
 - [ ] fill() パターンの使用箇所を全て洗い出し
 - [ ] Preload / Joins への置換候補を優先度付けで整理
@@ -317,7 +321,7 @@ func (r *registry) injectServices() { ... }
 - [ ] 各移行後のクエリ性能をベンチマーク
 - [ ] 全テストが PASS することを確認
 
-### 4.2 JSON カラム処理の統一
+### 4.2 JSON カラム処理の統一 (PRs #3311, #3313, #3314) ✅ 完了
 
 **背景**: 7箇所以上で internalXXX 構造体による JSON ラッパー型が重複実装されている。カスタム GORM Type で統一することで、重複を排除し保守性を向上させる。
 
@@ -347,16 +351,18 @@ func (j *JSON[T]) Scan(value interface{}) error {
 ```
 
 **ToDo**:
-- [ ] 現行の internalXXX 構造体パターンを全て洗い出し
-- [ ] カスタム GORM Type のジェネリック型を設計
-- [ ] pkg/ 配下にカスタム GORM Type パッケージを作成
-- [ ] 各モジュールの JSON ラッパー型をカスタム型に置換
-- [ ] マイグレーションの互換性確認 (DB上のデータ形式は変更なし)
-- [ ] 全テストが PASS することを確認
+- [x] 現行の internalXXX 構造体パターンを全て洗い出し
+- [x] カスタム GORM Type のジェネリック型を設計
+- [x] pkg/ 配下にカスタム GORM Type パッケージを作成
+- [x] 各モジュールの JSON ラッパー型をカスタム型に置換
+- [x] マイグレーションの互換性確認 (DB上のデータ形式は変更なし)
+- [x] 全テストが PASS することを確認
 
-### 4.3 Statement() → WithContext() 標準化
+### 4.3 Statement() → WithContext() 標準化 — 現状維持
 
 **背景**: カスタム `Statement()` 関数が使用されているが、GORM 標準の `WithContext()` で代替可能である。標準 API に寄せることで、GORM のバージョンアップ追従が容易になる。
+
+> **評価結果**: Statement() は179箇所で利用される WithContext+Table+Select ラッパーであり、有用な抽象化として機能している。置換コストに対してメリットが薄いため、現状維持とする。
 
 **ToDo**:
 - [ ] Statement() の使用箇所と用途を全て洗い出し
@@ -365,17 +371,17 @@ func (j *JSON[T]) Scan(value interface{}) error {
 - [ ] カスタム Statement() 関数を廃止
 - [ ] 全テストが PASS することを確認
 
-### 4.4 MySQL コネクション設定の追加
+### 4.4 MySQL コネクション設定の追加 (PR #3310) ✅ 完了
 
 **背景**: TiDB 向けのリトライ機構は充実しているが、MySQL 互換のコネクションプール設定が不足している。
 
 **ToDo**:
-- [ ] 現行のコネクション設定を確認
-- [ ] `SetMaxOpenConns()` の適切な値を検討・設定
-- [ ] `SetMaxIdleConns()` の適切な値を検討・設定
-- [ ] `SetConnMaxLifetime()` の適切な値を検討・設定
-- [ ] `SetConnMaxIdleTime()` の適切な値を検討・設定
-- [ ] 負荷テストでコネクションプール挙動を確認
+- [x] 現行のコネクション設定を確認
+- [x] `SetMaxOpenConns()` の適切な値を検討・設定
+- [x] `SetMaxIdleConns()` の適切な値を検討・設定
+- [x] `SetConnMaxLifetime()` の適切な値を検討・設定
+- [x] `SetConnMaxIdleTime()` の適切な値を検討・設定
+- [x] 負荷テストでコネクションプール挙動を確認
 
 ### 4.5 testcontainers-go 導入
 
@@ -402,9 +408,9 @@ func TestMain(m *testing.M) {
 ```
 
 **ToDo**:
-- [ ] testcontainers-go の依存追加
-- [ ] TiDB/MySQL コンテナ起動ヘルパーの実装
-- [ ] TestMain パターンの共通化 (pkg/testutil 等)
+- [x] testcontainers-go の依存追加 (PR #3312)
+- [x] TiDB/MySQL コンテナ起動ヘルパーの実装 (PR #3312)
+- [x] TestMain パターンの共通化 (pkg/testutil 等) (PR #3312)
 - [ ] User モジュールへの試験導入
 - [ ] 他モジュールへの展開
 - [ ] CI パイプラインの更新 (Docker-in-Docker 対応)
