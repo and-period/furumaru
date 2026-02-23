@@ -55,9 +55,9 @@ watch(data, (newData) => {
 })
 
 // 注文情報を取得
-  const order = computed(() => {
-    return data.value?.order || null
-  })
+const order = computed(() => {
+  return data.value?.order || null
+})
 
 // 体験情報を取得
 const experience = computed(() => {

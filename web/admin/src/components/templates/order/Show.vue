@@ -72,7 +72,7 @@ const props = defineProps({
       soldOut: false,
       startAt: 0,
       status: 0,
-      updatedAt: 0
+      updatedAt: 0,
     }),
   },
   order: {
@@ -1083,12 +1083,12 @@ const onSubmitRefund = (): void => {
               v-if="getExperienceTitle()"
               class="mb-4"
             >
-                <h3 class="text-h6 font-weight-bold mb-1">
-                  体験名
-                </h3>
-                <p class="text-body-1 mb-0">
-                  {{ getExperienceTitle() }}
-                </p>
+              <h3 class="text-h6 font-weight-bold mb-1">
+                体験名
+              </h3>
+              <p class="text-body-1 mb-0">
+                {{ getExperienceTitle() }}
+              </p>
             </div>
             <!-- Experience Description -->
             <div
@@ -1128,9 +1128,9 @@ const onSubmitRefund = (): void => {
             ユーザーからの要望
           </v-card-title>
           <v-card-text class="pa-6">
-              <div class="text-body-1">
-                {{ getOrderRequest() }}
-              </div>
+            <div class="text-body-1">
+              {{ getOrderRequest() }}
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
