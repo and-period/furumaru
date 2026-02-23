@@ -664,19 +664,19 @@ const getPickupLocation = (): string => {
 }
 
 // ユーザー要望を取得
-const getOrderRequest = (): string => {
+const orderRequest = computed(() => {
   return props.order?.metadata?.orderRequest || ''
-}
+})
 
 // 体験タイトルを取得
-const getExperienceTitle = (): string => {
+const experienceTitle = computed(() => {
   return props.experience?.title || ''
-}
+})
 
 // 体験説明を取得
-const getExperienceDescription = (): string => {
+const experienceDescription = computed(() => {
   return props.experience?.description || ''
-}
+})
 
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
   const items = props.order?.items?.filter((item: OrderItem): boolean => {
@@ -1080,19 +1080,19 @@ const onSubmitRefund = (): void => {
           <v-card-text class="pa-6">
             <!-- Experience Title -->
             <div
-              v-if="getExperienceTitle()"
+              v-if="experienceTitle"
               class="mb-4"
             >
               <h3 class="text-h6 font-weight-bold mb-1">
                 体験名
               </h3>
               <p class="text-body-1 mb-0">
-                {{ getExperienceTitle() }}
+                {{ experienceTitle }}
               </p>
             </div>
             <!-- Experience Description -->
             <div
-              v-if="getExperienceDescription()"
+              v-if="experienceDescription"
               class="mb-4"
             >
               <div class="mb-2">
@@ -1101,7 +1101,7 @@ const onSubmitRefund = (): void => {
                 </h4>
               </div>
               <div class="text-body-1 pa-4 bg-grey-lighten-5 rounded">
-                {{ getExperienceDescription() }}
+                {{ experienceDescription }}
               </div>
             </div>
             <!-- Experience Details -->
@@ -1115,7 +1115,7 @@ const onSubmitRefund = (): void => {
 
         <!-- User Request Information -->
         <v-card
-          v-if="getOrderRequest()"
+          v-if="orderRequest"
           elevation="2"
           class="mb-4"
         >
@@ -1129,7 +1129,7 @@ const onSubmitRefund = (): void => {
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="text-body-1">
-              {{ getOrderRequest() }}
+              {{ orderRequest }}
             </div>
           </v-card-text>
         </v-card>
