@@ -364,7 +364,24 @@
       "locationPostalcode": "・Location (Postal code)",
       "locationAddress": "・Location (Address)",
       "producerInformationTitle": "Producer of this Product",
-      "accessMethod": "Access method"
+      "accessMethod": "Access method",
+      "purchase": {
+        "title": "Checkout Process",
+        "customerInformationTitle": "Customer Information",
+        "adult": "Adult (High school or older)",
+        "juniorHighSchool": "Junior highschool students",
+        "elementarySchool": "Elementary school students",
+        "preschool": "Preschoolers (From 3 years old)",
+        "senior": "Senior (From 65 years old)",
+        "quantityLabel": "Quantity",
+        "subTotalPriceLabel": "Subtotal (tax included)",
+        "totalPriceLabel": "Total (tax included)",
+        "submitButtonText": "Purchase",
+        "useDefaultAddressLabel": "Use the above address",
+        "useOtherAddressLabel": "Enter a different address",
+        "orderRequestLabel": "Requests & Comments",
+        "orderRequestPlaceholder": "Please enter any requests or questions you may have here"
+      }
     }
   },
   "lives": {

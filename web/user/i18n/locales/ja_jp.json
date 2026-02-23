@@ -428,7 +428,9 @@
       "totalPriceLabel": "合計（税込み）",
       "submitButtonText": "購入する",
       "useDefaultAddressLabel": "上記の住所を利用する",
-      "useOtherAddressLabel": "その他の住所を入力する"
+      "useOtherAddressLabel": "その他の住所を入力する",
+      "orderRequestLabel": "ご要望・備考",
+      "orderRequestPlaceholder": "ご要望やご質問がございましたらこちらにご記入ください"
     }
   },
   "reviews": {

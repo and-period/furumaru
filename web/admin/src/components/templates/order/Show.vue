@@ -18,7 +18,7 @@ import {
   OrderType,
   RefundType,
 } from '~/types/api/v1'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
+import type { CompleteOrderRequest, Coordinator, Experience, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -37,6 +37,43 @@ const props = defineProps({
   alertText: {
     type: String,
     default: '',
+  },
+  experience: {
+    type: Object as PropType<Experience>,
+    default: (): Experience => ({
+      title: '',
+      description: '',
+      businessCloseTime: '',
+      businessOpenTime: '',
+      coordinatorId: '',
+      createdAt: 0,
+      direction: '',
+      duration: 0,
+      endAt: 0,
+      experienceTypeId: '',
+      hostAddressLine1: '',
+      hostAddressLine2: '',
+      hostCity: '',
+      hostPostalCode: '',
+      hostPrefectureCode: 0,
+      id: '',
+      media: [],
+      priceAdult: 0,
+      priceElementarySchool: 0,
+      priceJuniorHighSchool: 0,
+      pricePreschool: 0,
+      priceSenior: 0,
+      producerId: '',
+      promotionVideoUrl: '',
+      _public: false,
+      recommendedPoint1: '',
+      recommendedPoint2: '',
+      recommendedPoint3: '',
+      soldOut: false,
+      startAt: 0,
+      status: 0,
+      updatedAt: 0,
+    }),
   },
   order: {
     type: Object as PropType<Order>,
@@ -105,6 +142,7 @@ const props = defineProps({
       metadata: {
         pickupAt: 0,
         pickupLocation: '',
+        orderRequest: '',
       },
     }),
   },
@@ -625,6 +663,21 @@ const getPickupLocation = (): string => {
   return props.order?.metadata?.pickupLocation || '未指定'
 }
 
+// ユーザー要望を取得
+const orderRequest = computed(() => {
+  return props.order?.metadata?.orderRequest || ''
+})
+
+// 体験タイトルを取得
+const experienceTitle = computed(() => {
+  return props.experience?.title || ''
+})
+
+// 体験説明を取得
+const experienceDescription = computed(() => {
+  return props.experience?.description || ''
+})
+
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
   const items = props.order?.items?.filter((item: OrderItem): boolean => {
     return item.fulfillmentId === fulfillmentId
@@ -1025,11 +1078,59 @@ const onSubmitRefund = (): void => {
             体験予約詳細
           </v-card-title>
           <v-card-text class="pa-6">
+            <!-- Experience Title -->
+            <div
+              v-if="experienceTitle"
+              class="mb-4"
+            >
+              <h3 class="text-h6 font-weight-bold mb-1">
+                体験名
+              </h3>
+              <p class="text-body-1 mb-0">
+                {{ experienceTitle }}
+              </p>
+            </div>
+            <!-- Experience Description -->
+            <div
+              v-if="experienceDescription"
+              class="mb-4"
+            >
+              <div class="mb-2">
+                <h4 class="text-subtitle-1 font-weight-medium text-grey-darken-2">
+                  体験説明
+                </h4>
+              </div>
+              <div class="text-body-1 pa-4 bg-grey-lighten-5 rounded">
+                {{ experienceDescription }}
+              </div>
+            </div>
+            <!-- Experience Details -->
             <organisms-order-experience-details
               :experience="props.order?.experience"
               :loading="loading"
               variant="default"
             />
+          </v-card-text>
+        </v-card>
+
+        <!-- User Request Information -->
+        <v-card
+          v-if="orderRequest"
+          elevation="2"
+          class="mb-4"
+        >
+          <v-card-title class="bg-grey-lighten-4 py-4">
+            <v-icon
+              class="mr-2"
+              color="primary"
+              :icon="mdiAlert"
+            />
+            ユーザーからの要望
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <div class="text-body-1">
+              {{ orderRequest }}
+            </div>
           </v-card-text>
         </v-card>
       </v-col>

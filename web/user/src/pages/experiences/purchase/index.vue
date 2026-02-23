@@ -181,6 +181,7 @@ const formData = ref<GuestCheckoutExperienceRequest>({
   callbackUrl: '',
   total: targetExperience.value?.total || 0,
   email: user.value?.email || '',
+  orderRequest: '',
   billingAddress: {
     lastname: user.value?.lastname || '',
     firstname: user.value?.firstname || '',
@@ -474,6 +475,23 @@ useSeoMeta(
               v-model="formData.creditCard"
               form-id=""
             />
+
+            <!-- 備考欄 -->
+            <div class="mt-6">
+              <label
+                for="orderRequest"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {{ dt("orderRequestLabel") }}
+              </label>
+              <textarea
+                id="orderRequest"
+                v-model="formData.orderRequest"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main focus:border-transparent"
+                :placeholder="dt('orderRequestPlaceholder')"
+              />
+            </div>
           </form>
 
           <!-- 購入内容確認 -->
