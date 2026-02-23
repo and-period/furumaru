@@ -105,6 +105,7 @@ const props = defineProps({
       metadata: {
         pickupAt: 0,
         pickupLocation: '',
+        orderRequest: '',
       },
     }),
   },
@@ -625,6 +626,11 @@ const getPickupLocation = (): string => {
   return props.order?.metadata?.pickupLocation || '未指定'
 }
 
+// ユーザー要望を取得
+const getOrderRequest = (): string => {
+  return props.order?.metadata?.orderRequest || ''
+}
+
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
   const items = props.order?.items?.filter((item: OrderItem): boolean => {
     return item.fulfillmentId === fulfillmentId
@@ -1030,6 +1036,27 @@ const onSubmitRefund = (): void => {
               :loading="loading"
               variant="default"
             />
+          </v-card-text>
+        </v-card>
+
+        <!-- User Request Information -->
+        <v-card
+          v-if="getOrderRequest()"
+          elevation="2"
+          class="mb-4"
+        >
+          <v-card-title class="bg-grey-lighten-4 py-4">
+            <v-icon
+              class="mr-2"
+              color="primary"
+              :icon="mdiAlert"
+            />
+            ユーザーからの要望
+          </v-card-title>
+          <v-card-text class="pa-6">
+              <div class="text-body-1">
+                {{ getOrderRequest() }}
+              </div>
           </v-card-text>
         </v-card>
       </v-col>
