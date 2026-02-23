@@ -427,8 +427,11 @@ const calcStyle = (i: number) => {
           class="px-4 py-2 cursor-pointer"
           :class="{ 'bg-grey-lighten-4': !isGroupExpanded(group.title) }"
           role="button"
+          tabindex="0"
           :aria-expanded="isGroupExpanded(group.title).toString()"
           @click="toggleGroup(group.title)"
+          @keydown.enter.prevent="toggleGroup(group.title)"
+          @keydown.space.prevent="toggleGroup(group.title)"
         >
           <template #prepend>
             <v-icon
@@ -496,30 +499,32 @@ const calcStyle = (i: number) => {
 
     <div
       aria-live="polite"
-      aria-atomic="false"
+      aria-atomic="true"
+      class="sr-only"
     >
-      <v-snackbar
-        v-for="(snackbar, i) in snackbars"
-        :key="i"
-        v-model="snackbar.isOpen"
-        :color="snackbar.color"
-        location="top"
-        variant="elevated"
-        :timeout="snackbar.timeout"
-        :style="calcStyle(i)"
-      >
-        {{ snackbar.message }}
-        <template #actions>
-          <v-btn
-            variant="text"
-            color="white"
-            @click="commonStore.hideSnackbar(i)"
-          >
-            閉じる
-          </v-btn>
-        </template>
-      </v-snackbar>
+      {{ snackbars.map(s => s.message).join(', ') }}
     </div>
+    <v-snackbar
+      v-for="(snackbar, i) in snackbars"
+      :key="i"
+      v-model="snackbar.isOpen"
+      :color="snackbar.color"
+      location="top"
+      variant="elevated"
+      :timeout="snackbar.timeout"
+      :style="calcStyle(i)"
+    >
+      {{ snackbar.message }}
+      <template #actions>
+        <v-btn
+          variant="text"
+          color="white"
+          @click="commonStore.hideSnackbar(i)"
+        >
+          閉じる
+        </v-btn>
+      </template>
+    </v-snackbar>
 
     <v-main id="main-content">
       <v-container :class="{ 'container-wide': isWide }">
@@ -534,6 +539,18 @@ const calcStyle = (i: number) => {
 </template>
 
 <style lang="scss" scoped>
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .container-wide {
   max-width: 1200px;
 }

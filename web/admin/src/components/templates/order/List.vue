@@ -410,11 +410,12 @@ const onSubmitExport = (): void => {
 
     <v-card-text>
       <v-skeleton-loader
-        v-if="loading"
+        v-if="loading && props.orders.length === 0"
         type="table-heading, table-row-divider@5"
       />
       <v-data-table-server
         v-else
+        :loading="loading"
         :headers="headers"
         :items="props.orders"
         :items-per-page="props.tableItemsPerPage"
