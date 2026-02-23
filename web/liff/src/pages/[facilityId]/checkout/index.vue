@@ -212,6 +212,13 @@ const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
 const PAYMENT_METHOD_CARD = PaymentMethodType.PaymentMethodTypeCreditCard; // クレジットカード決済（仮のコード）
 
+const priceFormatter = (price: number): string => {
+  return new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'JPY',
+  }).format(price);
+};
+
 const handlePay = async () => {
   submitError.value = null;
   if (!orderSummary.value.coordinator) return;
@@ -321,6 +328,20 @@ const handlePay = async () => {
               <button @click="handleClickCancelPromotionCodeButton">
                 解除
               </button>
+            </div>
+            <div class="mt-2 rounded-md bg-orange/5 p-3 text-sm text-gray-700">
+              <div class="flex items-center justify-between">
+                <span>商品合計</span>
+                <span>{{ priceFormatter(orderSummary.subtotal) }}</span>
+              </div>
+              <div class="mt-1 flex items-center justify-between text-orange">
+                <span>クーポン割引</span>
+                <span>-{{ priceFormatter(orderSummary.discount) }}</span>
+              </div>
+              <div class="mt-1 flex items-center justify-between font-semibold">
+                <span>適用後合計</span>
+                <span>{{ priceFormatter(orderSummary.total) }}</span>
+              </div>
             </div>
           </template>
 
