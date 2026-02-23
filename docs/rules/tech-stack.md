@@ -3,7 +3,7 @@
 ## バックエンド
 
 ### 言語・フレームワーク
-- **言語**: Go 1.25.1
+- **言語**: Go 1.26
 - **HTTPフレームワーク**: Gin
 - **内部通信**: 直接関数呼び出し
 - **ORマッパー**: GORM
@@ -67,7 +67,8 @@
 
 ### テスト
 - **Go**: testing標準パッケージ + testify
-- **モック**: gomock
+- **モック**: go.uber.org/mock (gomock)
+- **DBテスト**: testcontainers-go
 - **フロントエンド**: Vitest
 
 ### API仕様

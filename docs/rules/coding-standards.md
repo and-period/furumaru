@@ -35,8 +35,9 @@
 ### テスト
 - テストファイルは`*_test.go`
 - テーブル駆動テストを使用
-- モックは`gomock`で生成
+- モックは`go.uber.org/mock`で生成（`//go:generate go tool mockgen`）
 - テストカバレッジは80%以上を目標
+- DBテストは`testcontainers-go`によるコンテナベーステストを推奨
 
 ## フロントエンド（Vue.js/Nuxt）
 

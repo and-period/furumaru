@@ -78,6 +78,56 @@ func (r *productRepository) Get(ctx context.Context, id string) (*entity.Product
 }
 ```
 
+
+### JSONカラム処理パターン
+
+#### mysql.JSONColumn[T] ジェネリック型
+GORMのJSONカラムには `mysql.JSONColumn[T]` を使用する。各モジュールで独自のラッパー型を作成しない。
+
+```go
+import "github.com/and-period/furumaru/api/pkg/mysql"
+
+// エンティティ定義
+type Product struct {
+    ID          string                         `gorm:"primaryKey"`
+    Media       mysql.JSONColumn[[]Media]      `gorm:""`
+    RecommendAt mysql.JSONColumn[[]time.Time]  `gorm:""`
+}
+
+// 値の作成
+product := &Product{
+    Media: mysql.NewJSONColumn([]Media{{URL: "https://example.com/img.jpg"}}),
+}
+
+// Update時のValue取得
+val, _ := mysql.NewJSONColumn(media).Value()
+updates["media"] = val
+```
+
+### testcontainers-go パターン
+
+#### コンテナベースDBテスト
+テストでは `mysql.NewContainerDB()` を使用してMySQL/TiDBコンテナを自動起動する。
+
+```go
+func TestMain(m *testing.M) {
+    if !mysql.ShouldUseContainerDB() {
+        // CI環境など既存DB使用時
+        testDB, cleanup, _ = newTestDB(ctx)
+    } else {
+        // ローカル開発時: testcontainersでDB自動起動
+        testDB, cleanup, _ = mysql.NewContainerDB(ctx,
+            mysql.WithSchemaDir("path/to/schema"),
+        )
+    }
+    defer cleanup()
+    os.Exit(m.Run())
+}
+```
+
+- `ShouldUseContainerDB()`: `DB_DRIVER` 環境変数が設定されていない場合に `true` を返す
+- `WithSchemaDir()`: スキーマSQLファイルを自動実行してテーブルを初期化
+
 ## Vue.js/Nuxt 実装パターン
 
 ### Composition API パターン
