@@ -321,7 +321,7 @@ func (r *registry) injectServices() { ... }
 - [ ] 各移行後のクエリ性能をベンチマーク
 - [ ] 全テストが PASS することを確認
 
-### 4.2 JSON カラム処理の統一 (PRs #3311, #3313, #3314) ✅ 完了
+### 4.2 JSON カラム処理の統一 (PRs #3311, #3313, #3314, 最終クリーンアップ含む) ✅ 完了
 
 **背景**: 7箇所以上で internalXXX 構造体による JSON ラッパー型が重複実装されている。カスタム GORM Type で統一することで、重複を排除し保守性を向上させる。
 
@@ -411,8 +411,8 @@ func TestMain(m *testing.M) {
 - [x] testcontainers-go の依存追加 (PR #3312)
 - [x] TiDB/MySQL コンテナ起動ヘルパーの実装 (PR #3312)
 - [x] TestMain パターンの共通化 (pkg/testutil 等) (PR #3312)
-- [ ] User モジュールへの試験導入
-- [ ] 他モジュールへの展開
+- [x] User モジュールへの試験導入 (PR #3324)
+- [x] 他モジュールへの展開 (messenger PR #3318, media PR #3323, store+user+CI fix PR #3324)
 - [ ] CI パイプラインの更新 (Docker-in-Docker 対応)
 - [ ] テスト実行時間の計測・最適化
 
@@ -426,11 +426,11 @@ func TestMain(m *testing.M) {
 - 既存テストを段階的に修正する
 
 **ToDo**:
-- [ ] `foreign_key_checks = 0` の使用箇所を洗い出し
-- [ ] テストデータ投入順序の依存関係を整理
-- [ ] テストヘルパーにデータ投入順序を組み込み
-- [ ] 段階的に foreign_key_checks を有効化
-- [ ] 全テストが外部キー制約有効状態で PASS することを確認
+- [x] `foreign_key_checks = 0` の使用箇所を洗い出し (PR #3315)
+- [x] テストデータ投入順序の依存関係を整理 (PR #3315)
+- [x] テストヘルパーにデータ投入順序を組み込み (PR #3315)
+- [x] 段階的に foreign_key_checks を有効化 (PR #3315)
+- [x] 全テストが外部キー制約有効状態で PASS することを確認 (PR #3315)
 
 ---
 

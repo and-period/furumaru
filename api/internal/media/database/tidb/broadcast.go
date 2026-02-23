@@ -2,7 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -144,12 +143,12 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 		updates["archive_fixed"] = params.ArchiveFixed
 	}
 	if params.UpdateBroadcastArchiveParams != nil {
-		metadata, err := json.Marshal(params.ArchiveMetadata)
+		metadataVal, err := mysql.NewJSONColumn(params.ArchiveMetadata).Value()
 		if err != nil {
 			return dbError(err)
 		}
 		updates["archive_url"] = params.UpdateBroadcastArchiveParams.ArchiveURL
-		updates["archive_metadata"] = metadata
+		updates["archive_metadata"] = metadataVal
 	}
 	if params.UpsertYoutubeBroadcastParams != nil {
 		updates["youtube_account"] = params.YoutubeAccount

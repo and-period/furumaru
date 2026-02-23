@@ -2,8 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -118,19 +116,19 @@ func (s *shop) GetByCoordinatorID(ctx context.Context, coordinatorID string, fie
 }
 
 func (s *shop) Update(ctx context.Context, shopID string, params *database.UpdateShopParams) error {
-	productTypeIDs, err := json.Marshal(params.ProductTypeIDs)
+	productTypeIDsVal, err := mysql.NewJSONColumn(params.ProductTypeIDs).Value()
 	if err != nil {
-		return fmt.Errorf("tidb: failed to marshal product type ids: %w", err)
+		return dbError(err)
 	}
-	businessDays, err := json.Marshal(params.BusinessDays)
+	businessDaysVal, err := mysql.NewJSONColumn(params.BusinessDays).Value()
 	if err != nil {
-		return fmt.Errorf("tidb: failed to marshal business days: %w", err)
+		return dbError(err)
 	}
 
 	updates := map[string]interface{}{
 		"name":             params.Name,
-		"product_type_ids": productTypeIDs,
-		"business_days":    businessDays,
+		"product_type_ids": productTypeIDsVal,
+		"business_days":    businessDaysVal,
 		"updated_at":       s.now(),
 	}
 	stmt := s.db.DB.WithContext(ctx).Table(shopTable).Where("id = ?", shopID)

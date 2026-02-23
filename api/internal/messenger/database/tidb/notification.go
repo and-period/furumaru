@@ -2,7 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -121,11 +120,11 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 			"updated_at":   n.now(),
 		}
 		if len(params.Targets) > 0 {
-			targets, err := json.Marshal(params.Targets)
+			targetsVal, err := mysql.NewJSONColumn(params.Targets).Value()
 			if err != nil {
 				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 			}
-			updates["targets"] = targets
+			updates["targets"] = targetsVal
 		}
 		err = tx.WithContext(ctx).
 			Table(notificationTable).
