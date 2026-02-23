@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type {
+  CalcCartResponse,
   CartResponse,
   CartItem as ApiCartItem,
   Product,
@@ -126,6 +127,33 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         console.error('Failed to fetch cart:', error);
         this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
       }
+    },
+
+    // コーディネーター単位でカート金額を再計算
+    async calcCartByCoordinatorId(
+      facilityId: string,
+      coordinatorId: string,
+      cartNumber?: number,
+      promotionCode?: string,
+    ): Promise<CalcCartResponse> {
+      const runtimeConfig = useRuntimeConfig();
+      const authStore = useAuthStore();
+
+      const accessToken = authStore.token?.accessToken;
+      const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
+      const config = new FacilityConfiguration({
+        headers,
+        basePath: runtimeConfig.public.API_BASE_URL,
+        credentials: 'include',
+      });
+
+      const api = new CartApi(config);
+      return await api.facilitiesFacilityIdCartsCoordinatorIdGet({
+        facilityId,
+        coordinatorId,
+        number: cartNumber,
+        promotion: promotionCode,
+      });
     },
 
     // カートにアイテムを追加
