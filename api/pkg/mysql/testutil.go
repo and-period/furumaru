@@ -75,13 +75,28 @@ func WithSchemaDir(dir string) ContainerDBOption {
 	}
 }
 
+// ShouldUseContainerDB returns true if tests should use testcontainers
+// instead of an external database connection.
+// Returns false when:
+//   - DISABLE_CONTAINER_DB=true is set
+//   - DB_DRIVER is set (indicating an external database is configured)
+func ShouldUseContainerDB() bool {
+	if os.Getenv("DISABLE_CONTAINER_DB") == "true" {
+		return false
+	}
+	if os.Getenv("DB_DRIVER") != "" {
+		return false
+	}
+	return true
+}
+
 // NewContainerDB は testcontainers-go を使ってMySQLコンテナを起動し、
 // 接続済みの *Client とクリーンアップ関数を返す。
 //
-// 環境変数 DISABLE_CONTAINER_DB=true が設定されている場合は、
+// ShouldUseContainerDB() が false の場合は、
 // 従来の環境変数ベースの外部DB接続にフォールバックする。
 func NewContainerDB(ctx context.Context, opts ...ContainerDBOption) (*Client, func(), error) {
-	if os.Getenv("DISABLE_CONTAINER_DB") == "true" {
+	if !ShouldUseContainerDB() {
 		return newExternalDB()
 	}
 
