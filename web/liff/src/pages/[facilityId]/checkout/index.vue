@@ -106,6 +106,7 @@ const promotionCodeFormValue = ref('');
 const validPromotion = ref(false);
 const invalidPromotion = ref(false);
 const isApplyingPromotion = ref(false);
+const recalculateErrorMessage = ref<string | null>(null);
 
 const recalculateCart = async (promotionCode?: string) => {
   if (!summary.value.coordinatorId) {
@@ -125,9 +126,11 @@ const initializeCart = async () => {
   try {
     await shoppingCartStore.getCart(facilityId.value);
     await recalculateCart();
+    recalculateErrorMessage.value = null;
   }
   catch (e) {
     console.error('Failed to initialize cart:', e);
+    recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
   }
 };
 
@@ -145,15 +148,18 @@ const handleClickUsePromotionCodeButton = async () => {
     promotionCodeFormValue.value = code;
     invalidPromotion.value = false;
     validPromotion.value = true;
+    recalculateErrorMessage.value = null;
   }
   catch {
     invalidPromotion.value = true;
     validPromotion.value = false;
     try {
       await recalculateCart();
+      recalculateErrorMessage.value = null;
     }
     catch (e) {
       console.error('Failed to reset cart pricing after invalid coupon:', e);
+      recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
     }
   }
   finally {
@@ -165,7 +171,15 @@ const handleClickCancelPromotionCodeButton = async () => {
   promotionCodeFormValue.value = '';
   invalidPromotion.value = false;
   validPromotion.value = false;
-  await recalculateCart();
+  try {
+    await recalculateCart();
+    recalculateErrorMessage.value = null;
+  }
+  catch (e) {
+    console.error('Failed to recalculate cart after coupon cancellation:', e);
+    calculatedCart.value = null;
+    recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
+  }
 };
 
 // 以前の「決済プラン情報」表示は削除し、支払いフォームを表示します。
@@ -370,6 +384,13 @@ const handlePay = async () => {
               クーポンコードが無効です
             </div>
           </template>
+
+          <div
+            v-if="recalculateErrorMessage"
+            class="mt-2 px-1 text-xs text-red-600"
+          >
+            {{ recalculateErrorMessage }}
+          </div>
 
           <!-- 受け取り日時選択 -->
           <div
