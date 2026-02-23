@@ -127,10 +127,16 @@ const handleChangeTextStyle = (level: number): void => {
     >
       <div class="d-flex align-center gap">
         <v-btn-toggle>
-          <v-btn aria-label="元に戻す" @click="editor?.chain().focus().undo().run()">
+          <v-btn
+            aria-label="元に戻す"
+            @click="editor?.chain().focus().undo().run()"
+          >
             <v-icon :icon="mdiUndo" />
           </v-btn>
-          <v-btn aria-label="やり直す" @click="editor?.chain().focus().redo().run()">
+          <v-btn
+            aria-label="やり直す"
+            @click="editor?.chain().focus().redo().run()"
+          >
             <v-icon :icon="mdiRedo" />
           </v-btn>
         </v-btn-toggle>
@@ -179,10 +185,16 @@ const handleChangeTextStyle = (level: number): void => {
         </v-btn-toggle>
 
         <v-btn-toggle>
-          <v-btn aria-label="水平線" @click="editor?.chain().focus().setHorizontalRule().run()">
+          <v-btn
+            aria-label="水平線"
+            @click="editor?.chain().focus().setHorizontalRule().run()"
+          >
             <v-icon :icon="mdiArrowSplitHorizontal" />
           </v-btn>
-          <v-btn aria-label="改行" @click="editor?.chain().focus().setHardBreak().run()">
+          <v-btn
+            aria-label="改行"
+            @click="editor?.chain().focus().setHardBreak().run()"
+          >
             <v-icon :icon="mdiKeyboardReturn" />
           </v-btn>
         </v-btn-toggle>

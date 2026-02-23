@@ -150,7 +150,10 @@ const getItems = computed(() => {
                     size="64"
                     :class="item.connected ? 'connected-avatar' : ''"
                   >
-                    <v-img :src="item.image" :alt="item.name || '認証プロバイダ'" />
+                    <v-img
+                      :src="item.image"
+                      :alt="item.name || '認証プロバイダ'"
+                    />
                     <v-icon
                       v-if="item.connected"
                       :icon="mdiCheckCircle"

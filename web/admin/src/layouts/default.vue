@@ -272,7 +272,10 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
-    <a href="#main-content" class="skip-to-content">
+    <a
+      href="#main-content"
+      class="skip-to-content"
+    >
       コンテンツにスキップ
     </a>
     <v-app-bar
