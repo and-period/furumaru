@@ -1,4 +1,4 @@
-package entity
+package collection
 
 import (
 	"slices"
@@ -105,4 +105,17 @@ func TestMapIter(t *testing.T) {
 			assert.Equal(t, tt.expect, result)
 		})
 	}
+}
+
+func TestMapIter_EarlyBreak(t *testing.T) {
+	t.Parallel()
+	items := []int{1, 2, 3}
+	result := make(map[int]int)
+	for k, v := range MapIter(items, func(i int) (int, int) { return i, i * 10 }) {
+		result[k] = v
+		if len(result) >= 1 {
+			break
+		}
+	}
+	assert.Len(t, result, 1)
 }

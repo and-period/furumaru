@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと店舗のペアを返すイテレーターを返す。
 func (ss Shops) All() iter.Seq2[int, *Shop] {
@@ -15,7 +19,7 @@ func (ss Shops) All() iter.Seq2[int, *Shop] {
 
 // IterMapByCoordinatorID はコーディネータIDをキー、店舗を値とするイテレーターを返す。
 func (ss Shops) IterMapByCoordinatorID() iter.Seq2[string, *Shop] {
-	return MapIter(ss, func(s *Shop) (string, *Shop) {
+	return collection.MapIter(ss, func(s *Shop) (string, *Shop) {
 		return s.CoordinatorID, s
 	})
 }

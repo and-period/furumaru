@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと配送設定変更履歴のペアを返すイテレーターを返す。
 func (rs ShippingRevisions) All() iter.Seq2[int, *ShippingRevision] {
@@ -15,7 +19,7 @@ func (rs ShippingRevisions) All() iter.Seq2[int, *ShippingRevision] {
 
 // IterMapByShippingID は配送設定IDをキー、配送設定変更履歴を値とするイテレーターを返す。
 func (rs ShippingRevisions) IterMapByShippingID() iter.Seq2[string, *ShippingRevision] {
-	return MapIter(rs, func(r *ShippingRevision) (string, *ShippingRevision) {
+	return collection.MapIter(rs, func(r *ShippingRevision) (string, *ShippingRevision) {
 		return r.ShippingID, r
 	})
 }

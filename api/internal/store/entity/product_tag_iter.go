@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと商品タグのペアを返すイテレーターを返す。
 func (ts ProductTags) All() iter.Seq2[int, *ProductTag] {
@@ -15,7 +19,7 @@ func (ts ProductTags) All() iter.Seq2[int, *ProductTag] {
 
 // IterMap は商品タグIDをキー、商品タグを値とするイテレーターを返す。
 func (ts ProductTags) IterMap() iter.Seq2[string, *ProductTag] {
-	return MapIter(ts, func(t *ProductTag) (string, *ProductTag) {
+	return collection.MapIter(ts, func(t *ProductTag) (string, *ProductTag) {
 		return t.ID, t
 	})
 }

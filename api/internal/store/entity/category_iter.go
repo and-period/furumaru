@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスとカテゴリのペアを返すイテレーターを返す。
 func (cs Categories) All() iter.Seq2[int, *Category] {
@@ -15,7 +19,7 @@ func (cs Categories) All() iter.Seq2[int, *Category] {
 
 // IterMapByName はカテゴリ名をキー、カテゴリを値とするイテレーターを返す。
 func (cs Categories) IterMapByName() iter.Seq2[string, *Category] {
-	return MapIter(cs, func(c *Category) (string, *Category) {
+	return collection.MapIter(cs, func(c *Category) (string, *Category) {
 		return c.Name, c
 	})
 }

@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと体験レビューのペアを返すイテレーターを返す。
 func (rs ExperienceReviews) All() iter.Seq2[int, *ExperienceReview] {
@@ -15,7 +19,7 @@ func (rs ExperienceReviews) All() iter.Seq2[int, *ExperienceReview] {
 
 // IterMap は体験レビューIDをキー、体験レビューを値とするイテレーターを返す。
 func (rs ExperienceReviews) IterMap() iter.Seq2[string, *ExperienceReview] {
-	return MapIter(rs, func(r *ExperienceReview) (string, *ExperienceReview) {
+	return collection.MapIter(rs, func(r *ExperienceReview) (string, *ExperienceReview) {
 		return r.ID, r
 	})
 }
@@ -33,7 +37,7 @@ func (rs AggregatedExperienceReviews) All() iter.Seq2[int, *AggregatedExperience
 
 // IterMap は体験IDをキー、体験レビュー集計情報を値とするイテレーターを返す。
 func (rs AggregatedExperienceReviews) IterMap() iter.Seq2[string, *AggregatedExperienceReview] {
-	return MapIter(rs, func(r *AggregatedExperienceReview) (string, *AggregatedExperienceReview) {
+	return collection.MapIter(rs, func(r *AggregatedExperienceReview) (string, *AggregatedExperienceReview) {
 		return r.ExperienceID, r
 	})
 }

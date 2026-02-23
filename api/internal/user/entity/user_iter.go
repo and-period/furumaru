@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスとユーザーのペアを返すイテレーターを返す。
 func (us Users) All() iter.Seq2[int, *User] {
@@ -15,21 +19,21 @@ func (us Users) All() iter.Seq2[int, *User] {
 
 // IterMap はユーザーIDをキー、ユーザーを値とするイテレーターを返す。
 func (us Users) IterMap() iter.Seq2[string, *User] {
-	return MapIter(us, func(u *User) (string, *User) {
+	return collection.MapIter(us, func(u *User) (string, *User) {
 		return u.ID, u
 	})
 }
 
 // IterGroupByRegistered は会員登録フラグをキー、ユーザーを値とするイテレーターを返す。
 func (us Users) IterGroupByRegistered() iter.Seq2[bool, *User] {
-	return MapIter(us, func(u *User) (bool, *User) {
+	return collection.MapIter(us, func(u *User) (bool, *User) {
 		return u.Registered, u
 	})
 }
 
 // IterGroupByUserType はユーザー種別をキー、ユーザーを値とするイテレーターを返す。
 func (us Users) IterGroupByUserType() iter.Seq2[UserType, *User] {
-	return MapIter(us, func(u *User) (UserType, *User) {
+	return collection.MapIter(us, func(u *User) (UserType, *User) {
 		return u.Type, u
 	})
 }

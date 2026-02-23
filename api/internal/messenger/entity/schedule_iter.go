@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスとスケジュールのペアを返すイテレーターを返す。
 func (ss Schedules) All() iter.Seq2[int, *Schedule] {
@@ -15,7 +19,7 @@ func (ss Schedules) All() iter.Seq2[int, *Schedule] {
 
 // IterMap はメッセージIDをキー、スケジュールを値とするイテレーターを返す。
 func (ss Schedules) IterMap() iter.Seq2[string, *Schedule] {
-	return MapIter(ss, func(s *Schedule) (string, *Schedule) {
+	return collection.MapIter(ss, func(s *Schedule) (string, *Schedule) {
 		return s.MessageID, s
 	})
 }

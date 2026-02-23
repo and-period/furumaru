@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと体験種別のペアを返すイテレーターを返す。
 func (ts ExperienceTypes) All() iter.Seq2[int, *ExperienceType] {
@@ -15,7 +19,7 @@ func (ts ExperienceTypes) All() iter.Seq2[int, *ExperienceType] {
 
 // IterMap は体験種別IDをキー、体験種別を値とするイテレーターを返す。
 func (ts ExperienceTypes) IterMap() iter.Seq2[string, *ExperienceType] {
-	return MapIter(ts, func(t *ExperienceType) (string, *ExperienceType) {
+	return collection.MapIter(ts, func(t *ExperienceType) (string, *ExperienceType) {
 		return t.ID, t
 	})
 }
