@@ -272,6 +272,9 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
+    <a href="#main-content" class="skip-to-content">
+      コンテンツにスキップ
+    </a>
     <v-app-bar
       color="primary"
       elevation="2"
@@ -508,7 +511,7 @@ const calcStyle = (i: number) => {
       </template>
     </v-snackbar>
 
-    <v-main>
+    <v-main id="main-content">
       <v-container :class="{ 'container-wide': isWide }">
         <atoms-app-breadcrumbs
           v-if="breadcrumbs.length > 1"
