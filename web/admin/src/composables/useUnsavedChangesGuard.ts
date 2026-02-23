@@ -23,6 +23,7 @@ export function useUnsavedChangesGuard<T>(
 
   const captureSnapshot = (): void => {
     snapshot.value = JSON.stringify(formData.value)
+    bypassGuard.value = false
   }
 
   const markAsSaved = (): void => {

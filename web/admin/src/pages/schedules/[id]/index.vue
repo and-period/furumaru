@@ -2,6 +2,7 @@
 import dayjs, { unix } from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import {
   useBroadcastStore,
   useCommonStore,
@@ -93,6 +94,9 @@ const openingVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(scheduleFormData)
+
 const fetchState = useAsyncData('schedule-detail', async (): Promise<void> => {
   try {
     await Promise.all([
@@ -102,6 +106,7 @@ const fetchState = useAsyncData('schedule-detail', async (): Promise<void> => {
       broadcastStore.getBroadcastByScheduleId(scheduleId),
     ])
     scheduleFormData.value = { ...schedule.value }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -255,6 +260,8 @@ const handleSubmitUpdateSchedule = async (): Promise<void> => {
   try {
     loading.value = true
     await scheduleStore.updateSchedule(scheduleId, scheduleFormData.value)
+    markAsSaved()
+    captureSnapshot()
     commonStore.addSnackbar({
       message: `${scheduleFormData.value.title}を更新しました。`,
       color: 'info',
@@ -499,54 +506,65 @@ catch (err) {
 </script>
 
 <template>
-  <templates-schedule-edit
-    v-model:selected-tab-item="selector"
-    v-model:create-live-dialog="createLiveDialog"
-    v-model:update-live-dialog="updateLiveDialog"
-    v-model:pause-dialog="pauseDialog"
-    v-model:live-mp4-dialog="liveMp4Dialog"
-    v-model:archive-mp4-dialog="archiveMp4Dialog"
-    v-model:schedule-form-data="scheduleFormData"
-    v-model:create-live-form-data="createLiveFormData"
-    v-model:update-live-form-data="updateLiveFormData"
-    v-model:mp4-form-data="mp4FormData"
-    v-model:auth-youtube-form-data="authYoutubeFormData"
-    :loading="isLoading()"
-    :updatable="updatable()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :schedule="schedule"
-    :live="selectedLive"
-    :lives="lives"
-    :broadcast="broadcast"
-    :coordinators="coordinators"
-    :producers="producers"
-    :products="products"
-    :viewer-logs="viewerLogs"
-    :total-viewers="totalViewers"
-    :auth-youtube-url="authYoutubeUrl"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :image-upload-status="imageUploadStatus"
-    :opening-video-upload-status="openingVideoUploadStatus"
-    @click:link-youtube="handleClickLinkYouTube"
-    @click:new-live="handleClickNewLive"
-    @update:thumbnail="handleUploadThumbnail"
-    @update:image="handleUploadImage"
-    @update:opening-video="handleUploadOpeningVideo"
-    @update:public="handleSubmitPublishSchedule"
-    @search:producer="handleSearchProducer"
-    @search:product="handleSearchProduct"
-    @submit:schedule="handleSubmitUpdateSchedule"
-    @submit:create-live="handleSubmitCreateLive"
-    @submit:update-live="handleSubmitUpdateLive"
-    @submit:delete-live="handleSubmitDeleteLive"
-    @submit:pause="handleSubmitPause"
-    @submit:unpause="handleSubmitUnpause"
-    @submit:activate-static-image="handleSubmitActivateStaticImage"
-    @submit:deactivate-static-image="handleSubmitDeactivateStaticImage"
-    @submit:change-input-mp4="handleSubmitChangeMp4Input"
-    @submit:change-input-rtmp="handleSubmitChangeRtmpInput"
-    @submit:upload-archive-mp4="handleSubmitUploadArchiveMp4"
-  />
+  <div>
+    <templates-schedule-edit
+      v-model:selected-tab-item="selector"
+      v-model:create-live-dialog="createLiveDialog"
+      v-model:update-live-dialog="updateLiveDialog"
+      v-model:pause-dialog="pauseDialog"
+      v-model:live-mp4-dialog="liveMp4Dialog"
+      v-model:archive-mp4-dialog="archiveMp4Dialog"
+      v-model:schedule-form-data="scheduleFormData"
+      v-model:create-live-form-data="createLiveFormData"
+      v-model:update-live-form-data="updateLiveFormData"
+      v-model:mp4-form-data="mp4FormData"
+      v-model:auth-youtube-form-data="authYoutubeFormData"
+      :loading="isLoading()"
+      :updatable="updatable()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :schedule="schedule"
+      :live="selectedLive"
+      :lives="lives"
+      :broadcast="broadcast"
+      :coordinators="coordinators"
+      :producers="producers"
+      :products="products"
+      :viewer-logs="viewerLogs"
+      :total-viewers="totalViewers"
+      :auth-youtube-url="authYoutubeUrl"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :image-upload-status="imageUploadStatus"
+      :opening-video-upload-status="openingVideoUploadStatus"
+      @click:link-youtube="handleClickLinkYouTube"
+      @click:new-live="handleClickNewLive"
+      @update:thumbnail="handleUploadThumbnail"
+      @update:image="handleUploadImage"
+      @update:opening-video="handleUploadOpeningVideo"
+      @update:public="handleSubmitPublishSchedule"
+      @search:producer="handleSearchProducer"
+      @search:product="handleSearchProduct"
+      @submit:schedule="handleSubmitUpdateSchedule"
+      @submit:create-live="handleSubmitCreateLive"
+      @submit:update-live="handleSubmitUpdateLive"
+      @submit:delete-live="handleSubmitDeleteLive"
+      @submit:pause="handleSubmitPause"
+      @submit:unpause="handleSubmitUnpause"
+      @submit:activate-static-image="handleSubmitActivateStaticImage"
+      @submit:deactivate-static-image="handleSubmitDeactivateStaticImage"
+      @submit:change-input-mp4="handleSubmitChangeMp4Input"
+      @submit:change-input-rtmp="handleSubmitChangeRtmpInput"
+      @submit:upload-archive-mp4="handleSubmitUploadArchiveMp4"
+    />
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>
