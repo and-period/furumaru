@@ -106,6 +106,7 @@ const promotionCodeFormValue = ref('');
 const validPromotion = ref(false);
 const invalidPromotion = ref(false);
 const isApplyingPromotion = ref(false);
+// カート再計算API失敗時にユーザーへ表示するメッセージ
 const recalculateErrorMessage = ref<string | null>(null);
 
 const recalculateCart = async (promotionCode?: string) => {
@@ -226,12 +227,21 @@ const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
 const PAYMENT_METHOD_CARD = PaymentMethodType.PaymentMethodTypeCreditCard; // クレジットカード決済（仮のコード）
 
-const priceFormatter = (price: number): string => {
-  return new Intl.NumberFormat('ja-JP', {
-    style: 'currency',
-    currency: 'JPY',
-  }).format(price);
-};
+const normalizedSubtotal = computed(() => {
+  // API値の異常系を考慮し、表示上は0円未満を許容しない
+  return Math.max(0, orderSummary.value.subtotal || 0);
+});
+
+const normalizedDiscount = computed(() => {
+  // 割引は正負どちらで返ってきても扱えるよう絶対値化し、商品合計を上限にする
+  const discount = Math.abs(orderSummary.value.discount || 0);
+  return Math.min(discount, normalizedSubtotal.value);
+});
+
+const normalizedTotal = computed(() => {
+  // 最終的な請求金額は0円未満にしない
+  return Math.max(0, orderSummary.value.total || 0);
+});
 
 const handlePay = async () => {
   submitError.value = null;
@@ -261,7 +271,7 @@ const handlePay = async () => {
       pickupAt: pickupAt.value,
       promotionCode: validPromotion.value ? promotionCodeFormValue.value : undefined,
       requestId: orderSummary.value.requestId,
-      total: orderSummary.value.total,
+      total: normalizedTotal.value,
     });
 
     const url = res.url || checkoutStore.redirectUrl;
@@ -329,9 +339,9 @@ const handlePay = async () => {
             :items="orderSummary.items"
             :coordinator="orderSummary.coordinator"
             :carts="orderSummary.carts"
-            :subtotal="orderSummary.subtotal"
-            :discount="orderSummary.discount"
-            :total="orderSummary.total"
+            :subtotal="normalizedSubtotal"
+            :discount="normalizedDiscount"
+            :total="normalizedTotal"
           />
 
           <template v-if="validPromotion">
@@ -342,20 +352,6 @@ const handlePay = async () => {
               <button @click="handleClickCancelPromotionCodeButton">
                 解除
               </button>
-            </div>
-            <div class="mt-2 rounded-md bg-orange/5 p-3 text-sm text-gray-700">
-              <div class="flex items-center justify-between">
-                <span>商品合計</span>
-                <span>{{ priceFormatter(orderSummary.subtotal) }}</span>
-              </div>
-              <div class="mt-1 flex items-center justify-between text-orange">
-                <span>クーポン割引</span>
-                <span>-{{ priceFormatter(orderSummary.discount) }}</span>
-              </div>
-              <div class="mt-1 flex items-center justify-between font-semibold">
-                <span>適用後合計</span>
-                <span>{{ priceFormatter(orderSummary.total) }}</span>
-              </div>
             </div>
           </template>
 

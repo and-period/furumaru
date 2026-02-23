@@ -55,6 +55,7 @@ export interface FmOrderSummaryProps {
     quantityLabel?: string
     applyButtonText?: string
     itemTotalPriceLabel?: string
+    couponDiscountLabel?: string
     shippingFeeLabel?: string
     calculateNextPageMessage?: string
     totalPriceLabel?: string
@@ -73,6 +74,7 @@ withDefaults(defineProps<FmOrderSummaryProps>(), {
     quantityLabel: '数量：',
     applyButtonText: '適用する',
     itemTotalPriceLabel: '商品合計（税込）',
+    couponDiscountLabel: 'クーポン割引',
     shippingFeeLabel: '送料',
     calculateNextPageMessage: '次のページで計算されます',
     totalPriceLabel: '合計（税込）',
@@ -89,6 +91,15 @@ const priceFormatter = (price: number): string => {
 
 const itemThumbnailAlt = (itemName: string): string => {
   return `商品画像: ${itemName}`
+}
+
+const discountFormatter = (discount: number): string => {
+  // APIの返却値が正負どちらでも「割引額」として同一表現にする
+  const normalizedDiscount = Math.abs(discount)
+  if (normalizedDiscount === 0) {
+    return priceFormatter(0)
+  }
+  return `-${priceFormatter(normalizedDiscount)}`
 }
 
 </script>
@@ -159,10 +170,7 @@ const itemThumbnailAlt = (itemName: string): string => {
         </div>
 
         <!-- Price Breakdown -->
-        <div
-          v-if="false"
-          class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
-        >
+        <div class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]">
           <!-- Subtotal -->
           <div class="col-span-2 md:col-span-1">
             {{ texts.itemTotalPriceLabel }}
@@ -171,20 +179,32 @@ const itemThumbnailAlt = (itemName: string): string => {
             {{ priceFormatter(subtotal) }}
           </div>
 
+          <!-- Discount -->
+          <template v-if="Math.abs(discount) > 0">
+            <div class="col-span-2 md:col-span-1 text-orange">
+              {{ texts.couponDiscountLabel }}
+            </div>
+            <div class="col-span-3 text-right md:col-span-1 text-orange">
+              {{ discountFormatter(discount) }}
+            </div>
+          </template>
+
           <!-- Shipping Fee -->
-          <div
-            class="col-span-2 md:col-span-1"
-          >
-            {{ texts.shippingFeeLabel }}
-          </div>
-          <div class="col-span-3 text-right md:col-span-1">
-            <template v-if="shippingFee !== undefined">
-              {{ priceFormatter(shippingFee) }}
-            </template>
-            <template v-else>
-              {{ texts.calculateNextPageMessage }}
-            </template>
-          </div>
+          <template v-if="false">
+            <div
+              class="col-span-2 md:col-span-1"
+            >
+              {{ texts.shippingFeeLabel }}
+            </div>
+            <div class="col-span-3 text-right md:col-span-1">
+              <template v-if="shippingFee !== undefined">
+                {{ priceFormatter(shippingFee) }}
+              </template>
+              <template v-else>
+                {{ texts.calculateNextPageMessage }}
+              </template>
+            </div>
+          </template>
         </div>
 
         <!-- Total -->

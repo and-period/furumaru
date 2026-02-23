@@ -118,9 +118,9 @@ export const Loading: Story = {
 // Single Item
 export const SingleItem: Story = {
   args: {
-    items: [mockItems[0]],
+    items: [],
     coordinator: mockCoordinator,
-    carts: [{ id: '1' }],
+    carts: [],
     subtotal: 3000,
     discount: 0,
     total: 3000,
