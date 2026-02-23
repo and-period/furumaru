@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
+import { useKomojuTokenize } from '@furumaru/shared'
 import { useAddressStore } from '~/store/address'
 import { useProductCheckoutStore } from '~/store/productCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -150,6 +151,12 @@ const creditCardMonthValue = computed({
   },
 })
 
+const runtimeConfig = useRuntimeConfig()
+const { tokenize } = useKomojuTokenize(
+  runtimeConfig.public.KOMOJU_HOST,
+  runtimeConfig.public.KOMOJU_PUBLISHABLE_KEY,
+)
+
 const checkoutError = ref<string>('')
 const validPromotionCode = ref<boolean>(false)
 
@@ -169,16 +176,36 @@ const handleClickPreviousStepButton = () => {
  */
 const doCheckout = async () => {
   try {
-    const url = await guestCheckout({
+    const formData = {
       ...checkoutFormData.value,
       boxNumber: cartNumber.value ?? 0,
-    })
+    }
+
+    // クレジットカード決済の場合、トークン化してから送信
+    if (formData.paymentMethod === 2 && formData.creditCard) {
+      const token = await tokenize({
+        name: formData.creditCard.name,
+        number: formData.creditCard.number ?? '',
+        month: formData.creditCard.month ?? 0,
+        year: formData.creditCard.year ?? 0,
+        verificationValue: formData.creditCard.verificationValue ?? '',
+      })
+      formData.creditCard = {
+        token,
+        name: formData.creditCard.name,
+      }
+    }
+
+    const url = await guestCheckout(formData)
     console.log('debug', 'doCheckout', url)
     addressStore.$reset()
     window.location.href = url
   }
   catch (error) {
     if (error instanceof ApiBaseError) {
+      checkoutError.value = error.message
+    }
+    else if (error instanceof Error) {
       checkoutError.value = error.message
     }
   }

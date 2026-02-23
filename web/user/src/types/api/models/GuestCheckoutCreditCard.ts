@@ -30,25 +30,31 @@ export interface GuestCheckoutCreditCard {
      * @type {string}
      * @memberof GuestCheckoutCreditCard
      */
-    number: string;
+    number?: string;
+    /**
+     * カードトークン（KOMOJU Tokens API で取得）
+     * @type {string}
+     * @memberof GuestCheckoutCreditCard
+     */
+    token?: string;
     /**
      * 有効期限（月）
      * @type {number}
      * @memberof GuestCheckoutCreditCard
      */
-    month: number;
+    month?: number;
     /**
      * 有効期限（年）
      * @type {number}
      * @memberof GuestCheckoutCreditCard
      */
-    year: number;
+    year?: number;
     /**
      * セキュリティコード
      * @type {string}
      * @memberof GuestCheckoutCreditCard
      */
-    verificationValue: string;
+    verificationValue?: string;
 }
 
 /**
@@ -56,10 +62,6 @@ export interface GuestCheckoutCreditCard {
  */
 export function instanceOfGuestCheckoutCreditCard(value: object): value is GuestCheckoutCreditCard {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('number' in value) || value['number'] === undefined) return false;
-    if (!('month' in value) || value['month'] === undefined) return false;
-    if (!('year' in value) || value['year'] === undefined) return false;
-    if (!('verificationValue' in value) || value['verificationValue'] === undefined) return false;
     return true;
 }
 
@@ -72,9 +74,10 @@ export function GuestCheckoutCreditCardFromJSONTyped(json: any, ignoreDiscrimina
         return json;
     }
     return {
-        
+
         'name': json['name'],
         'number': json['number'],
+        'token': json['token'],
         'month': json['month'],
         'year': json['year'],
         'verificationValue': json['verificationValue'],
@@ -86,9 +89,10 @@ export function GuestCheckoutCreditCardToJSON(value?: GuestCheckoutCreditCard | 
         return value;
     }
     return {
-        
+
         'name': value['name'],
         'number': value['number'],
+        'token': value['token'],
         'month': value['month'],
         'year': value['year'],
         'verificationValue': value['verificationValue'],

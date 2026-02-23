@@ -4,4 +4,5 @@ export interface CreditCardData {
   month: number
   year: number
   verificationValue: string
+  token?: string
 }

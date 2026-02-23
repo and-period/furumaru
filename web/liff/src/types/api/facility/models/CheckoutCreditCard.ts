@@ -24,7 +24,7 @@ export interface CheckoutCreditCard {
      * @type {number}
      * @memberof CheckoutCreditCard
      */
-    month: number;
+    month?: number;
     /**
      * カード名義
      * @type {string}
@@ -36,30 +36,32 @@ export interface CheckoutCreditCard {
      * @type {string}
      * @memberof CheckoutCreditCard
      */
-    number: string;
+    number?: string;
+    /**
+     * カードトークン（KOMOJU Tokens API で取得）
+     * @type {string}
+     * @memberof CheckoutCreditCard
+     */
+    token?: string;
     /**
      * セキュリティコード
      * @type {string}
      * @memberof CheckoutCreditCard
      */
-    verificationValue: string;
+    verificationValue?: string;
     /**
      * 有効期限（年）
      * @type {number}
      * @memberof CheckoutCreditCard
      */
-    year: number;
+    year?: number;
 }
 
 /**
  * Check if a given object implements the CheckoutCreditCard interface.
  */
 export function instanceOfCheckoutCreditCard(value: object): value is CheckoutCreditCard {
-    if (!('month' in value) || value['month'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('number' in value) || value['number'] === undefined) return false;
-    if (!('verificationValue' in value) || value['verificationValue'] === undefined) return false;
-    if (!('year' in value) || value['year'] === undefined) return false;
     return true;
 }
 
@@ -72,10 +74,11 @@ export function CheckoutCreditCardFromJSONTyped(json: any, ignoreDiscriminator: 
         return json;
     }
     return {
-        
+
         'month': json['month'],
         'name': json['name'],
         'number': json['number'],
+        'token': json['token'],
         'verificationValue': json['verificationValue'],
         'year': json['year'],
     };
@@ -91,10 +94,11 @@ export function CheckoutCreditCardToJSONTyped(value?: CheckoutCreditCard | null,
     }
 
     return {
-        
+
         'month': value['month'],
         'name': value['name'],
         'number': value['number'],
+        'token': value['token'],
         'verificationValue': value['verificationValue'],
         'year': value['year'],
     };

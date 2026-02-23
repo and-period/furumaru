@@ -55,28 +55,43 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	cardParams := &entity.NewCreditCardParams{
-		Name:   in.Name,
-		Number: in.Number,
-		Month:  in.Month,
-		Year:   in.Year,
-		CVV:    in.VerificationValue,
-	}
-	card := entity.NewCreditCard(cardParams)
-	if err := card.Validate(s.now()); err != nil {
-		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
-		in := &payment.OrderCreditCardParams{
-			SessionID:         sessionID,
-			Name:              card.Name,
-			Number:            card.Number,
-			Month:             card.Month,
-			Year:              card.Year,
-			VerificationValue: card.CVV,
-			Email:             params.customer.Email(),
+	var payFn func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error)
+	if in.Token != "" {
+		// トークンベース決済（PCI DSS 4.0 準拠）
+		payFn = func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+			p := &payment.OrderCreditCardParams{
+				SessionID: sessionID,
+				Token:     in.Token,
+				Name:      in.Name,
+				Email:     params.customer.Email(),
+			}
+			return s.payment.OrderCreditCard(ctx, p)
 		}
-		return s.payment.OrderCreditCard(ctx, in)
+	} else {
+		// 従来フロー（後方互換）
+		cardParams := &entity.NewCreditCardParams{
+			Name:   in.Name,
+			Number: in.Number,
+			Month:  in.Month,
+			Year:   in.Year,
+			CVV:    in.VerificationValue,
+		}
+		card := entity.NewCreditCard(cardParams)
+		if err := card.Validate(s.now()); err != nil {
+			return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		}
+		payFn = func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+			p := &payment.OrderCreditCardParams{
+				SessionID:         sessionID,
+				Name:              card.Name,
+				Number:            card.Number,
+				Month:             card.Month,
+				Year:              card.Year,
+				VerificationValue: card.CVV,
+				Email:             params.customer.Email(),
+			}
+			return s.payment.OrderCreditCard(ctx, p)
+		}
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,

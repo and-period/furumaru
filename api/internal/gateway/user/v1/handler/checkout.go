@@ -245,6 +245,7 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 		}
 		in := &store.CheckoutCreditCardInput{
 			CheckoutDetail:    *params.detail,
+			Token:             params.creditCard.Token,
 			Name:              params.creditCard.Name,
 			Number:            params.creditCard.Number,
 			Month:             params.creditCard.Month,

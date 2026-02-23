@@ -17,6 +17,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
+    "@furumaru/shared": "link:../shared",
     "@googlemaps/google-maps-services-js": "^3.4.2",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/robots": "^5.7.0",
