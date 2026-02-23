@@ -34,11 +34,12 @@ type CheckoutExperienceRequest struct {
 }
 
 type CheckoutCreditCard struct {
-	Name              string `json:"name" validate:"required"`                         // カード名義
-	Number            string `json:"number" validate:"required,credit_card"`           // カード番号
-	Month             int64  `json:"month" validate:"min=1,max=12"`                    // 有効期限（月）
-	Year              int64  `json:"year" validate:"min=2000,max=2100"`                // 有効期限（年）
-	VerificationValue string `json:"verificationValue" validate:"min=3,max=4,numeric"` // セキュリティコード
+	Token             string `json:"token"`                                                                  // カードトークン（KOMOJU Tokens API で取得）
+	Name              string `json:"name" validate:"required"`                                               // カード名義
+	Number            string `json:"number" validate:"required_without=Token,omitempty,credit_card"`         // カード番号
+	Month             int64  `json:"month" validate:"required_without=Token,omitempty,min=1,max=12"`         // 有効期限（月）
+	Year              int64  `json:"year" validate:"required_without=Token,omitempty,min=2000,max=2100"`     // 有効期限（年）
+	VerificationValue string `json:"verificationValue" validate:"required_without=Token,omitempty,min=3,max=4,numeric"` // セキュリティコード
 }
 
 type CheckoutResponse struct {

@@ -39,6 +39,8 @@ export default defineNuxtConfig({
       LIFF_ID: process.env.LIFF_ID,
       VERSION: pkg.version || '0.1.0',
       API_BASE_URL: process.env.API_BASE_URL,
+      KOMOJU_PUBLISHABLE_KEY: process.env.NUXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || '',
+      KOMOJU_HOST: process.env.NUXT_PUBLIC_KOMOJU_HOST || 'https://komoju.com',
     },
   },
   srcDir: 'src',

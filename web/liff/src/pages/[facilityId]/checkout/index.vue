@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FmOrderSummary, FmCreditCardForm } from '@furumaru/shared';
+import { FmOrderSummary, FmCreditCardForm, useKomojuTokenize } from '@furumaru/shared';
 import type { CreditCardData } from '@furumaru/shared';
 import { useShoppingCartStore } from '~/stores/shopping';
 import { useCheckoutStore } from '~/stores/checkout';
@@ -223,6 +223,12 @@ const pickupAt = computed<number>(() => {
   return 0;
 });
 
+const runtimeConfig = useRuntimeConfig();
+const { tokenize } = useKomojuTokenize(
+  runtimeConfig.public.KOMOJU_HOST,
+  runtimeConfig.public.KOMOJU_PUBLISHABLE_KEY,
+);
+
 const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
 const PAYMENT_METHOD_CARD = PaymentMethodType.PaymentMethodTypeCreditCard; // クレジットカード決済（仮のコード）
@@ -258,15 +264,15 @@ const handlePay = async () => {
     const facilityId = String(route.params.facilityId || '');
     const callbackUrl = `${window.location.origin}/${facilityId}/complete`;
 
+    // トークン化してから送信
+    const token = await tokenize(creditCard.value);
+
     const res = await checkoutStore.startCheckout(facilityId, {
       callbackUrl,
       paymentMethod: PAYMENT_METHOD_CARD,
       creditCard: {
+        token,
         name: creditCard.value.name,
-        number: creditCard.value.number,
-        month: creditCard.value.month,
-        year: creditCard.value.year,
-        verificationValue: creditCard.value.verificationValue,
       },
       pickupAt: pickupAt.value,
       promotionCode: validPromotion.value ? promotionCodeFormValue.value : undefined,

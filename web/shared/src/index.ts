@@ -10,3 +10,4 @@ export type {
   Promotion 
 } from './components/FmOrderSummary.vue';
 export type { CreditCardData } from './types/index';
+export { useKomojuTokenize } from './composables/useKomojuTokenize';

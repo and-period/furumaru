@@ -94,11 +94,12 @@ type GetCheckoutStateInput struct {
 
 type CheckoutCreditCardInput struct {
 	CheckoutDetail
+	Token             string `validate:"required_without=Number"`
 	Name              string `validate:"required"`
-	Number            string `validate:"required,credit_card"`
-	Month             int64  `validate:"min=1,max=12"`
-	Year              int64  `validate:"min=2000,max=2100"`
-	VerificationValue string `validate:"min=3,max=4,numeric"`
+	Number            string `validate:"required_without=Token,omitempty,credit_card"`
+	Month             int64  `validate:"required_without=Token,omitempty,min=1,max=12"`
+	Year              int64  `validate:"required_without=Token,omitempty,min=2000,max=2100"`
+	VerificationValue string `validate:"required_without=Token,omitempty,min=3,max=4,numeric"`
 }
 
 type CheckoutPayPayInput struct {
