@@ -3,6 +3,8 @@ package entity
 import (
 	"iter"
 	"time"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
 )
 
 // All はインデックスと注文履歴のペアを返すイテレーターを返す。
@@ -18,7 +20,7 @@ func (os Orders) All() iter.Seq2[int, *Order] {
 
 // IterMap は注文履歴IDをキー、注文履歴を値とするイテレーターを返す。
 func (os Orders) IterMap() iter.Seq2[string, *Order] {
-	return MapIter(os, func(o *Order) (string, *Order) {
+	return collection.MapIter(os, func(o *Order) (string, *Order) {
 		return o.ID, o
 	})
 }
@@ -36,7 +38,7 @@ func (os AggregatedUserOrders) All() iter.Seq2[int, *AggregatedUserOrder] {
 
 // IterMap はユーザーIDをキー、注文履歴集計情報を値とするイテレーターを返す。
 func (os AggregatedUserOrders) IterMap() iter.Seq2[string, *AggregatedUserOrder] {
-	return MapIter(os, func(o *AggregatedUserOrder) (string, *AggregatedUserOrder) {
+	return collection.MapIter(os, func(o *AggregatedUserOrder) (string, *AggregatedUserOrder) {
 		return o.UserID, o
 	})
 }
@@ -54,7 +56,7 @@ func (ps AggregatedOrderPayments) All() iter.Seq2[int, *AggregatedOrderPayment] 
 
 // IterMap は支払い種別をキー、支払い情報別集計情報を値とするイテレーターを返す。
 func (ps AggregatedOrderPayments) IterMap() iter.Seq2[PaymentMethodType, *AggregatedOrderPayment] {
-	return MapIter(ps, func(p *AggregatedOrderPayment) (PaymentMethodType, *AggregatedOrderPayment) {
+	return collection.MapIter(ps, func(p *AggregatedOrderPayment) (PaymentMethodType, *AggregatedOrderPayment) {
 		return p.PaymentMethodType, p
 	})
 }
@@ -72,7 +74,7 @@ func (os AggregatedOrderPromotions) All() iter.Seq2[int, *AggregatedOrderPromoti
 
 // IterMap はプロモーションIDをキー、プロモーション利用履歴集計情報を値とするイテレーターを返す。
 func (os AggregatedOrderPromotions) IterMap() iter.Seq2[string, *AggregatedOrderPromotion] {
-	return MapIter(os, func(o *AggregatedOrderPromotion) (string, *AggregatedOrderPromotion) {
+	return collection.MapIter(os, func(o *AggregatedOrderPromotion) (string, *AggregatedOrderPromotion) {
 		return o.PromotionID, o
 	})
 }
@@ -90,7 +92,7 @@ func (os AggregatedPeriodOrders) All() iter.Seq2[int, *AggregatedPeriodOrder] {
 
 // IterMapByPeriod は期間をキー、期間別注文履歴集計情報を値とするイテレーターを返す。
 func (os AggregatedPeriodOrders) IterMapByPeriod() iter.Seq2[time.Time, *AggregatedPeriodOrder] {
-	return MapIter(os, func(o *AggregatedPeriodOrder) (time.Time, *AggregatedPeriodOrder) {
+	return collection.MapIter(os, func(o *AggregatedPeriodOrder) (time.Time, *AggregatedPeriodOrder) {
 		return o.Period, o
 	})
 }

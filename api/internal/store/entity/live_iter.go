@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスとライブ配信のペアを返すイテレーターを返す。
 func (ls Lives) All() iter.Seq2[int, *Live] {
@@ -15,7 +19,7 @@ func (ls Lives) All() iter.Seq2[int, *Live] {
 
 // IterMap はライブ配信IDをキー、ライブ配信を値とするイテレーターを返す。
 func (ls Lives) IterMap() iter.Seq2[string, *Live] {
-	return MapIter(ls, func(l *Live) (string, *Live) {
+	return collection.MapIter(ls, func(l *Live) (string, *Live) {
 		return l.ID, l
 	})
 }

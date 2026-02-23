@@ -4,6 +4,7 @@ import (
 	"iter"
 
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/collection"
 )
 
 // All はインデックスと買い物かごのペアを返すイテレーターを返す。
@@ -20,7 +21,7 @@ func (bs CartBaskets) All() iter.Seq2[int, *CartBasket] {
 // IterFilterByCoordinatorID は指定されたコーディネータIDに一致する買い物かごを返すイテレーターを返す。
 func (bs CartBaskets) IterFilterByCoordinatorID(coordinatorIDs ...string) iter.Seq[*CartBasket] {
 	s := set.New(coordinatorIDs...)
-	return FilterIter(bs, func(b *CartBasket) bool {
+	return collection.FilterIter(bs, func(b *CartBasket) bool {
 		return s.Contains(b.CoordinatorID)
 	})
 }
@@ -30,11 +31,11 @@ func (bs CartBaskets) IterFilterByCoordinatorID(coordinatorIDs ...string) iter.S
 func (bs CartBaskets) IterFilterByBoxNumber(targets ...int64) iter.Seq[*CartBasket] {
 	s := set.New(targets...)
 	if s.Contains(0) {
-		return FilterIter(bs, func(_ *CartBasket) bool {
+		return collection.FilterIter(bs, func(_ *CartBasket) bool {
 			return true
 		})
 	}
-	return FilterIter(bs, func(b *CartBasket) bool {
+	return collection.FilterIter(bs, func(b *CartBasket) bool {
 		return s.Contains(b.BoxNumber)
 	})
 }
@@ -52,7 +53,7 @@ func (is CartItems) All() iter.Seq2[int, *CartItem] {
 
 // IterMapByProductID は商品IDをキー、カートアイテムを値とするイテレーターを返す。
 func (is CartItems) IterMapByProductID() iter.Seq2[string, *CartItem] {
-	return MapIter(is, func(item *CartItem) (string, *CartItem) {
+	return collection.MapIter(is, func(item *CartItem) (string, *CartItem) {
 		return item.ProductID, item
 	})
 }

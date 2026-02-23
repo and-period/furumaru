@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと管理者のペアを返すイテレーターを返す。
 func (as Admins) All() iter.Seq2[int, *Admin] {
@@ -15,14 +19,14 @@ func (as Admins) All() iter.Seq2[int, *Admin] {
 
 // IterMap は管理者IDをキー、管理者を値とするイテレーターを返す。
 func (as Admins) IterMap() iter.Seq2[string, *Admin] {
-	return MapIter(as, func(a *Admin) (string, *Admin) {
+	return collection.MapIter(as, func(a *Admin) (string, *Admin) {
 		return a.ID, a
 	})
 }
 
 // IterGroupByType は管理者種別をキー、管理者を値とするイテレーターを返す。
 func (as Admins) IterGroupByType() iter.Seq2[AdminType, *Admin] {
-	return MapIter(as, func(a *Admin) (AdminType, *Admin) {
+	return collection.MapIter(as, func(a *Admin) (AdminType, *Admin) {
 		return a.Type, a
 	})
 }
