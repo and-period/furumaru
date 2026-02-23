@@ -18,7 +18,7 @@ import {
   OrderType,
   RefundType,
 } from '~/types/api/v1'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
+import type { CompleteOrderRequest, Coordinator, Experience, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -37,6 +37,43 @@ const props = defineProps({
   alertText: {
     type: String,
     default: '',
+  },
+  experience: {
+    type: Object as PropType<Experience>,
+    default: (): Experience => ({
+      title: '',
+      description: '',
+      businessCloseTime: '',
+      businessOpenTime: '',
+      coordinatorId: '',
+      createdAt: 0,
+      direction: '',
+      duration: 0,
+      endAt: 0,
+      experienceTypeId: '',
+      hostAddressLine1: '',
+      hostAddressLine2: '',
+      hostCity: '',
+      hostPostalCode: '',
+      hostPrefectureCode: 0,
+      id: '',
+      media: [],
+      priceAdult: 0,
+      priceElementarySchool: 0,
+      priceJuniorHighSchool: 0,
+      pricePreschool: 0,
+      priceSenior: 0,
+      producerId: '',
+      promotionVideoUrl: '',
+      _public: false,
+      recommendedPoint1: '',
+      recommendedPoint2: '',
+      recommendedPoint3: '',
+      soldOut: false,
+      startAt: 0,
+      status: 0,
+      updatedAt: 0
+    }),
   },
   order: {
     type: Object as PropType<Order>,
@@ -631,6 +668,11 @@ const getOrderRequest = (): string => {
   return props.order?.metadata?.orderRequest || ''
 }
 
+// 体験タイトルを取得
+const getExperienceTitle = (): string => {
+  return props.experience.title || ''
+}
+
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
   const items = props.order?.items?.filter((item: OrderItem): boolean => {
     return item.fulfillmentId === fulfillmentId
@@ -1031,6 +1073,25 @@ const onSubmitRefund = (): void => {
             体験予約詳細
           </v-card-title>
           <v-card-text class="pa-6">
+            <!-- Experience Title -->
+            <div
+              v-if="getExperienceTitle()"
+              class="mb-4"
+            >
+              <v-alert
+                type="info"
+                variant="tonal"
+                class="mb-0"
+              >
+                <h3 class="text-h6 font-weight-bold mb-1">
+                  体験名
+                </h3>
+                <p class="text-body-1 mb-0">
+                  {{ getExperienceTitle() }}
+                </p>
+              </v-alert>
+            </div>
+            <!-- Experience Details -->
             <organisms-order-experience-details
               :experience="props.order?.experience"
               :loading="loading"
