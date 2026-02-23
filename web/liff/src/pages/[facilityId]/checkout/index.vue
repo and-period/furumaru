@@ -4,7 +4,7 @@ import type { CreditCardData } from '@furumaru/shared';
 import { useShoppingCartStore } from '~/stores/shopping';
 import { useCheckoutStore } from '~/stores/checkout';
 import { PaymentMethodType } from '~/types/api/v1';
-import type { CalcCartResponse, Product, CartItem } from '~/types/api/facility/models';
+import type { CalcCartResponse, Product } from '~/types/api/facility/models';
 
 const router = useRouter();
 const route = useRoute();
@@ -77,10 +77,14 @@ const calculatedSummary = computed(() => {
       const product = productMap.get(item.productId);
       return {
         ...item,
-        product,
-      } as CartItem & { product?: Product };
-    })
-    .filter(item => !!item.product);
+        product: product
+          ? {
+              ...product,
+              thumbnail: product.media.find(media => media.isThumbnail),
+            }
+          : undefined,
+      };
+    });
 
   const carts = calculatedCart.value.carts.map((cart, idx) => ({ id: String(cart.number ?? idx + 1) }));
 
