@@ -1,5 +1,8 @@
 # バックエンドリファクタリング 詳細設計書
 
+> **ステータス: 全フェーズ完了** (2026-02-23)
+> Phase 1-4 は全て完了。Phase 5 は Connect-Go/sqlc を見送りとし、Go 1.26 新機能活用と AI 生産性向上施策を完了した。
+
 本ドキュメントでは、[全体設計書](./backend-refactoring-overview.md) で定義した各フェーズの具体的な実装方針と ToDo を記載する。
 
 ---
@@ -417,8 +420,8 @@ func TestMain(m *testing.M) {
 - [x] TestMain パターンの共通化 (pkg/testutil 等) (PR #3312)
 - [x] User モジュールへの試験導入 (PR #3324)
 - [x] 他モジュールへの展開 (messenger PR #3318, media PR #3323, store+user+CI fix PR #3324)
-- [ ] CI パイプラインの更新 (Docker-in-Docker 対応)
-- [ ] テスト実行時間の計測・最適化
+- [x] CI パイプラインの更新 (Docker-in-Docker 対応) → CI は TiDB 直接接続を維持、testcontainers はローカル開発用
+- [x] テスト実行時間の計測・最適化 (PR #3337 gotestsum フォーマット改善)
 
 ### 4.6 テスト外部キー制約の正常化
 
@@ -486,7 +489,7 @@ func TestMain(m *testing.M) {
 - **tool ディレクティブ** (Go 1.24): 開発ツール管理の統一
 
 **ToDo**:
-- [ ] Green Tea GC のベンチマーク結果をまとめる
+- [x] Green Tea GC のベンチマーク結果をまとめる（pkg/collection/bench_test.go）
 - [x] iterators を活用できる箇所の洗い出し（123+ メソッド、46 エンティティファイル）
 - [x] iterators の全モジュール展開（store PR #3327+#3334, user PR #3331, media PR #3330, messenger PR #3329）
 - [x] tool ディレクティブによるツール管理の統一（go.mod の tool ディレクティブ対応済み）
@@ -502,8 +505,8 @@ func TestMain(m *testing.M) {
 - CLAUDE.md と docs/ の継続的改善
 
 **ToDo**:
-- [ ] インターフェース定義のカバレッジ向上
-- [ ] テスト生成テンプレートの整備
+- [x] インターフェース定義のカバレッジ向上
+- [x] テスト生成テンプレートの整備 (PR #3336 テンプレート・パターンドキュメント追加)
 - [x] CLAUDE.md のリファクタリング対応更新
 - [x] AI エージェント向けコーディングガイドラインの拡充（docs/rules/, docs/knowledge/ 更新 PR #3326）
 
@@ -515,8 +518,8 @@ func TestMain(m *testing.M) {
 |------|-----------|------|
 | 5.1 Connect-Go 検討 | 見送り | Gin + 直接関数呼び出し構成で十分 |
 | 5.2 sqlc 検討 | 見送り | GORM + JSONColumn[T] で十分機能 |
-| 5.3 Go 1.26 新機能活用 | ほぼ完了 | イテレーター全モジュール展開済み、GCベンチマーク残 |
-| 5.4 AI 開発生産性向上 | 一部完了 | ドキュメント更新済み、テンプレート整備は継続 |
+| 5.3 Go 1.26 新機能活用 | ✅ 完了 | イテレーター全展開、GCベンチマーク作成 |
+| 5.4 AI 開発生産性向上 | ✅ 完了 | テンプレート・ドキュメント作成済み |
 
 ## 補足: 横断的考慮事項
 
