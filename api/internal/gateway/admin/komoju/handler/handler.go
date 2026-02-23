@@ -16,17 +16,19 @@ import (
 )
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Store     store.Service
+	WaitGroup     *sync.WaitGroup
+	Store         store.Service
+	WebhookSecret string
 }
 
 type handler struct {
-	appName   string
-	env       string
-	now       func() time.Time
-	sentry    sentry.Client
-	waitGroup *sync.WaitGroup
-	store     store.Service
+	appName       string
+	env           string
+	now           func() time.Time
+	sentry        sentry.Client
+	waitGroup     *sync.WaitGroup
+	store         store.Service
+	webhookSecret string
 }
 
 type options struct {
@@ -65,12 +67,13 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		opts[i](dopts)
 	}
 	return &handler{
-		appName:   dopts.appName,
-		env:       dopts.env,
-		now:       jst.Now,
-		sentry:    dopts.sentry,
-		waitGroup: params.WaitGroup,
-		store:     params.Store,
+		appName:       dopts.appName,
+		env:           dopts.env,
+		now:           jst.Now,
+		sentry:        dopts.sentry,
+		waitGroup:     params.WaitGroup,
+		store:         params.Store,
+		webhookSecret: params.WebhookSecret,
 	}
 }
 
