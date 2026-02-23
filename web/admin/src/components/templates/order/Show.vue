@@ -18,7 +18,7 @@ import {
   OrderType,
   RefundType,
 } from '~/types/api/v1'
-import type { CompleteOrderRequest, Coordinator, Experience, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
+import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -670,7 +670,12 @@ const getOrderRequest = (): string => {
 
 // 体験タイトルを取得
 const getExperienceTitle = (): string => {
-  return props.experience.title || ''
+  return props.experience?.title || ''
+}
+
+// 体験説明を取得
+const getExperienceDescription = (): string => {
+  return props.experience?.description || ''
 }
 
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
@@ -1078,18 +1083,26 @@ const onSubmitRefund = (): void => {
               v-if="getExperienceTitle()"
               class="mb-4"
             >
-              <v-alert
-                type="info"
-                variant="tonal"
-                class="mb-0"
-              >
                 <h3 class="text-h6 font-weight-bold mb-1">
                   体験名
                 </h3>
                 <p class="text-body-1 mb-0">
                   {{ getExperienceTitle() }}
                 </p>
-              </v-alert>
+            </div>
+            <!-- Experience Description -->
+            <div
+              v-if="getExperienceDescription()"
+              class="mb-4"
+            >
+              <div class="mb-2">
+                <h4 class="text-subtitle-1 font-weight-medium text-grey-darken-2">
+                  体験説明
+                </h4>
+              </div>
+              <div class="text-body-1 pa-4 bg-grey-lighten-5 rounded">
+                {{ getExperienceDescription() }}
+              </div>
             </div>
             <!-- Experience Details -->
             <organisms-order-experience-details
