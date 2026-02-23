@@ -42,6 +42,7 @@ const handleDelete = (i: number) => {
         <v-img
           :src="img.url"
           aspect-ratio="1"
+          alt="商品サムネイル"
         >
           <div class="d-flex col">
             <v-radio

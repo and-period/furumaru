@@ -305,6 +305,7 @@ const calcStyle = (i: number) => {
               :src="user.thumbnailUrl"
               :srcset="getImages()"
               cover
+              alt="ユーザーアバター"
             />
             <v-icon
               v-else
@@ -353,6 +354,7 @@ const calcStyle = (i: number) => {
                 :src="user?.thumbnailUrl"
                 :srcset="getImages()"
                 cover
+                alt="ユーザーアバター"
               />
               <v-icon
                 v-else

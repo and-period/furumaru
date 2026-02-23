@@ -26,6 +26,7 @@ const handleClickDeleteButton = () => {
       :max-height="56"
       :max-width="80"
       :src="getProductThumbnailUrl(item)"
+      :alt="item.name || '商品画像'"
     />
   </td>
   <td>{{ item.name }}</td>

@@ -333,6 +333,7 @@ const onClickCopyItem = (): void => {
               cover
               :src="getThumbnail(item.media)"
               :srcset="getResizedThumbnails(item.media)"
+              :alt="item.name || '商品画像'"
             />
             <v-icon
               v-else

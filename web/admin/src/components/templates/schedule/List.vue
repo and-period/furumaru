@@ -264,6 +264,7 @@ const onClickPublished = (scheduleId: string): void => {
               cover
               :src="getThumbnail(item)"
               :srcset="getResizedThumbnails(item)"
+              :alt="item.title || 'スケジュール画像'"
             />
             <v-icon
               v-else

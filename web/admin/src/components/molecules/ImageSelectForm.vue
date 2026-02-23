@@ -86,6 +86,7 @@ const onChangeFile = (): void => {
             :max-height="300"
             aspect-ratio="16/9"
             :src="props.imgUrl"
+            alt="選択された画像"
           />
         </div>
         <input
