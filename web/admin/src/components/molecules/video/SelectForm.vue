@@ -90,6 +90,7 @@ const onChangeFile = (): void => {
               id="wrapper"
               muted
               autoplay
+              aria-label="動画プレビュー"
               :src="props.videoUrl"
             />
           </v-responsive>

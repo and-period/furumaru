@@ -441,6 +441,7 @@ const onSubmit = async (): Promise<void> => {
                 <video
                   class="w-100"
                   controls
+                  aria-label="アップロード動画プレビュー"
                   :src="formDataValue.promotionVideoUrl"
                 />
               </v-responsive>

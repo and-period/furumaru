@@ -29,6 +29,7 @@ const handleClickDeleteButton = () => {
         <video
           :src="item.promotionVideoUrl"
           controls
+          aria-label="体験動画"
           class="w-100"
         />
       </v-responsive>
