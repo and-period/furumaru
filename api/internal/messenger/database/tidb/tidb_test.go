@@ -37,8 +37,8 @@ func TestMain(m *testing.M) {
 }
 
 func newTestDBClient(ctx context.Context) (*mysql.Client, func(), error) {
-	// DISABLE_CONTAINER_DB=true の場合は従来の外部DB接続を使用
-	if os.Getenv("DISABLE_CONTAINER_DB") == "true" {
+	// 外部DBが設定されている場合は従来の外部DB接続を使用
+	if !mysql.ShouldUseContainerDB() {
 		return newExternalDBClient()
 	}
 
