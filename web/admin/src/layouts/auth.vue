@@ -16,27 +16,32 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
-    <v-snackbar
-      v-for="(snackbar, i) in snackbars"
-      :key="i"
-      v-model="snackbar.isOpen"
-      :color="snackbar.color"
-      location="top"
-      variant="elevated"
-      :timeout="snackbar.timeout"
-      :style="calcStyle(i)"
+    <div
+      aria-live="polite"
+      aria-atomic="false"
     >
-      {{ snackbar.message }}
-      <template #actions>
-        <v-btn
-          variant="text"
-          color="white"
-          @click="commonStore.hideSnackbar(i)"
-        >
-          閉じる
-        </v-btn>
-      </template>
-    </v-snackbar>
+      <v-snackbar
+        v-for="(snackbar, i) in snackbars"
+        :key="i"
+        v-model="snackbar.isOpen"
+        :color="snackbar.color"
+        location="top"
+        variant="elevated"
+        :timeout="snackbar.timeout"
+        :style="calcStyle(i)"
+      >
+        {{ snackbar.message }}
+        <template #actions>
+          <v-btn
+            variant="text"
+            color="white"
+            @click="commonStore.hideSnackbar(i)"
+          >
+            閉じる
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
 
     <v-main class="d-flex justify-center align-center bg-color">
       <v-container>

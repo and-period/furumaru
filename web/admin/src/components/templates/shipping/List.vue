@@ -167,9 +167,13 @@ const onSubmitDelete = (): void => {
     </v-card-title>
 
     <v-card-text>
+      <v-skeleton-loader
+        v-if="loading"
+        type="table-heading, table-row-divider@5"
+      />
       <v-data-table-server
+        v-else
         :headers="headers"
-        :loading="loading"
         :items="shippings"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

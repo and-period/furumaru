@@ -120,9 +120,13 @@ const onClickRow = (contactId: string): void => {
     <v-card-title>お問い合わせ管理</v-card-title>
 
     <v-card-text>
+      <v-skeleton-loader
+        v-if="loading"
+        type="table-heading, table-row-divider@5"
+      />
       <v-data-table-server
+        v-else
         :headers="headers"
-        :loading="loading"
         :items="props.contacts"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

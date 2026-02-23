@@ -377,7 +377,23 @@ const onChangeEndAt = (): void => {
     </v-card>
 
     <!-- KPI Cards -->
-    <v-row class="mb-4">
+    <v-row
+      v-if="loading"
+      class="mb-4"
+    >
+      <v-col
+        v-for="n in 4"
+        :key="n"
+        cols="12"
+        md="3"
+      >
+        <v-skeleton-loader type="card" />
+      </v-col>
+    </v-row>
+    <v-row
+      v-else
+      class="mb-4"
+    >
       <v-col
         cols="12"
         md="3"
@@ -522,15 +538,32 @@ const onChangeEndAt = (): void => {
     </v-row>
 
     <!-- Charts Row -->
-    <v-row>
+    <v-row v-if="loading">
       <v-col
         cols="12"
         lg="8"
       >
-        <v-card
-          :loading="loading"
-          elevation="2"
-        >
+        <v-skeleton-loader
+          type="image"
+          height="300"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <v-skeleton-loader
+          type="image"
+          height="300"
+        />
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col
+        cols="12"
+        lg="8"
+      >
+        <v-card elevation="2">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="primary"
@@ -553,10 +586,7 @@ const onChangeEndAt = (): void => {
         cols="12"
         lg="4"
       >
-        <v-card
-          :loading="loading"
-          elevation="2"
-        >
+        <v-card elevation="2">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="info"
@@ -579,10 +609,7 @@ const onChangeEndAt = (): void => {
     <!-- Payment Details Table -->
     <v-row>
       <v-col cols="12">
-        <v-card
-          :loading="loading"
-          elevation="2"
-        >
+        <v-card elevation="2">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="secondary"
@@ -591,8 +618,12 @@ const onChangeEndAt = (): void => {
             />
           </v-card-title>
           <v-card-text>
+            <v-skeleton-loader
+              v-if="loading"
+              type="table-heading, table-row-divider@3"
+            />
             <v-data-table
-              :loading="loading"
+              v-else
               :headers="paymentHeaders"
               :items="sortedPayments"
               no-data-text="データがありません"

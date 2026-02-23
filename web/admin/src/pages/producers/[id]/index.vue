@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import { Prefecture } from '~/types'
 import type { UpdateProducerRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
@@ -58,6 +59,9 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 const fetchState = useAsyncData('producer-detail', async (): Promise<void> => {
   try {
     await producerStore.getProducer(producerId)
@@ -65,6 +69,7 @@ const fetchState = useAsyncData('producer-detail', async (): Promise<void> => {
       ...producer.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(producer.value.phoneNumber),
     }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -90,6 +95,7 @@ const handleSubmit = async () => {
       color: 'info',
       message: `${formData.value.username}を更新しました。`,
     })
+    markAsSaved()
     router.push('/producers')
   }
   catch (err) {
@@ -208,24 +214,36 @@ catch (err) {
 </script>
 
 <template>
-  <templates-producer-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :header-upload-status="headerUploadStatus"
-    :promotion-video-upload-status="promotionVideoUploadStatus"
-    :bonus-video-upload-status="bonusVideoUploadStatus"
-    :search-loading="searchAddress.loading.value"
-    :search-error-message="searchAddress.errorMessage.value"
-    :producer="producer"
-    @click:search-address="handleSearchAddress"
-    @update:thumbnail-file="handleUpdateThumbnail"
-    @update:header-file="handleUpdateHeader"
-    @update:promotion-video="handleUpdatePromotionVideo"
-    @update:bonus-video="handleUpdateBonusVideo"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-producer-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :header-upload-status="headerUploadStatus"
+      :promotion-video-upload-status="promotionVideoUploadStatus"
+      :bonus-video-upload-status="bonusVideoUploadStatus"
+      :search-loading="searchAddress.loading.value"
+      :search-error-message="searchAddress.errorMessage.value"
+      :producer="producer"
+      @click:search-address="handleSearchAddress"
+      @update:thumbnail-file="handleUpdateThumbnail"
+      @update:header-file="handleUpdateHeader"
+      @update:promotion-video="handleUpdatePromotionVideo"
+      @update:bonus-video="handleUpdateBonusVideo"
+      @submit="handleSubmit"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>
