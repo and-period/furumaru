@@ -12,8 +12,8 @@ var (
 	ErrNotImplemented = errors.New("komoju: not implemented")
 )
 
-// KOMOJU エラーコード
-// @see https://ja.doc.komoju.com/docs/errors#%E3%82%A8%E3%83%A9%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89
+// ErrCode represents a KOMOJU error code.
+// @see https://ja.doc.komoju.com/docs/errors
 type ErrCode string
 
 const (
@@ -51,35 +51,6 @@ const (
 	ErrCodeOtherInvalid         ErrCode = "other_invalid"
 )
 
-func NewErrCode(err error) ErrCode {
-	var e *Error
-	if errors.As(err, &e) {
-		return e.Code
-	}
-	return ""
-}
-
-func IsSessionFailed(err error) bool {
-	var e *Error
-	if !errors.As(err, &e) {
-		return false
-	}
-	// ユーザー起因のもののみ失敗と判断する
-	return e.Status == 422
-}
-
-func IsRetryable(err error) bool {
-	var e *Error
-	if !errors.As(err, &e) {
-		return false
-	}
-	switch e.Code {
-	case ErrCodeInternalServerError, ErrCodeBadGateway, ErrCodeGatewayTimeout, ErrCodeServiceunavailable:
-		return true
-	}
-	return false
-}
-
 type Error struct {
 	Method  string
 	Route   string
@@ -90,4 +61,20 @@ type Error struct {
 
 func (e *Error) Error() string {
 	return fmt.Sprintf("komoju: method=%s, route=%s, status=%d, code=%s, message=%s", e.Method, e.Route, e.Status, e.Code, e.Message)
+}
+
+func NewErrCode(err error) ErrCode {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Code
+	}
+	return ""
+}
+
+func isSessionFailed(err error) bool {
+	var e *Error
+	if !errors.As(err, &e) {
+		return false
+	}
+	return e.Status == 422
 }

@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import { NotificationType } from '~/types/api/v1'
 import type { UpdateNotificationRequest } from '~/types/api/v1'
 
@@ -31,6 +32,9 @@ const formData = ref<UpdateNotificationRequest>({
   publishedAt: 0,
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 const fetchState = useAsyncData('notification-detail', async (): Promise<void> => {
   try {
     await notificationStore.getNotification(notificationId)
@@ -38,6 +42,7 @@ const fetchState = useAsyncData('notification-detail', async (): Promise<void> =
       await promotionStore.getPromotion(notification.value.promotionId)
     }
     formData.value = { ...notification.value }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -59,6 +64,7 @@ const handleSubmit = async (): Promise<void> => {
       message: 'お知らせ情報の編集が完了しました',
       color: 'info',
     })
+    markAsSaved()
     router.push('/notifications')
   }
   catch (err) {
@@ -81,16 +87,28 @@ catch (err) {
 </script>
 
 <template>
-  <templates-notification-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :admin-type="adminType"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :notification="notification"
-    :promotion="promotion"
-    :admin="admin"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-notification-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :admin-type="adminType"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :notification="notification"
+      :promotion="promotion"
+      :admin="admin"
+      @submit="handleSubmit"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

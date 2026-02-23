@@ -5,6 +5,7 @@ on:
     - '.github/actions/setup-node/**'
     - '.github/workflows/ci-web-user.yaml'
     - 'web/user/**'
+    - 'web/shared/**'
     - 'infra/docker/web/user/**'
 
 env:
@@ -27,6 +28,17 @@ jobs:
     - name: Check out code
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
+
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/user
@@ -47,6 +59,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -71,6 +94,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -99,6 +133,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:

@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdateDefaultShippingRequest } from '~/types/api/v1'
 import { UpdateDefaultShippingValidationRules } from '~/types/validations'
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
@@ -46,6 +47,9 @@ const formData = ref<UpdateDefaultShippingRequest>({
   freeShippingRates: 0,
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 /**
  * サイズ60の配送料オプションのインデックス配列を計算する
  * @returns サイズ60の配送料オプションのインデックス配列
@@ -76,6 +80,7 @@ const fetchState = useAsyncData('shipping-default', async (): Promise<void> => {
   try {
     await shippingStore.fetchDefaultShipping()
     formData.value = { ...shipping.value }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -205,6 +210,8 @@ const handleSubmit = async (): Promise<void> => {
       color: 'info',
       message: 'デフォルト配送設定を更新しました。',
     })
+    markAsSaved()
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -529,6 +536,16 @@ catch (err) {
         </div>
       </v-container>
     </v-footer>
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
   </v-container>
 </template>
 

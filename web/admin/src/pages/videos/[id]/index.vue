@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useVideoStore, useProductStore, useExperienceStore, useVideoCommentStore, useCommonStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api/v1'
 import { ApiBaseError } from '~/types/exception'
 import { useAlert } from '~/lib/hooks'
@@ -42,6 +43,9 @@ const formData = ref<UpdateVideoRequest>({
 const selectedProducts = ref<Product[]>([])
 const selectedExperiences = ref<Experience[]>([])
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 const fetchState = useAsyncData('video-detail', async (): Promise<void> => {
   try {
     await Promise.all([
@@ -60,6 +64,7 @@ const fetchState = useAsyncData('video-detail', async (): Promise<void> => {
     formData.value = { ...formData.value, ...video.value }
     selectedProducts.value = sproducts.value
     selectedExperiences.value = sexperiences.value
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -279,6 +284,7 @@ const handleSubmit = async (): Promise<void> => {
       message: `${formData.value.title}を更新しました。`,
       color: 'info',
     })
+    markAsSaved()
     router.push('/videos')
   }
   catch (err) {
@@ -320,37 +326,49 @@ catch (err) {
 </script>
 
 <template>
-  <templates-video-edit
-    v-model:video-form-data="formData"
-    v-model:product-form-data="linkTargetProductIds"
-    v-model:experience-form-data="linkTargetExperienceIds"
-    v-model:product-dialog="isOpenLinkProductDialog"
-    v-model:experience-dialog="isOpenLinkExperienceDialog"
-    v-model:current-tab="currentTab"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :loading="isLoading()"
-    :viewer-logs="viewerLogs"
-    :video-upload-status="uploadVideoStatus"
-    :thumbnail-upload-status="uploadThumbnailStatus"
-    :product-search-loading="productSearchLoading"
-    :experience-search-loading="experienceSearchLoading"
-    :selected-products="selectedProducts"
-    :selected-experiences="selectedExperiences"
-    :searched-products="products"
-    :searched-experiences="experiences"
-    :comments="comments"
-    @submit="handleSubmit"
-    @submit:upload-video="handleUploadVideo"
-    @submit:upload-thumbnail="handleUploadThumbnail"
-    @click:add-products="handleClickLinkProductAddButton"
-    @click:add-experiences="handleClickLinkExperienceAddButton"
-    @click:remove-product="handleDeleteLinkedProduct"
-    @click:remove-experience="handleDeleteLinkedExperience"
-    @click:back="handleClickBack"
-    @update:search-product="handleSearchProduct"
-    @update:search-experience="handleSearchExperience"
-    @click:ban-comment="handleBanComment"
-  />
+  <div>
+    <templates-video-edit
+      v-model:video-form-data="formData"
+      v-model:product-form-data="linkTargetProductIds"
+      v-model:experience-form-data="linkTargetExperienceIds"
+      v-model:product-dialog="isOpenLinkProductDialog"
+      v-model:experience-dialog="isOpenLinkExperienceDialog"
+      v-model:current-tab="currentTab"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :loading="isLoading()"
+      :viewer-logs="viewerLogs"
+      :video-upload-status="uploadVideoStatus"
+      :thumbnail-upload-status="uploadThumbnailStatus"
+      :product-search-loading="productSearchLoading"
+      :experience-search-loading="experienceSearchLoading"
+      :selected-products="selectedProducts"
+      :selected-experiences="selectedExperiences"
+      :searched-products="products"
+      :searched-experiences="experiences"
+      :comments="comments"
+      @submit="handleSubmit"
+      @submit:upload-video="handleUploadVideo"
+      @submit:upload-thumbnail="handleUploadThumbnail"
+      @click:add-products="handleClickLinkProductAddButton"
+      @click:add-experiences="handleClickLinkExperienceAddButton"
+      @click:remove-product="handleDeleteLinkedProduct"
+      @click:remove-experience="handleDeleteLinkedExperience"
+      @click:back="handleClickBack"
+      @update:search-product="handleSearchProduct"
+      @update:search-experience="handleSearchExperience"
+      @click:ban-comment="handleBanComment"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

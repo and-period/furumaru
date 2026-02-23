@@ -81,6 +81,7 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		}
 		p.komojuClientID = secrets["clientId"]
 		p.komojuClientPassword = secrets["clientPassword"]
+		p.komojuWebhookSecret = secrets["webhookSecret"]
 		return nil
 	})
 	eg.Go(func() error {

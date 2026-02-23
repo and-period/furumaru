@@ -8,7 +8,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
@@ -16,7 +15,7 @@ import (
 	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
-	mock_komoju "github.com/and-period/furumaru/api/mock/store/komoju"
+	mock_payment "github.com/and-period/furumaru/api/mock/store/payment"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -36,8 +35,7 @@ type mocks struct {
 	postalCode    *mock_postalcode.MockClient
 	geolocation   *mock_geolocation.MockClient
 	ivs           *mock_ivs.MockClient
-	komojuPayment *mock_komoju.MockPayment
-	komojuSession *mock_komoju.MockSession
+	payment *mock_payment.MockProvider
 }
 
 type dbMocks struct {
@@ -88,8 +86,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		postalCode:    mock_postalcode.NewMockClient(ctrl),
 		geolocation:   mock_geolocation.NewMockClient(ctrl),
 		ivs:           mock_ivs.NewMockClient(ctrl),
-		komojuPayment: mock_komoju.NewMockPayment(ctrl),
-		komojuSession: mock_komoju.NewMockSession(ctrl),
+		payment: mock_payment.NewMockProvider(ctrl),
 	}
 }
 
@@ -154,10 +151,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		PostalCode:  mocks.postalCode,
 		Geolocation: mocks.geolocation,
 		Ivs:         mocks.ivs,
-		Komoju: &komoju.Komoju{
-			Payment: mocks.komojuPayment,
-			Session: mocks.komojuSession,
-		},
+		Payment: mocks.payment,
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

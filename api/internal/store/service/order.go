@@ -17,7 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/exporter/general"
 	"github.com/and-period/furumaru/api/internal/store/exporter/sagawa"
 	"github.com/and-period/furumaru/api/internal/store/exporter/yamato"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -95,7 +95,7 @@ func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput)
 	if !order.Capturable() {
 		return fmt.Errorf("service: this order cannot be capture: %w", exception.ErrFailedPrecondition)
 	}
-	_, err = s.komoju.Payment.Capture(ctx, order.PaymentID)
+	err = s.payment.CapturePayment(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -192,7 +192,7 @@ func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) e
 	if !order.Cancelable() {
 		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
 	}
-	_, err = s.komoju.Payment.Cancel(ctx, order.PaymentID)
+	err = s.payment.CancelPayment(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -207,12 +207,12 @@ func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) e
 	if !order.Refundable() {
 		return fmt.Errorf("service: this order cannot be refund: %w", exception.ErrFailedPrecondition)
 	}
-	params := &komoju.RefundParams{
+	rparams := &payment.RefundParams{
 		PaymentID:   order.PaymentID,
 		Amount:      order.Total,
 		Description: in.Description,
 	}
-	_, err = s.komoju.Payment.Refund(ctx, params)
+	err = s.payment.RefundPayment(ctx, rparams)
 	return internalError(err)
 }
 

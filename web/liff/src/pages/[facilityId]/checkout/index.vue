@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { FmOrderSummary, FmCreditCardForm } from '@furumaru/shared';
+import { FmOrderSummary, FmCreditCardForm, useKomojuTokenize } from '@furumaru/shared';
 import type { CreditCardData } from '@furumaru/shared';
 import { useShoppingCartStore } from '~/stores/shopping';
 import { useCheckoutStore } from '~/stores/checkout';
 import { PaymentMethodType } from '~/types/api/v1';
+import type { CalcCartResponse, Product } from '~/types/api/facility/models';
 
 const router = useRouter();
 const route = useRoute();
@@ -38,8 +39,8 @@ const nextDayAfterCheckinData = computed(() => {
 
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
-onMounted(() => {
-  shoppingCartStore.getCart(facilityId.value);
+onMounted(async () => {
+  await initializeCart();
 });
 
 const summary = computed(() => {
@@ -48,9 +49,139 @@ const summary = computed(() => {
   const coordinator = carts.find(c => c.coordinator)?.coordinator;
   const subtotal = items.reduce((sum, item) => sum + (item.product?.price ?? 0) * item.quantity, 0);
   const boxCarts = carts.map((c, idx) => ({ id: String(c.number ?? idx + 1) }));
+  const coordinatorId = carts[0]?.coordinatorId ?? '';
 
-  return { items, coordinator, carts: boxCarts, subtotal };
+  return {
+    items,
+    coordinator,
+    carts: boxCarts,
+    subtotal,
+    discount: 0,
+    total: subtotal,
+    requestId: undefined as string | undefined,
+    coordinatorId,
+  };
 });
+
+const calculatedCart = ref<CalcCartResponse | null>(null);
+
+const calculatedSummary = computed(() => {
+  if (!calculatedCart.value) return null;
+
+  const productMap = new Map<string, Product>(
+    calculatedCart.value.products.map(product => [product.id, product]),
+  );
+
+  const items = calculatedCart.value.items
+    .map((item) => {
+      const product = productMap.get(item.productId);
+      return {
+        ...item,
+        product: product
+          ? {
+              ...product,
+              thumbnail: product.media.find(media => media.isThumbnail),
+            }
+          : undefined,
+      };
+    });
+
+  const carts = calculatedCart.value.carts.map((cart, idx) => ({ id: String(cart.number ?? idx + 1) }));
+
+  return {
+    items,
+    coordinator: calculatedCart.value.coordinator,
+    carts,
+    subtotal: calculatedCart.value.subtotal,
+    discount: calculatedCart.value.discount,
+    total: calculatedCart.value.total,
+    requestId: calculatedCart.value.requestId,
+    coordinatorId: calculatedCart.value.coordinator.id,
+  };
+});
+
+const orderSummary = computed(() => calculatedSummary.value ?? summary.value);
+
+const promotionCodeFormValue = ref('');
+const validPromotion = ref(false);
+const invalidPromotion = ref(false);
+const isApplyingPromotion = ref(false);
+// カート再計算API失敗時にユーザーへ表示するメッセージ
+const recalculateErrorMessage = ref<string | null>(null);
+
+const recalculateCart = async (promotionCode?: string) => {
+  if (!summary.value.coordinatorId) {
+    calculatedCart.value = null;
+    return;
+  }
+
+  calculatedCart.value = await shoppingCartStore.calcCartByCoordinatorId(
+    facilityId.value,
+    summary.value.coordinatorId,
+    undefined,
+    promotionCode,
+  );
+};
+
+const initializeCart = async () => {
+  try {
+    await shoppingCartStore.getCart(facilityId.value);
+    await recalculateCart();
+    recalculateErrorMessage.value = null;
+  }
+  catch (e) {
+    console.error('Failed to initialize cart:', e);
+    recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
+  }
+};
+
+const handleClickUsePromotionCodeButton = async () => {
+  const code = promotionCodeFormValue.value.trim();
+  if (!code) {
+    invalidPromotion.value = false;
+    validPromotion.value = false;
+    return;
+  }
+
+  try {
+    isApplyingPromotion.value = true;
+    await recalculateCart(code);
+    promotionCodeFormValue.value = code;
+    invalidPromotion.value = false;
+    validPromotion.value = true;
+    recalculateErrorMessage.value = null;
+  }
+  catch {
+    invalidPromotion.value = true;
+    validPromotion.value = false;
+    try {
+      await recalculateCart();
+      recalculateErrorMessage.value = null;
+    }
+    catch (e) {
+      console.error('Failed to reset cart pricing after invalid coupon:', e);
+      recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
+    }
+  }
+  finally {
+    isApplyingPromotion.value = false;
+  }
+};
+
+const handleClickCancelPromotionCodeButton = async () => {
+  promotionCodeFormValue.value = '';
+  invalidPromotion.value = false;
+  validPromotion.value = false;
+  try {
+    await recalculateCart();
+    recalculateErrorMessage.value = null;
+  }
+  catch (e) {
+    console.error('Failed to recalculate cart after coupon cancellation:', e);
+    calculatedCart.value = null;
+    recalculateErrorMessage.value = '金額の再計算に失敗しました。時間をおいて再度お試しください。';
+  }
+};
 
 // 以前の「決済プラン情報」表示は削除し、支払いフォームを表示します。
 
@@ -92,13 +223,35 @@ const pickupAt = computed<number>(() => {
   return 0;
 });
 
+const runtimeConfig = useRuntimeConfig();
+const { tokenize } = useKomojuTokenize(
+  runtimeConfig.public.KOMOJU_HOST,
+  runtimeConfig.public.KOMOJU_PUBLISHABLE_KEY,
+);
+
 const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
 const PAYMENT_METHOD_CARD = PaymentMethodType.PaymentMethodTypeCreditCard; // クレジットカード決済（仮のコード）
 
+const normalizedSubtotal = computed(() => {
+  // API値の異常系を考慮し、表示上は0円未満を許容しない
+  return Math.max(0, orderSummary.value.subtotal || 0);
+});
+
+const normalizedDiscount = computed(() => {
+  // 割引は正負どちらで返ってきても扱えるよう絶対値化し、商品合計を上限にする
+  const discount = Math.abs(orderSummary.value.discount || 0);
+  return Math.min(discount, normalizedSubtotal.value);
+});
+
+const normalizedTotal = computed(() => {
+  // 最終的な請求金額は0円未満にしない
+  return Math.max(0, orderSummary.value.total || 0);
+});
+
 const handlePay = async () => {
   submitError.value = null;
-  if (!summary.value.coordinator) return;
+  if (!orderSummary.value.coordinator) return;
 
   // 簡易バリデーション
   if (!creditCard.value.number || !creditCard.value.name || !creditCard.value.month || !creditCard.value.year || !creditCard.value.verificationValue) {
@@ -111,18 +264,20 @@ const handlePay = async () => {
     const facilityId = String(route.params.facilityId || '');
     const callbackUrl = `${window.location.origin}/${facilityId}/complete`;
 
+    // トークン化してから送信
+    const token = await tokenize(creditCard.value);
+
     const res = await checkoutStore.startCheckout(facilityId, {
       callbackUrl,
       paymentMethod: PAYMENT_METHOD_CARD,
       creditCard: {
+        token,
         name: creditCard.value.name,
-        number: creditCard.value.number,
-        month: creditCard.value.month,
-        year: creditCard.value.year,
-        verificationValue: creditCard.value.verificationValue,
       },
       pickupAt: pickupAt.value,
-      total: summary.value.subtotal,
+      promotionCode: validPromotion.value ? promotionCodeFormValue.value : undefined,
+      requestId: orderSummary.value.requestId,
+      total: normalizedTotal.value,
     });
 
     const url = res.url || checkoutStore.redirectUrl;
@@ -187,13 +342,65 @@ const handlePay = async () => {
       >
         <template v-if="summary.coordinator">
           <fm-order-summary
-            :items="summary.items"
-            :coordinator="summary.coordinator"
-            :carts="summary.carts"
-            :subtotal="summary.subtotal"
-            :discount="0"
-            :total="summary.subtotal"
+            :items="orderSummary.items"
+            :coordinator="orderSummary.coordinator"
+            :carts="orderSummary.carts"
+            :subtotal="normalizedSubtotal"
+            :discount="normalizedDiscount"
+            :total="normalizedTotal"
           />
+
+          <template v-if="validPromotion">
+            <div class="mt-4 flex justify-between rounded-lg border border-orange p-2 text-sm text-orange">
+              <div class="flex items-center gap-1">
+                クーポンコードを適用しました
+              </div>
+              <button @click="handleClickCancelPromotionCodeButton">
+                解除
+              </button>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="mt-4 flex gap-2">
+              <div class="grow">
+                <label
+                  for="promotion-code"
+                  class="sr-only"
+                >
+                  クーポンコード
+                </label>
+                <input
+                  id="promotion-code"
+                  v-model="promotionCodeFormValue"
+                  type="text"
+                  class="w-full border border-gray-300 bg-gray-50 p-2.5 text-sm"
+                  placeholder="クーポンコード"
+                  aria-label="クーポンコード"
+                >
+              </div>
+              <button
+                class="whitespace-nowrap bg-orange px-4 py-2 text-sm text-white disabled:bg-gray-300"
+                :disabled="isApplyingPromotion"
+                @click="handleClickUsePromotionCodeButton"
+              >
+                {{ isApplyingPromotion ? '適用中...' : '適用' }}
+              </button>
+            </div>
+            <div
+              v-if="invalidPromotion"
+              class="mt-2 px-1 text-xs text-red-600"
+            >
+              クーポンコードが無効です
+            </div>
+          </template>
+
+          <div
+            v-if="recalculateErrorMessage"
+            class="mt-2 px-1 text-xs text-red-600"
+          >
+            {{ recalculateErrorMessage }}
+          </div>
 
           <!-- 受け取り日時選択 -->
           <div

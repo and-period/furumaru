@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import { useCommonStore, useCoordinatorStore, useProducerStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
 import { Prefecture } from '~/types'
 import type { UpdateCoordinatorRequest, UpdateShopRequest, Shipping, CreateShippingRequest, UpdateShippingRequest } from '~/types/api/v1'
@@ -108,6 +109,13 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   message: '',
 })
 
+const guardedFormData = computed(() => ({
+  coordinator: coordinatorFormData.value,
+  shop: shopFormData.value,
+}))
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(guardedFormData)
+
 const fetchState = useAsyncData('coordinator-detail', async (): Promise<void> => {
   try {
     await coordinatorStore.getCoordinator(coordinatorId)
@@ -121,6 +129,7 @@ const fetchState = useAsyncData('coordinator-detail', async (): Promise<void> =>
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber),
     }
     shopFormData.value = { ...shop.value }
+    captureSnapshot()
     if (productTypes.value.length === 0) {
       productTypeStore.fetchProductTypes(20)
     }
@@ -223,6 +232,8 @@ const handleSubmitCoordinator = async (): Promise<void> => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(coordinatorFormData.value.phoneNumber),
     }
     await coordinatorStore.updateCoordinator(coordinatorId, req)
+    markAsSaved()
+    captureSnapshot()
     commonStore.addSnackbar({
       color: 'info',
       message: 'コーディネーター情報を更新しました。',
@@ -247,6 +258,8 @@ const handleSubmitShop = async (): Promise<void> => {
   try {
     loading.value = true
     await shopStore.updateShop(shop.value.id, shopFormData.value)
+    markAsSaved()
+    captureSnapshot()
     commonStore.addSnackbar({
       color: 'info',
       message: '店舗情報を更新しました。',
@@ -487,52 +500,63 @@ catch (err) {
 </script>
 
 <template>
-  <templates-coordinator-edit
-    v-model:selected-tab-item="selector"
-    v-model:coordinator-form-data="coordinatorFormData"
-    v-model:shop-form-data="shopFormData"
-    v-model:create-shipping-form-data="createShippingFormData"
-    v-model:update-shipping-form-data="updateShippingFormData"
-    v-model:create-shipping-dialog="createShippingDialog"
-    v-model:update-shipping-dialog="updateShippingDialog"
-    v-model:delete-shipping-dialog="deleteShippingDialog"
-    v-model:active-shipping-dialog="activeShippingDialog"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :bonus-video-upload-status="bonusVideoUploadStatus"
-    :header-upload-status="headerUploadStatus"
-    :promotion-video-upload-status="promotionVideoUploadStatus"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :search-loading="searchAddress.loading.value"
-    :search-error-message="searchAddress.errorMessage.value"
-    :coordinator="coordinator"
-    :producers="producers"
-    :product-types="productTypes"
-    :shipping="selectedShipping"
-    :shippings="shippings"
-    :shop="shop"
-    :table-items-per-page="pagination.itemsPerPage.value"
-    :table-items-total="total"
-    @click:search-address="handleSearchAddress"
-    @click:update-shipping-page="handleUpdateShippingPage"
-    @click:update-shipping-items-per-page="pagination.handleUpdateItemsPerPage"
-    @click:create-shipping="handleClickCreateShipping"
-    @click:update-shipping="handleClickUpdateShipping"
-    @click:delete-shipping="handleClickDeleteShipping"
-    @click:copy-shipping="handleClickCopyShipping"
-    @click:active-shipping="handleClickActiveShipping"
-    @update:search-product-type="handleSearchProductType"
-    @update:thumbnail-file="handleUpdateThumbnail"
-    @update:header-file="handleUpdateHeader"
-    @update:promotion-video="handleUpdatePromotionVideo"
-    @update:bonus-video="handleUpdateBonusVideo"
-    @submit:coordinator="handleSubmitCoordinator"
-    @submit:shop="handleSubmitShop"
-    @submit:create-shipping="handleSubmitCreateShipping"
-    @submit:update-shipping="handleSubmitUpdateShipping"
-    @submit:delete-shipping="handleSubmitDeleteShipping"
-    @submit:active-shipping="handleSubmitActiveShipping"
-  />
+  <div>
+    <templates-coordinator-edit
+      v-model:selected-tab-item="selector"
+      v-model:coordinator-form-data="coordinatorFormData"
+      v-model:shop-form-data="shopFormData"
+      v-model:create-shipping-form-data="createShippingFormData"
+      v-model:update-shipping-form-data="updateShippingFormData"
+      v-model:create-shipping-dialog="createShippingDialog"
+      v-model:update-shipping-dialog="updateShippingDialog"
+      v-model:delete-shipping-dialog="deleteShippingDialog"
+      v-model:active-shipping-dialog="activeShippingDialog"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :bonus-video-upload-status="bonusVideoUploadStatus"
+      :header-upload-status="headerUploadStatus"
+      :promotion-video-upload-status="promotionVideoUploadStatus"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :search-loading="searchAddress.loading.value"
+      :search-error-message="searchAddress.errorMessage.value"
+      :coordinator="coordinator"
+      :producers="producers"
+      :product-types="productTypes"
+      :shipping="selectedShipping"
+      :shippings="shippings"
+      :shop="shop"
+      :table-items-per-page="pagination.itemsPerPage.value"
+      :table-items-total="total"
+      @click:search-address="handleSearchAddress"
+      @click:update-shipping-page="handleUpdateShippingPage"
+      @click:update-shipping-items-per-page="pagination.handleUpdateItemsPerPage"
+      @click:create-shipping="handleClickCreateShipping"
+      @click:update-shipping="handleClickUpdateShipping"
+      @click:delete-shipping="handleClickDeleteShipping"
+      @click:copy-shipping="handleClickCopyShipping"
+      @click:active-shipping="handleClickActiveShipping"
+      @update:search-product-type="handleSearchProductType"
+      @update:thumbnail-file="handleUpdateThumbnail"
+      @update:header-file="handleUpdateHeader"
+      @update:promotion-video="handleUpdatePromotionVideo"
+      @update:bonus-video="handleUpdateBonusVideo"
+      @submit:coordinator="handleSubmitCoordinator"
+      @submit:shop="handleSubmitShop"
+      @submit:create-shipping="handleSubmitCreateShipping"
+      @submit:update-shipping="handleSubmitUpdateShipping"
+      @submit:delete-shipping="handleSubmitDeleteShipping"
+      @submit:active-shipping="handleSubmitActiveShipping"
+    />
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

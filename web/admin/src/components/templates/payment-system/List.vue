@@ -112,9 +112,13 @@ const onSubmit = (methodType: PaymentMethodType): void => {
     <v-card-title>決済システム状態管理</v-card-title>
 
     <v-card-text>
+      <v-skeleton-loader
+        v-if="loading"
+        type="table-heading, table-row-divider@5"
+      />
       <v-data-table-server
+        v-else
         :headers="headers"
-        :loading="loading"
         :items="systems"
         :items-length="systems.length"
         no-data-text="登録されている決済システムがありません。"

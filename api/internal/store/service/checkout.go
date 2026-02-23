@@ -10,7 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
@@ -42,41 +42,56 @@ func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutSta
 		return order.ID, order.OrderPayment.Status, nil
 	}
 	slog.InfoContext(ctx, "This checkout is pending", slog.String("transactionId", in.TransactionID))
-	// 未払い状態の場合、KOMOJUから最新の状態を取得する
-	res, err := s.komoju.Session.Get(ctx, in.TransactionID)
-	if err != nil || res.Payment == nil {
+	// 未払い状態の場合、決済プロバイダーから最新の状態を取得する
+	res, err := s.payment.GetSession(ctx, in.TransactionID)
+	if err != nil {
 		slog.WarnContext(ctx, "Failed to get session state", slog.String("transactionId", in.TransactionID), log.Error(err))
 		return order.ID, entity.PaymentStatusUnknown, internalError(err)
 	}
-	return order.ID, entity.NewPaymentStatus(res.Payment.Status), nil
+	return order.ID, res.PaymentStatus, nil
 }
 
 func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	cardParams := &entity.NewCreditCardParams{
-		Name:   in.Name,
-		Number: in.Number,
-		Month:  in.Month,
-		Year:   in.Year,
-		CVV:    in.VerificationValue,
-	}
-	card := entity.NewCreditCard(cardParams)
-	if err := card.Validate(s.now()); err != nil {
-		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderCreditCardParams{
-			SessionID:         sessionID,
-			Name:              card.Name,
-			Number:            card.Number,
-			Month:             card.Month,
-			Year:              card.Year,
-			VerificationValue: card.CVV,
-			Email:             params.customer.Email(),
+	var payFn func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error)
+	if in.Token != "" {
+		// トークンベース決済（PCI DSS 4.0 準拠）
+		payFn = func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+			p := &payment.OrderCreditCardParams{
+				SessionID: sessionID,
+				Token:     in.Token,
+				Name:      in.Name,
+				Email:     params.customer.Email(),
+			}
+			return s.payment.OrderCreditCard(ctx, p)
 		}
-		return s.komoju.Session.OrderCreditCard(ctx, in)
+	} else {
+		// 従来フロー（後方互換）
+		cardParams := &entity.NewCreditCardParams{
+			Name:   in.Name,
+			Number: in.Number,
+			Month:  in.Month,
+			Year:   in.Year,
+			CVV:    in.VerificationValue,
+		}
+		card := entity.NewCreditCard(cardParams)
+		if err := card.Validate(s.now()); err != nil {
+			return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		}
+		payFn = func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+			p := &payment.OrderCreditCardParams{
+				SessionID:         sessionID,
+				Name:              card.Name,
+				Number:            card.Number,
+				Month:             card.Month,
+				Year:              card.Year,
+				VerificationValue: card.CVV,
+				Email:             params.customer.Email(),
+			}
+			return s.payment.OrderCreditCard(ctx, p)
+		}
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -90,11 +105,11 @@ func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderPayPayParams{
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderPayPayParams{
 			SessionID: sessionID,
 		}
-		return s.komoju.Session.OrderPayPay(ctx, in)
+		return s.payment.OrderPayPay(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -108,11 +123,11 @@ func (s *service) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePay
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderLinePayParams{
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderLinePayParams{
 			SessionID: sessionID,
 		}
-		return s.komoju.Session.OrderLinePay(ctx, in)
+		return s.payment.OrderLinePay(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -126,11 +141,11 @@ func (s *service) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderMerpayParams{
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderMerpayParams{
 			SessionID: sessionID,
 		}
-		return s.komoju.Session.OrderMerpay(ctx, in)
+		return s.payment.OrderMerpay(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -144,11 +159,11 @@ func (s *service) CheckoutRakutenPay(ctx context.Context, in *store.CheckoutRaku
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderRakutenPayParams{
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderRakutenPayParams{
 			SessionID: sessionID,
 		}
-		return s.komoju.Session.OrderRakutenPay(ctx, in)
+		return s.payment.OrderRakutenPay(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -162,11 +177,11 @@ func (s *service) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInpu
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderAUPayParams{
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderAUPayParams{
 			SessionID: sessionID,
 		}
-		return s.komoju.Session.OrderAUPay(ctx, in)
+		return s.payment.OrderAUPay(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -180,13 +195,13 @@ func (s *service) CheckoutPaidy(ctx context.Context, in *store.CheckoutPaidyInpu
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderPaidyParams{
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderPaidyParams{
 			SessionID: sessionID,
 			Email:     params.customer.Email(),
 			Name:      params.customer.Name(),
 		}
-		return s.komoju.Session.OrderPaidy(ctx, in)
+		return s.payment.OrderPaidy(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -200,8 +215,8 @@ func (s *service) CheckoutBankTransfer(ctx context.Context, in *store.CheckoutBa
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderBankTransferParams{
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderBankTransferParams{
 			SessionID:     sessionID,
 			Email:         params.customer.Email(),
 			PhoneNumber:   params.billingAddress.PhoneNumber,
@@ -210,7 +225,7 @@ func (s *service) CheckoutBankTransfer(ctx context.Context, in *store.CheckoutBa
 			LastnameKana:  japanese.HiraganaToKatakana(params.billingAddress.LastnameKana),
 			FirstnameKana: japanese.HiraganaToKatakana(params.billingAddress.FirstnameKana),
 		}
-		return s.komoju.Session.OrderBankTransfer(ctx, in)
+		return s.payment.OrderBankTransfer(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -224,8 +239,8 @@ func (s *service) CheckoutPayEasy(ctx context.Context, in *store.CheckoutPayEasy
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		in := &komoju.OrderPayEasyParams{
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+		in := &payment.OrderPayEasyParams{
 			SessionID:     sessionID,
 			Email:         params.customer.Email(),
 			PhoneNumber:   params.billingAddress.PhoneNumber,
@@ -234,7 +249,7 @@ func (s *service) CheckoutPayEasy(ctx context.Context, in *store.CheckoutPayEasy
 			LastnameKana:  japanese.HiraganaToKatakana(params.billingAddress.LastnameKana),
 			FirstnameKana: japanese.HiraganaToKatakana(params.billingAddress.FirstnameKana),
 		}
-		return s.komoju.Session.OrderPayEasy(ctx, in)
+		return s.payment.OrderPayEasy(ctx, in)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -251,8 +266,8 @@ func (s *service) CheckoutFree(ctx context.Context, in *store.CheckoutFreeInput)
 	if in.Total != 0 {
 		return "", fmt.Errorf("service: invalid total: %w", exception.ErrInvalidArgument)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
-		return &komoju.OrderSessionResponse{}, nil
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+		return &payment.OrderResult{}, nil
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -268,7 +283,7 @@ type checkoutParams struct {
 	customer          *uentity.User
 	billingAddress    *uentity.Address
 	shippingAddress   *uentity.Address
-	payFn             func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error)
+	payFn             func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error)
 }
 
 type checkoutDetailParams struct {
@@ -599,19 +614,19 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 func (s *service) executePaymentOrder(
 	ctx context.Context, order *entity.Order, params *checkoutParams,
 ) (string, func(context.Context), error) {
-	sparams := &komoju.CreateSessionParams{
-		OrderID:      order.ID,
-		Amount:       order.Total,
-		CallbackURL:  params.payload.CallbackURL,
-		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
-		Customer: &komoju.CreateSessionCustomer{
+	sparams := &payment.CreateSessionParams{
+		OrderID:           order.ID,
+		Amount:            order.Total,
+		CallbackURL:       params.payload.CallbackURL,
+		PaymentMethodType: params.paymentMethodType,
+		Customer: &payment.CreateSessionCustomer{
 			ID:    params.customer.ID,
 			Name:  params.customer.Name(),
 			Email: params.customer.Email(),
 		},
 	}
 	if params.billingAddress != nil {
-		sparams.BillingAddress = &komoju.CreateSessionAddress{
+		sparams.BillingAddress = &payment.CreateSessionAddress{
 			ZipCode:      params.billingAddress.PostalCode,
 			Prefecture:   params.billingAddress.Prefecture,
 			City:         params.billingAddress.City,
@@ -620,7 +635,7 @@ func (s *service) executePaymentOrder(
 		}
 	}
 	if params.shippingAddress != nil {
-		sparams.ShippingAddress = &komoju.CreateSessionAddress{
+		sparams.ShippingAddress = &payment.CreateSessionAddress{
 			ZipCode:      params.shippingAddress.PostalCode,
 			Prefecture:   params.shippingAddress.Prefecture,
 			City:         params.shippingAddress.City,
@@ -629,11 +644,11 @@ func (s *service) executePaymentOrder(
 		}
 	}
 	// 決済トランザクションの発行
-	session, err := s.komoju.Session.Create(ctx, sparams)
+	session, err := s.payment.CreateSession(ctx, sparams)
 	if err != nil {
 		return "", nil, internalError(err)
 	}
-	order.SetTransaction(session.ID, s.now())
+	order.SetTransaction(session.SessionID, s.now())
 	// 注文履歴レコードの登録
 	if err := s.db.Order.Create(ctx, order); err != nil {
 		return "", nil, internalError(err)
@@ -643,15 +658,15 @@ func (s *service) executePaymentOrder(
 		customer:       params.customer,
 		billingAddress: params.billingAddress,
 	}
-	pay, err := params.payFn(ctx, session.ID, cparams)
-	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
+	result, err := params.payFn(ctx, session.SessionID, cparams)
+	if s.payment.IsSessionFailed(err) && session.ReturnURL != "" {
 		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
-		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), func(ctx context.Context) {}, errDuplicateOrder
+		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.SessionID), func(ctx context.Context) {}, errDuplicateOrder
 	}
 	if err != nil {
 		return "", nil, internalError(err)
 	}
-	return pay.RedirectURL, func(context.Context) {}, nil
+	return result.RedirectURL, func(context.Context) {}, nil
 }
 
 func (s *service) executeFreeOrder(

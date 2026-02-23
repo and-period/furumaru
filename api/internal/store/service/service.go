@@ -12,7 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
@@ -42,7 +42,7 @@ type Params struct {
 	PostalCode  postalcode.Client
 	Geolocation geolocation.Client
 	Ivs         ivs.Client
-	Komoju      *komoju.Komoju
+	Payment     payment.Provider
 }
 
 type service struct {
@@ -59,7 +59,7 @@ type service struct {
 	postalCode          postalcode.Client
 	geolocation         geolocation.Client
 	ivs                 ivs.Client
-	komoju              *komoju.Komoju
+	payment             payment.Provider
 	cartTTL             time.Duration
 	cartRefreshInterval time.Duration
 }
@@ -107,7 +107,7 @@ func NewService(params *Params, opts ...Option) store.Service {
 		postalCode:          params.PostalCode,
 		geolocation:         params.Geolocation,
 		ivs:                 params.Ivs,
-		komoju:              params.Komoju,
+		payment:             params.Payment,
 		cartTTL:             dopts.cartTTL,
 		cartRefreshInterval: defaultCartRefreshInterval,
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -501,7 +501,6 @@ func TestCaptureOrder(t *testing.T) {
 			},
 		},
 	}
-	payment := &komoju.PaymentResponse{}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -512,7 +511,7 @@ func TestCaptureOrder(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(payment, nil)
+				mocks.payment.EXPECT().CapturePayment(ctx, "payment-id").Return(nil)
 			},
 			input: &store.CaptureOrderInput{
 				OrderID: "order-id",
@@ -552,7 +551,7 @@ func TestCaptureOrder(t *testing.T) {
 			name: "failed to capture",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(nil, assert.AnError)
+				mocks.payment.EXPECT().CapturePayment(ctx, "payment-id").Return(assert.AnError)
 			},
 			input: &store.CaptureOrderInput{
 				OrderID: "order-id",
@@ -1008,7 +1007,6 @@ func TestCancelOrder(t *testing.T) {
 			},
 		},
 	}
-	payment := &komoju.PaymentResponse{}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -1019,7 +1017,7 @@ func TestCancelOrder(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Cancel(ctx, "payment-id").Return(payment, nil)
+				mocks.payment.EXPECT().CancelPayment(ctx, "payment-id").Return(nil)
 			},
 			input: &store.CancelOrderInput{
 				OrderID: "order-id",
@@ -1059,7 +1057,7 @@ func TestCancelOrder(t *testing.T) {
 			name: "failed to capture",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Cancel(ctx, "payment-id").Return(nil, assert.AnError)
+				mocks.payment.EXPECT().CancelPayment(ctx, "payment-id").Return(assert.AnError)
 			},
 			input: &store.CancelOrderInput{
 				OrderID: "order-id",
@@ -1135,12 +1133,11 @@ func TestRefundOrder(t *testing.T) {
 			},
 		},
 	}
-	params := &komoju.RefundParams{
+	params := &payment.RefundParams{
 		PaymentID:   "payment-id",
 		Amount:      1600,
 		Description: "在庫が不足していたため。",
 	}
-	payment := &komoju.PaymentResponse{}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -1151,7 +1148,7 @@ func TestRefundOrder(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Refund(ctx, params).Return(payment, nil)
+				mocks.payment.EXPECT().RefundPayment(ctx, params).Return(nil)
 			},
 			input: &store.RefundOrderInput{
 				OrderID:     "order-id",
@@ -1192,7 +1189,7 @@ func TestRefundOrder(t *testing.T) {
 			name: "failed to refund",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.komojuPayment.EXPECT().Refund(ctx, params).Return(nil, assert.AnError)
+				mocks.payment.EXPECT().RefundPayment(ctx, params).Return(assert.AnError)
 			},
 			input: &store.RefundOrderInput{
 				OrderID:     "order-id",

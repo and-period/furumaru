@@ -12,7 +12,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/semaphore"
 )
@@ -44,16 +43,16 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 		return internalError(err)
 	}
 
-	payment, err := s.komoju.Payment.Show(ctx, in.PaymentID)
+	result, err := s.payment.ShowPayment(ctx, in.PaymentID)
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to get payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
 	}
-	if payment.Status != komoju.PaymentStatusAuthorized {
-		slog.WarnContext(ctx, "Payment status is not authorized", slog.String("paymentId", in.PaymentID), slog.String("status", string(payment.Status)))
+	if result.Status != entity.PaymentStatusAuthorized {
+		slog.WarnContext(ctx, "Payment status is not authorized", slog.String("paymentId", in.PaymentID), slog.Int("status", int(result.Status)))
 		return nil
 	}
-	if _, err := s.komoju.Payment.Capture(ctx, in.PaymentID); err != nil {
+	if err := s.payment.CapturePayment(ctx, in.PaymentID); err != nil {
 		slog.ErrorContext(ctx, "Failed to capture payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
 	}
