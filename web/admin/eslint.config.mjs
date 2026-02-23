@@ -1,5 +1,6 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs'
+import vuejsAccessibility from 'eslint-plugin-vuejs-accessibility'
 
 export default withNuxt(
   {
@@ -12,6 +13,9 @@ export default withNuxt(
   },
   {
     files: ['src/**/*.{vue,js,ts,tsx}'],
+    plugins: {
+      'vuejs-accessibility': vuejsAccessibility,
+    },
     rules: {
       '@typescript-eslint/ban-types': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
@@ -28,6 +32,12 @@ export default withNuxt(
       'vue/no-ref-as-operand': 'off',
       'vue/no-v-html': 'off',
       'vue/no-v-text-v-html-on-component': 'off',
+      ...Object.fromEntries(
+        Object.keys(vuejsAccessibility.rules).map(rule => [
+          `vuejs-accessibility/${rule}`,
+          'warn',
+        ]),
+      ),
     },
   },
 )

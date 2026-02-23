@@ -54,6 +54,7 @@
     "@vueuse/core": "13.9.0",
     "@vueuse/nuxt": "13.9.0",
     "eslint": "9.36.0",
+    "eslint-plugin-vuejs-accessibility": "^2.5.0",
     "postcss-html": "1.8.0",
     "prettier": "3.6.2",
     "raw-loader": "4.0.2",
