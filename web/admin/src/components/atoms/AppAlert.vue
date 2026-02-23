@@ -14,6 +14,7 @@ defineProps<Props>()
   <v-alert
     v-show="show"
     :type="type"
+    aria-live="polite"
     v-text="text"
   />
 </template>
