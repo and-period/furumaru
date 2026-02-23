@@ -24,7 +24,6 @@ export default defineNuxtConfig({
   css: ['~/assets/main.scss'],
 
   plugins: [
-    '~/plugins/chartjs.client',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
     '~/plugins/sentry.client',

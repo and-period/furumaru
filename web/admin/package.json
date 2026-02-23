@@ -26,7 +26,6 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/integrations": "^13.9.0",
     "axios": "^1.12.2",
-    "chart.js": "^4.5.0",
     "dayjs": "^1.11.18",
     "echarts": "^5.6.0",
     "firebase": "^10.14.1",
@@ -37,7 +36,6 @@
     "sass": "^1.93.2",
     "sortablejs": "^1.15.6",
     "universal-cookie": "^7.2.2",
-    "vue-chart-3": "^3.1.8",
     "vue-echarts": "^6.7.3",
     "vuetify": "^3.10.4",
     "vuetify-nuxt-module": "^0.19.5"

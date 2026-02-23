@@ -16,7 +16,6 @@ import {
   mdiVideo,
   mdiRadio,
 } from '@mdi/js'
-import Hls from 'hls.js'
 import {
 
   BroadcastStatus,
@@ -156,7 +155,7 @@ const isVOD = (): boolean => {
   return props.broadcast?.status === BroadcastStatus.BroadcastStatusDisabled
 }
 
-const onClickVideo = (): void => {
+const onClickVideo = async (): Promise<void> => {
   if (!videoRef.value || !props.broadcast) {
     return
   }
@@ -167,8 +166,9 @@ const onClickVideo = (): void => {
   const video = videoRef.value
   const src = props.broadcast.outputUrl
 
-  if (Hls.isSupported()) {
-    const hls = new Hls({ enableWorker: false })
+  const { default: HlsLib } = await import('hls.js')
+  if (HlsLib.isSupported()) {
+    const hls = new HlsLib({ enableWorker: false })
     hls.loadSource(src)
     hls.attachMedia(video)
     video.play()

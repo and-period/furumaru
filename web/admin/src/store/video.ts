@@ -1,4 +1,6 @@
+import { useApiClient } from '~/composables/useApiClient'
 import { fileUpload } from './helper'
+import { UploadApi, VideoApi } from '~/types/api/v1'
 import type {
   CreateVideoRequest,
   Experience,
@@ -17,180 +19,128 @@ import type {
   VideoViewerLog,
 } from '~/types/api/v1'
 
-export const useVideoStore = defineStore('video', {
-  state: () => ({
-    video: null as Video | null,
-    products: [] as Product[],
-    experiences: [] as Experience[],
-    viewerLogs: [] as VideoViewerLog[],
-    videoResponse: null as VideosResponse | null,
-  }),
+export const useVideoStore = defineStore('video', () => {
+  const { create, errorHandler } = useApiClient()
+  const videoApi = () => create(VideoApi)
+  const uploadApi = () => create(UploadApi)
 
-  getters: {},
+  const video = ref<Video | null>(null)
+  const products = ref<Product[]>([])
+  const experiences = ref<Experience[]>([])
+  const viewerLogs = ref<VideoViewerLog[]>([])
+  const videoResponse = ref<VideosResponse | null>(null)
 
-  actions: {
-    /**
-     * 動画一覧取得関数
-     * @param limit
-     * @param offset
-     * @returns
-     */
-    async fetchVideos(limit = 20, offset = 0): Promise<void> {
-      try {
-        const params: V1VideosGetRequest = {
-          limit,
-          offset,
-        }
-        const res = await this.videoApi().v1VideosGet(params)
-        this.videoResponse = res
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
+  async function fetchVideos(limit = 20, offset = 0): Promise<void> {
+    try {
+      const params: V1VideosGetRequest = { limit, offset }
+      const res = await videoApi().v1VideosGet(params)
+      videoResponse.value = res
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-    /**
-     * 動画詳細取得関数
-     * @param id 動画ID
-     * @returns
-     */
-    async fetchVideo(id: string): Promise<void> {
-      try {
-        const params: V1VideosVideoIdGetRequest = {
-          videoId: id,
-        }
-        const res = await this.videoApi().v1VideosVideoIdGet(params)
-        this.video = res.video
-        this.products = res.products
-        this.experiences = res.experiences
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
+  async function fetchVideo(id: string): Promise<void> {
+    try {
+      const params: V1VideosVideoIdGetRequest = { videoId: id }
+      const res = await videoApi().v1VideosVideoIdGet(params)
+      video.value = res.video
+      products.value = res.products
+      experiences.value = res.experiences
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-    /**
-     * 動画の分析情報を取得する関数
-     * @param videoId 動画ID
-     * @returns
-     */
-    async analyzeVideo(videoId: string, start?: number, end?: number): Promise<void> {
-      try {
-        const params: V1VideosVideoIdAnalyticsGetRequest = {
-          videoId,
-          start,
-          end,
-        }
-        const res = await this.videoApi().v1VideosVideoIdAnalyticsGet(params)
-        this.viewerLogs = res.viewerLogs
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          404: '対象の動画が見つかりません。',
-        })
-      }
-    },
+  async function analyzeVideo(videoId: string, start?: number, end?: number): Promise<void> {
+    try {
+      const params: V1VideosVideoIdAnalyticsGetRequest = { videoId, start, end }
+      const res = await videoApi().v1VideosVideoIdAnalyticsGet(params)
+      viewerLogs.value = res.viewerLogs
+    }
+    catch (err) {
+      return errorHandler(err, { 404: '対象の動画が見つかりません。' })
+    }
+  }
 
-    /**
-     * 動画の新規登録関数
-     * @param payload
-     * @returns
-     */
-    async createVideo(payload: CreateVideoRequest): Promise<void> {
-      try {
-        const params: V1VideosPostRequest = {
-          createVideoRequest: payload,
-        }
-        await this.videoApi().v1VideosPost(params)
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
+  async function createVideo(payload: CreateVideoRequest): Promise<void> {
+    try {
+      const params: V1VideosPostRequest = { createVideoRequest: payload }
+      await videoApi().v1VideosPost(params)
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-    /**
-     * 動画の更新関数
-     * @param id  動画ID
-     * @param payload
-     * @returns
-     */
-    async updateVideo(id: string, payload: UpdateVideoRequest): Promise<void> {
-      try {
-        const params: V1VideosVideoIdPatchRequest = {
-          videoId: id,
-          updateVideoRequest: payload,
-        }
-        await this.videoApi().v1VideosVideoIdPatch(params)
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
+  async function updateVideo(id: string, payload: UpdateVideoRequest): Promise<void> {
+    try {
+      const params: V1VideosVideoIdPatchRequest = { videoId: id, updateVideoRequest: payload }
+      await videoApi().v1VideosVideoIdPatch(params)
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-    /**
-     * 動画ファイルアップロード関数
-     * @param file 動画ファイル
-     * @returns 参照先のURL
-     */
-    async uploadVideoFile(file: File): Promise<string> {
-      try {
-        const params: V1UploadVideosFilePostRequest = {
-          getUploadURLRequest: {
-            fileType: file.type,
-          },
-        }
-        const res = await this.uploadApi().v1UploadVideosFilePost(params)
+  async function uploadVideoFile(file: File): Promise<string> {
+    try {
+      const params: V1UploadVideosFilePostRequest = {
+        getUploadURLRequest: { fileType: file.type },
+      }
+      const res = await uploadApi().v1UploadVideosFilePost(params)
+      return await fileUpload(uploadApi(), file, res.key, res.url)
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-        return await fileUpload(this.uploadApi(), file, res.key, res.url)
+  async function uploadThumbnailFile(file: File): Promise<string> {
+    try {
+      const params: V1UploadVideosThumbnailPostRequest = {
+        getUploadURLRequest: { fileType: file.type },
       }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
+      const res = await uploadApi().v1UploadVideosThumbnailPost(params)
+      return await fileUpload(uploadApi(), file, res.key, res.url)
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-    /**
-     * サムネイルファイルアップロード関数
-     * @param file 画像ファイル
-     * @returns 参照先のURL
-     */
-    async uploadThumbnailFile(file: File): Promise<string> {
-      try {
-        const params: V1UploadVideosThumbnailPostRequest = {
-          getUploadURLRequest: {
-            fileType: file.type,
-          },
-        }
-        const res = await this.uploadApi().v1UploadVideosThumbnailPost(params)
+  async function deleteVideo(id: string): Promise<void> {
+    try {
+      const params: V1VideosVideoIdDeleteRequest = { videoId: id }
+      await videoApi().v1VideosVideoIdDelete(params)
+    }
+    catch (error) {
+      console.log(error)
+      return errorHandler(error)
+    }
+  }
 
-        return await fileUpload(this.uploadApi(), file, res.key, res.url)
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
-
-    /**
-     * 動画の削除関数
-     * @param id  動画ID
-     * @returns
-     */
-    async deleteVideo(id: string): Promise<void> {
-      try {
-        const params: V1VideosVideoIdDeleteRequest = {
-          videoId: id,
-        }
-        await this.videoApi().v1VideosVideoIdDelete(params)
-      }
-      catch (error) {
-        console.log(error)
-        return this.errorHandler(error)
-      }
-    },
-  },
+  return {
+    video,
+    products,
+    experiences,
+    viewerLogs,
+    videoResponse,
+    fetchVideos,
+    fetchVideo,
+    analyzeVideo,
+    createVideo,
+    updateVideo,
+    uploadVideoFile,
+    uploadThumbnailFile,
+    deleteVideo,
+  }
 })

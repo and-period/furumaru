@@ -8,30 +8,32 @@ export interface Snackbar extends AddSnackbarPayload {
   timeout: number | string
 }
 
-export const useCommonStore = defineStore('common', {
-  state: () => ({
-    snackbars: [] as Snackbar[],
-  }),
+export const useCommonStore = defineStore('common', () => {
+  const snackbars = ref<Snackbar[]>([])
 
-  actions: {
-    /**
-     * スナックバーを表示する関数
-     * @param snackbar スナックバーの情報
-     */
-    addSnackbar(snackbar: AddSnackbarPayload): void {
-      this.snackbars.push({
-        isOpen: true,
-        ...snackbar,
-        timeout: snackbar.color === 'error' ? -1 : 5000,
-      })
-    },
+  /**
+   * スナックバーを表示する関数
+   * @param snackbar スナックバーの情報
+   */
+  function addSnackbar(snackbar: AddSnackbarPayload): void {
+    snackbars.value.push({
+      isOpen: true,
+      ...snackbar,
+      timeout: snackbar.color === 'error' ? -1 : 5000,
+    })
+  }
 
-    /**
-     * スナックバーを削除する関数
-     * @param index 削除するスナックバーのindex
-     */
-    hideSnackbar(index: number): void {
-      this.snackbars.splice(index, 1)
-    },
-  },
+  /**
+   * スナックバーを削除する関数
+   * @param index 削除するスナックバーのindex
+   */
+  function hideSnackbar(index: number): void {
+    snackbars.value.splice(index, 1)
+  }
+
+  function $reset(): void {
+    snackbars.value = []
+  }
+
+  return { snackbars, addSnackbar, hideSnackbar, $reset }
 })

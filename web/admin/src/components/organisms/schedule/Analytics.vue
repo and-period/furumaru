@@ -7,16 +7,9 @@ import {
   mdiAccountMultiple,
 } from '@mdi/js'
 import dayjs from 'dayjs'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import {
-  TitleComponent,
-  GridComponent,
-  TooltipComponent,
-} from 'echarts/components'
-import { LineChart } from 'echarts/charts'
-import VChart from 'vue-echarts'
 import type { BroadcastViewerLog } from '~/types/api/v1'
+
+const AppChart = defineAsyncComponent(() => import('~/components/atoms/AppChart.vue'))
 
 const props = defineProps({
   loading: {
@@ -32,14 +25,6 @@ const props = defineProps({
     default: 0,
   },
 })
-
-use([
-  GridComponent,
-  CanvasRenderer,
-  LineChart,
-  TitleComponent,
-  TooltipComponent,
-])
 
 const option = computed(() => {
   const labels: string[] = []
@@ -344,10 +329,10 @@ const getBroadcastDuration = (): string => {
       </v-card-title>
       <v-card-text class="pa-6">
         <div v-if="props.viewerLogs.length > 0">
-          <v-chart
+          <app-chart
             :option="option"
             class="chart"
-            autoresize
+            :autoresize="true"
           />
         </div>
         <div
