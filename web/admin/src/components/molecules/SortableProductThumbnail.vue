@@ -54,6 +54,7 @@ const handleDelete = (i: number) => {
               color="error"
               variant="text"
               size="small"
+              aria-label="削除"
               @click="handleDelete(i)"
             />
           </div>

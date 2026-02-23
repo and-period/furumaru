@@ -278,7 +278,10 @@ const calcStyle = (i: number) => {
       :density="$vuetify.display.mobile ? 'compact' : 'default'"
     >
       <template #prepend>
-        <v-app-bar-nav-icon @click="handleClickNavIcon">
+        <v-app-bar-nav-icon
+          aria-label="メニューを開く"
+          @click="handleClickNavIcon"
+        >
           <v-icon
             :icon="mdiMenu"
             color="white"
@@ -320,6 +323,7 @@ const calcStyle = (i: number) => {
         <v-btn
           icon
           variant="text"
+          aria-label="通知"
           @click="handleClickMessage"
         >
           <v-badge
