@@ -205,18 +205,30 @@ const onSubmit = async (): Promise<void> => {
           />
         </div>
       </v-card-text>
+    </v-form>
+  </v-card>
 
-      <v-card-actions>
+  <v-footer
+    app
+    color="white"
+    elevation="8"
+    class="px-6 py-4 fixed-footer-actions"
+  >
+    <v-container
+      fluid
+      class="pa-0"
+    >
+      <div class="d-flex align-center justify-center flex-wrap ga-3">
         <v-btn
-          block
           :loading="loading"
-          variant="outlined"
           color="primary"
-          type="submit"
+          variant="elevated"
+          size="large"
+          @click="onSubmit"
         >
           登録
         </v-btn>
-      </v-card-actions>
-    </v-form>
-  </v-card>
+      </div>
+    </v-container>
+  </v-footer>
 </template>
