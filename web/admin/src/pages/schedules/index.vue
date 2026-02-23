@@ -17,7 +17,6 @@ const { coordinators } = storeToRefs(coordinatorStore)
 const { schedules, total } = storeToRefs(scheduleStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('schedules', async (): Promise<void> => {
   await fetchSchedules()
@@ -114,7 +113,6 @@ const handleClickDelete = async (scheduleId: string): Promise<void> => {
       message: `${schedule.title}を削除しました。`,
       color: 'info',
     })
-    deleteDialog.value = false
     fetchState.execute()
   }
   catch (err) {
@@ -138,7 +136,6 @@ catch (err) {
 
 <template>
   <templates-schedule-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :admin-type="adminType"
     :is-alert="isShow"

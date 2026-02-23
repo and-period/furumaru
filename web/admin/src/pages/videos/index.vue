@@ -15,7 +15,6 @@ const { adminType } = storeToRefs(authStore)
 const { videoResponse } = storeToRefs(videoStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('videos', async (): Promise<void> => {
   await fetchVideos()
@@ -68,7 +67,6 @@ const handleClickDelete = async (videoId: string): Promise<void> => {
       message: `${video.title}を削除しました。`,
       color: 'info',
     })
-    deleteDialog.value = false
     fetchState.execute()
   }
   catch (err) {
@@ -92,7 +90,6 @@ catch (err) {
 
 <template>
   <templates-video-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :admin-type="adminType"
     :is-alert="isShow"

@@ -26,7 +26,6 @@ const {
 } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('customer-detail', async () => {
   await fetchCustomerOrders()
@@ -93,7 +92,6 @@ catch (err) {
 
 <template>
   <templates-customer-show
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :admin-type="adminType"
     :is-alert="isShow"

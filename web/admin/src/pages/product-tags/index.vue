@@ -19,7 +19,6 @@ const loading = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
 const newDialog = ref<boolean>(false)
 const editDialog = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 const newFormData = ref<CreateProductTagRequest>({
   name: '',
 })
@@ -131,7 +130,6 @@ const handleDelete = async (productTagId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -150,7 +148,6 @@ catch (err) {
     v-model:edit-form-data="editFormData"
     v-model:new-dialog="newDialog"
     v-model:edit-dialog="editDialog"
-    v-model:delete-dialog="deleteDialog"
     v-model:sort-by="sortBy"
     :loading="isLoading()"
     :admin-type="adminType"

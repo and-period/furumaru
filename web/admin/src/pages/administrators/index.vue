@@ -12,7 +12,6 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const { administrators, total } = storeToRefs(administratorStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData('administrators', async (): Promise<void> => {
   await fetchAdministrators()
@@ -63,7 +62,6 @@ const handleClickDelete = async (administratorId: string): Promise<void> => {
     console.log(err)
   }
   finally {
-    deleteDialog.value = false
     loading.value = false
   }
 }
@@ -82,7 +80,6 @@ catch (err) {
 
 <template>
   <templates-administrator-list
-    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
