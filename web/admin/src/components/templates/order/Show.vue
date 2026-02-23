@@ -664,17 +664,17 @@ const getPickupLocation = (): string => {
 }
 
 // ユーザー要望を取得
-const orderRequest = computed<string>((): string => {
+const orderRequest = computed(() => {
   return props.order?.metadata?.orderRequest || ''
 })
 
 // 体験タイトルを取得
-const experienceTitle = computed<string>((): string => {
+const experienceTitle = computed(() => {
   return props.experience?.title || ''
 })
 
 // 体験説明を取得
-const experienceDescription = computed<string>((): string => {
+const experienceDescription = computed(() => {
   return props.experience?.description || ''
 })
 
