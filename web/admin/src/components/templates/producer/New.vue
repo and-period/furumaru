@@ -11,6 +11,7 @@ import {
   mdiMapMarker,
   mdiShareVariant,
   mdiArrowLeft,
+  mdiPlus,
 } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { Prefecture } from '~/types'
@@ -441,25 +442,40 @@ const onClickSearchAddress = (): void => {
         </v-card-text>
       </v-card>
 
-      <!-- 送信ボタン -->
-      <div class="d-flex justify-end gap-3">
-        <v-btn
-          variant="text"
-          size="large"
-          @click="$router.back()"
+      <v-footer
+        app
+        color="white"
+        elevation="8"
+        class="px-6 py-4 fixed-footer-actions"
+      >
+        <v-container
+          fluid
+          class="pa-0"
         >
-          キャンセル
-        </v-btn>
-        <v-btn
-          :loading="loading"
-          color="primary"
-          variant="elevated"
-          size="large"
-          type="submit"
-        >
-          生産者を登録
-        </v-btn>
-      </div>
+          <div class="d-flex align-center justify-center flex-wrap ga-3">
+            <v-btn
+              variant="text"
+              size="large"
+              @click="$router.back()"
+            >
+              キャンセル
+            </v-btn>
+            <v-btn
+              :loading="loading"
+              color="primary"
+              variant="elevated"
+              size="large"
+              type="submit"
+            >
+              <v-icon
+                :icon="mdiPlus"
+                start
+              />
+              生産者を登録
+            </v-btn>
+          </div>
+        </v-container>
+      </v-footer>
     </v-form>
   </v-container>
 </template>
