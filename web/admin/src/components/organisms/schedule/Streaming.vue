@@ -473,12 +473,14 @@ const onClickCopyUrl = (url: string) => {
                 id="video"
                 ref="videoRef"
                 controls
+                aria-label="配信映像"
                 class="video-player"
               />
               <video
                 v-show="isVOD()"
                 id="video"
                 controls
+                aria-label="配信映像"
                 class="video-player"
               >
                 <source

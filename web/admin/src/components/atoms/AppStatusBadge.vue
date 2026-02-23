@@ -8,7 +8,10 @@ defineProps<Props>()
 </script>
 
 <template>
-  <v-chip :color="color">
+  <v-chip
+    :color="color"
+    :aria-label="label"
+  >
     {{ label }}
   </v-chip>
 </template>

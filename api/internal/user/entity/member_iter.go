@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと会員のペアを返すイテレーターを返す。
 func (ms Members) All() iter.Seq2[int, *Member] {
@@ -15,7 +19,7 @@ func (ms Members) All() iter.Seq2[int, *Member] {
 
 // IterMap はユーザーIDをキー、会員を値とするイテレーターを返す。
 func (ms Members) IterMap() iter.Seq2[string, *Member] {
-	return MapIter(ms, func(m *Member) (string, *Member) {
+	return collection.MapIter(ms, func(m *Member) (string, *Member) {
 		return m.UserID, m
 	})
 }

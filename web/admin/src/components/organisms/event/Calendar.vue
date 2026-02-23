@@ -77,6 +77,7 @@ const handleClickNextButton = () => {
       <v-btn
         icon
         class="ma-2"
+        aria-label="前の月"
         @click="handleClickPrevButton"
       >
         <v-icon :icon="mdiChevronLeft" />
@@ -84,6 +85,7 @@ const handleClickNextButton = () => {
       <v-btn
         icon
         class="ma-2"
+        aria-label="次の月"
         @click="handleClickNextButton"
       >
         <v-icon :icon="mdiChevronRight" />

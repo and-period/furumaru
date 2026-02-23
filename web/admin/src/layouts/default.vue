@@ -272,13 +272,22 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
+    <a
+      href="#main-content"
+      class="skip-to-content"
+    >
+      コンテンツにスキップ
+    </a>
     <v-app-bar
       color="primary"
       elevation="2"
       :density="$vuetify.display.mobile ? 'compact' : 'default'"
     >
       <template #prepend>
-        <v-app-bar-nav-icon @click="handleClickNavIcon">
+        <v-app-bar-nav-icon
+          aria-label="メニューを開く"
+          @click="handleClickNavIcon"
+        >
           <v-icon
             :icon="mdiMenu"
             color="white"
@@ -305,6 +314,7 @@ const calcStyle = (i: number) => {
               :src="user.thumbnailUrl"
               :srcset="getImages()"
               cover
+              alt="ユーザーアバター"
             />
             <v-icon
               v-else
@@ -319,6 +329,7 @@ const calcStyle = (i: number) => {
         <v-btn
           icon
           variant="text"
+          aria-label="通知"
           @click="handleClickMessage"
         >
           <v-badge
@@ -353,6 +364,7 @@ const calcStyle = (i: number) => {
                 :src="user?.thumbnailUrl"
                 :srcset="getImages()"
                 cover
+                alt="ユーザーアバター"
               />
               <v-icon
                 v-else
@@ -414,6 +426,8 @@ const calcStyle = (i: number) => {
         <v-list-item
           class="px-4 py-2 cursor-pointer"
           :class="{ 'bg-grey-lighten-4': !isGroupExpanded(group.title) }"
+          role="button"
+          :aria-expanded="isGroupExpanded(group.title).toString()"
           @click="toggleGroup(group.title)"
         >
           <template #prepend>
@@ -480,29 +494,34 @@ const calcStyle = (i: number) => {
       </template>
     </v-navigation-drawer>
 
-    <v-snackbar
-      v-for="(snackbar, i) in snackbars"
-      :key="i"
-      v-model="snackbar.isOpen"
-      :color="snackbar.color"
-      location="top"
-      variant="elevated"
-      :timeout="snackbar.timeout"
-      :style="calcStyle(i)"
+    <div
+      aria-live="polite"
+      aria-atomic="false"
     >
-      {{ snackbar.message }}
-      <template #actions>
-        <v-btn
-          variant="text"
-          color="white"
-          @click="commonStore.hideSnackbar(i)"
-        >
-          閉じる
-        </v-btn>
-      </template>
-    </v-snackbar>
+      <v-snackbar
+        v-for="(snackbar, i) in snackbars"
+        :key="i"
+        v-model="snackbar.isOpen"
+        :color="snackbar.color"
+        location="top"
+        variant="elevated"
+        :timeout="snackbar.timeout"
+        :style="calcStyle(i)"
+      >
+        {{ snackbar.message }}
+        <template #actions>
+          <v-btn
+            variant="text"
+            color="white"
+            @click="commonStore.hideSnackbar(i)"
+          >
+            閉じる
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
 
-    <v-main>
+    <v-main id="main-content">
       <v-container :class="{ 'container-wide': isWide }">
         <atoms-app-breadcrumbs
           v-if="breadcrumbs.length > 1"

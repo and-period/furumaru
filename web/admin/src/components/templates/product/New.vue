@@ -455,6 +455,7 @@ const onSubmit = async (): Promise<void> => {
                       :src="img.url"
                       aspect-ratio="1"
                       class="image-preview"
+                      alt="商品画像プレビュー"
                     >
                       <div class="image-overlay">
                         <v-radio
@@ -468,6 +469,7 @@ const onSubmit = async (): Promise<void> => {
                           variant="text"
                           size="small"
                           class="delete-btn"
+                          aria-label="画像を削除"
                           @click.stop="onDeleteThumbnail(i)"
                         />
                       </div>
@@ -1065,29 +1067,40 @@ const onSubmit = async (): Promise<void> => {
       </v-col>
     </v-row>
 
-    <!-- 送信ボタン -->
-    <div class="d-flex justify-end gap-3 mt-6">
-      <v-btn
-        variant="text"
-        size="large"
-        @click="$router.back()"
+    <v-footer
+      app
+      color="white"
+      elevation="8"
+      class="px-6 py-4 fixed-footer-actions"
+    >
+      <v-container
+        fluid
+        class="pa-0"
       >
-        キャンセル
-      </v-btn>
-      <v-btn
-        :loading="loading"
-        color="primary"
-        variant="elevated"
-        size="large"
-        @click="onSubmit"
-      >
-        <v-icon
-          :icon="mdiPlus"
-          start
-        />
-        商品を登録
-      </v-btn>
-    </div>
+        <div class="d-flex align-center justify-center flex-wrap ga-3">
+          <v-btn
+            variant="text"
+            size="large"
+            @click="$router.back()"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            :loading="loading"
+            color="primary"
+            variant="elevated"
+            size="large"
+            @click="onSubmit"
+          >
+            <v-icon
+              :icon="mdiPlus"
+              start
+            />
+            商品を登録
+          </v-btn>
+        </div>
+      </v-container>
+    </v-footer>
   </v-container>
 </template>
 

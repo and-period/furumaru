@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと要素のペアを返すイテレーターを返す。
 func (vs Videos) All() iter.Seq2[int, *Video] {
@@ -63,7 +67,7 @@ func (vs Videos) IterExperienceIDs() iter.Seq[string] {
 
 // IterMap はビデオIDをキー、ビデオを値とするイテレーターを返す。
 func (vs Videos) IterMap() iter.Seq2[string, *Video] {
-	return MapIter(vs, func(v *Video) (string, *Video) {
+	return collection.MapIter(vs, func(v *Video) (string, *Video) {
 		return v.ID, v
 	})
 }

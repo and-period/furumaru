@@ -3,6 +3,8 @@ package entity
 import (
 	"iter"
 	"time"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
 )
 
 // All はインデックスと要素のペアを返すイテレーターを返す。
@@ -18,7 +20,7 @@ func (ls AggregatedVideoViewerLogs) All() iter.Seq2[int, *AggregatedVideoViewerL
 
 // IterMapByReportedAt は集計日時をキー、集計情報を値とするイテレーターを返す。
 func (ls AggregatedVideoViewerLogs) IterMapByReportedAt() iter.Seq2[time.Time, *AggregatedVideoViewerLog] {
-	return MapIter(ls, func(l *AggregatedVideoViewerLog) (time.Time, *AggregatedVideoViewerLog) {
+	return collection.MapIter(ls, func(l *AggregatedVideoViewerLog) (time.Time, *AggregatedVideoViewerLog) {
 		return l.ReportedAt, l
 	})
 }

@@ -1,6 +1,10 @@
 package entity
 
-import "iter"
+import (
+	"iter"
+
+	"github.com/and-period/furumaru/api/pkg/collection"
+)
 
 // All はインデックスと住所のペアを返すイテレーターを返す。
 func (as Addresses) All() iter.Seq2[int, *Address] {
@@ -15,21 +19,21 @@ func (as Addresses) All() iter.Seq2[int, *Address] {
 
 // IterMap は住所IDをキー、住所を値とするイテレーターを返す。
 func (as Addresses) IterMap() iter.Seq2[string, *Address] {
-	return MapIter(as, func(a *Address) (string, *Address) {
+	return collection.MapIter(as, func(a *Address) (string, *Address) {
 		return a.ID, a
 	})
 }
 
 // IterMapByRevision はリビジョンIDをキー、住所を値とするイテレーターを返す。
 func (as Addresses) IterMapByRevision() iter.Seq2[int64, *Address] {
-	return MapIter(as, func(a *Address) (int64, *Address) {
+	return collection.MapIter(as, func(a *Address) (int64, *Address) {
 		return a.AddressRevision.ID, a
 	})
 }
 
 // IterMapByUserID はユーザーIDをキー、住所を値とするイテレーターを返す。
 func (as Addresses) IterMapByUserID() iter.Seq2[string, *Address] {
-	return MapIter(as, func(a *Address) (string, *Address) {
+	return collection.MapIter(as, func(a *Address) (string, *Address) {
 		return a.UserID, a
 	})
 }

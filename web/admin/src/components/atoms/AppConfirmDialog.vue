@@ -16,6 +16,10 @@ const props = withDefaults(defineProps<Props>(), {
   confirmText: '削除',
 })
 
+const dialogId = useId()
+const titleId = computed(() => `confirm-dialog-title-${dialogId}`)
+const descriptionId = computed(() => `confirm-dialog-desc-${dialogId}`)
+
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
   'confirm': []
@@ -42,12 +46,22 @@ function onConfirm() {
     v-model="dialogValue"
     width="500"
   >
-    <v-card>
-      <v-card-title class="text-h6 py-4">
+    <v-card
+      role="alertdialog"
+      :aria-labelledby="titleId"
+      :aria-describedby="descriptionId"
+    >
+      <v-card-title
+        :id="titleId"
+        class="text-h6 py-4"
+      >
         {{ title }}
       </v-card-title>
       <v-card-text class="pb-4">
-        <div class="text-body-1">
+        <div
+          :id="descriptionId"
+          class="text-body-1"
+        >
           {{ message }}
         </div>
         <div class="text-body-2 text-medium-emphasis mt-2">

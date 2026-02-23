@@ -3983,6 +3983,11 @@ argparse@^2.0.1:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
+aria-query@^5.3.0:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/aria-query/-/aria-query-5.3.2.tgz#93f81a43480e33a338f19163a3d10a50c01dcd59"
+  integrity sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==
+
 array-buffer-byte-length@^1.0.1, array-buffer-byte-length@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-buffer-byte-length/-/array-buffer-byte-length-1.0.2.tgz#384d12a37295aec3769ab022ad323a18a51ccf8b"
@@ -5506,6 +5511,14 @@ eslint-plugin-vue@^9.17.0, eslint-plugin-vue@^9.7.0:
     semver "^7.6.3"
     vue-eslint-parser "^9.4.3"
     xml-name-validator "^4.0.0"
+
+eslint-plugin-vuejs-accessibility@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vuejs-accessibility/-/eslint-plugin-vuejs-accessibility-2.5.0.tgz#532c3c7f3284b3504fe610cbd8a0177349054d36"
+  integrity sha512-oZ2fL4tS91Cm/ezH3BueNP+FtpbbeS627OSqqgp9/lsN//glmoPcLBT6D53xwGocLtyBybaT99tX4ThBh8+ytA==
+  dependencies:
+    aria-query "^5.3.0"
+    vue-eslint-parser "^9.0.0 || ^10.0.0"
 
 eslint-processor-vue-blocks@^2.0.0:
   version "2.0.0"
@@ -10326,7 +10339,7 @@ vue-echarts@^6.7.3:
     resize-detector "^0.3.0"
     vue-demi "^0.13.11"
 
-vue-eslint-parser@^10.2.0:
+vue-eslint-parser@^10.2.0, "vue-eslint-parser@^9.0.0 || ^10.0.0":
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-10.4.0.tgz#fd7251d0e710a88a6618f50e8a27973bc3c8d69c"
   integrity sha512-Vxi9pJdbN3ZnVGLODVtZ7y4Y2kzAAE2Cm0CZ3ZDRvydVYxZ6VrnBhLikBsRS+dpwj4Jv4UCv21PTEwF5rQ9WXg==

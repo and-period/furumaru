@@ -293,6 +293,7 @@ const onSubmitDelete = (liveId: string): void => {
           :icon="mdiClose"
           variant="text"
           size="small"
+          aria-label="閉じる"
           @click="onClickCloseCreateDialog"
         />
       </v-card-title>

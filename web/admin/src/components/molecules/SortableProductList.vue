@@ -61,6 +61,7 @@ const getProductInventoryColor = (product: Product): string => {
             :max-width="80"
             :src="getProductThumbnailUrl(product)"
             :srcset="getProductThumbnails(product)"
+            :alt="product.name || '商品画像'"
           />
         </td>
         <td>{{ product.name }}</td>

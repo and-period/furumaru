@@ -570,6 +570,7 @@ const onSubmitReview = (): void => {
                                 :src="img.url"
                                 aspect-ratio="1"
                                 class="image-preview"
+                                alt="商品画像"
                               >
                                 <div class="image-overlay">
                                   <v-radio
@@ -583,6 +584,7 @@ const onSubmitReview = (): void => {
                                     variant="text"
                                     size="small"
                                     class="delete-btn"
+                                    aria-label="画像を削除"
                                     @click.stop="onDeleteThumbnail(i)"
                                   />
                                 </div>

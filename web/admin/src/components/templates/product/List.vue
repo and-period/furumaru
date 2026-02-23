@@ -311,9 +311,13 @@ const onClickCopyItem = (): void => {
     </v-card-title>
 
     <v-card-text>
+      <v-skeleton-loader
+        v-if="loading"
+        type="table-heading, table-row-divider@5"
+      />
       <v-data-table-server
+        v-else
         :headers="headers"
-        :loading="loading"
         :items="props.products"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
@@ -333,6 +337,7 @@ const onClickCopyItem = (): void => {
               cover
               :src="getThumbnail(item.media)"
               :srcset="getResizedThumbnails(item.media)"
+              :alt="item.name || '商品画像'"
             />
             <v-icon
               v-else

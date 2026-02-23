@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
 import { useAuthStore, useCommonStore, usePromotionStore, useShopStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdatePromotionRequest } from '~/types/api/v1'
 
 const router = useRouter()
@@ -32,10 +33,14 @@ const formData = ref<UpdatePromotionRequest>({
   endAt: dayjs().unix(),
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 const fetchState = useAsyncData('promotion-detail', async (): Promise<void> => {
   try {
     await promotionStore.getPromotion(promotionId)
     formData.value = { ...promotion.value }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -61,6 +66,7 @@ const handleSubmit = async (): Promise<void> => {
       message: 'セール情報の編集が完了しました',
       color: 'info',
     })
+    markAsSaved()
     router.push('/promotions')
   }
   catch (err) {
@@ -83,16 +89,28 @@ catch (err) {
 </script>
 
 <template>
-  <templates-promotion-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :shop-ids="shopIds"
-    :admin-type="adminType"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :promotion="promotion"
-    :shop="shop"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-promotion-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :shop-ids="shopIds"
+      :admin-type="adminType"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :promotion="promotion"
+      :shop="shop"
+      @submit="handleSubmit"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

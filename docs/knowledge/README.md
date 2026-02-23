@@ -7,10 +7,21 @@
 ### 📚 [implementation-patterns.md](./implementation-patterns.md)
 実装パターンと技術的な知見
 - Go言語の実装パターン（エラーハンドリング、gRPC、データベースアクセス）
+- Presenter/Serviceラッパーパターン、Gatewayハンドラーパターン
+- サービス層パターン、モック生成パターン
 - Vue.js/Nuxtの実装パターン（Composition API、Pinia）
 - API設計パターン
 - パフォーマンス最適化手法
 - セキュリティ実装
+
+### 🧪 [test-templates.md](./test-templates.md)
+AIエージェント向けテスト生成テンプレート集
+- データベース層テスト（TiDB）: TestMain、List/Get/Create パターン
+- サービス層テスト: モックベースのテーブル駆動テスト
+- エンティティテスト: コンストラクタ・メソッドテスト
+- Gatewayサービスラッパーテスト: DTO変換テスト
+- Gatewayハンドラーテスト: HTTPテスト
+- モック生成・テスト実行コマンド
 
 ### 📝 [lessons-learned.md](./lessons-learned.md)
 過去のトラブル事例と教訓

@@ -212,9 +212,13 @@ const onClickDelete = (): void => {
       </v-card-title>
 
       <v-card-text>
+        <v-skeleton-loader
+          v-if="loading"
+          type="table-heading, table-row-divider@5"
+        />
         <v-data-table-server
+          v-else
           :headers="headers"
-          :loading="loading"
           :items="producers"
           :items-per-page="props.tableItemsPerPage"
           :items-length="props.tableItemsTotal"
@@ -234,6 +238,7 @@ const onClickDelete = (): void => {
                 cover
                 :src="item.thumbnailUrl"
                 :srcset="getImages(item)"
+                :alt="item.username || '生産者画像'"
               />
               <v-icon
                 v-else

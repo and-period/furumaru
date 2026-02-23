@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
 import { useAdministratorStore, useCommonStore } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdateAdministratorRequest } from '~/types/api/v1'
 
 const route = useRoute()
@@ -24,6 +25,9 @@ const formData = ref<UpdateAdministratorRequest>({
   phoneNumber: '',
 })
 
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
+
 const fetchState = useAsyncData('administrator-detail', async (): Promise<void> => {
   try {
     await administratorStore.getAdministrator(administratorId)
@@ -31,6 +35,7 @@ const fetchState = useAsyncData('administrator-detail', async (): Promise<void> 
       ...administrator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber),
     }
+    captureSnapshot()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -56,6 +61,7 @@ const handleSubmit = async (): Promise<void> => {
       message: '管理者情報の更新が完了しました。',
       color: 'info',
     })
+    markAsSaved()
     router.push('/administrators')
   }
   catch (err) {
@@ -78,13 +84,25 @@ catch (err) {
 </script>
 
 <template>
-  <templates-administrator-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :administrator="administrator"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-administrator-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :administrator="administrator"
+      @submit="handleSubmit"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

@@ -5,6 +5,7 @@ import {
   useExperienceTypeStore,
   useProducerStore,
 } from '~/store'
+import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdateExperienceRequest } from '~/types/api/v1'
 
 const route = useRoute()
@@ -51,6 +52,9 @@ const formData = ref<UpdateExperienceRequest>({
   businessOpenTime: '',
   businessCloseTime: '',
 })
+
+const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
+  = useUnsavedChangesGuard(formData)
 
 const isLoading = (): boolean => {
   return loading.value || videoUploading.value
@@ -139,6 +143,7 @@ const handleSubmit = async () => {
   try {
     loading.value = true
     await experienceStore.updateExperience(experienceId.value, req)
+    markAsSaved()
     router.push('/experiences')
   }
   catch (err) {
@@ -171,6 +176,7 @@ onMounted(async () => {
   formData.value.businessCloseTime = convertToTimeFormat(
     formData.value.businessCloseTime,
   )
+  captureSnapshot()
   loading.value = false
 })
 
@@ -185,21 +191,33 @@ const filteredProducers = computed(() => {
 </script>
 
 <template>
-  <templates-experience-new
-    v-model:form-data="formData"
-    v-model:producer-search-keyword="producerSearchKeyword"
-    :loading="isLoading()"
-    :search-loading="searchAddress.loading.value"
-    :search-error-message="searchAddress.errorMessage.value"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :producers="filteredProducers"
-    :experience-types="experienceTypes"
-    :video-uploading="videoUploading"
-    @click:search-address="handleSearchAddress"
-    @update:files="handleImageUpload"
-    @update:video="handleVideoUpload"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-experience-new
+      v-model:form-data="formData"
+      v-model:producer-search-keyword="producerSearchKeyword"
+      :loading="isLoading()"
+      :search-loading="searchAddress.loading.value"
+      :search-error-message="searchAddress.errorMessage.value"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :producers="filteredProducers"
+      :experience-types="experienceTypes"
+      :video-uploading="videoUploading"
+      @click:search-address="handleSearchAddress"
+      @update:files="handleImageUpload"
+      @update:video="handleVideoUpload"
+      @submit="handleSubmit"
+    />
+
+    <atoms-app-confirm-dialog
+      v-model="showLeaveDialog"
+      title="未保存の変更があります"
+      message="ページを離れると入力内容が失われます。よろしいですか？"
+      confirm-text="破棄して離れる"
+      confirm-color="warning"
+      @confirm="confirmLeave"
+      @cancel="cancelLeave"
+    />
+  </div>
 </template>

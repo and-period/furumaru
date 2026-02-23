@@ -982,6 +982,7 @@ const onSubmitRefund = (): void => {
                     :src="getThumbnail(item.productId)"
                     :srcset="getResizedThumbnails(item.productId)"
                     aspect-ratio="1"
+                    :alt="getProductName(item.productId) || '商品画像'"
                   />
                 </v-avatar>
               </template>
@@ -1361,6 +1362,7 @@ const onSubmitRefund = (): void => {
                             :src="getThumbnail(item.productId)"
                             :srcset="getResizedThumbnails(item.productId)"
                             aspect-ratio="1"
+                            :alt="getProductName(item.productId) || '商品画像'"
                           />
                         </v-avatar>
                       </template>
@@ -1478,6 +1480,7 @@ const onSubmitRefund = (): void => {
                             :src="getThumbnail(item.productId)"
                             :srcset="getResizedThumbnails(item.productId)"
                             aspect-ratio="1"
+                            :alt="getProductName(item.productId) || '商品画像'"
                           />
                         </v-avatar>
                       </template>
@@ -1773,43 +1776,3 @@ const onSubmitRefund = (): void => {
     </v-footer>
   </v-container>
 </template>
-
-<style scoped>
-.fixed-footer-actions {
-  position: fixed !important;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  border-top: 1px solid rgb(0 0 0 / 12%);
-}
-
-.fixed-footer-actions .v-container {
-  max-width: none;
-}
-
-@media (width <= 1024px) {
-  .fixed-footer-actions .d-flex {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .fixed-footer-actions .v-btn {
-    width: 100%;
-  }
-
-  .fixed-footer-actions .v-divider {
-    display: none;
-  }
-}
-
-@media (width <= 640px) {
-  .fixed-footer-actions {
-    padding: 12px 16px;
-  }
-
-  .fixed-footer-actions .v-btn {
-    font-size: 14px;
-  }
-}
-</style>
