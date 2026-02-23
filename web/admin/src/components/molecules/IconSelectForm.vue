@@ -60,8 +60,12 @@ const onChangeFile = (): void => {
       :loading="loading"
       class="text-center"
       role="button"
+      tabindex="0"
+      :aria-label="props.label ? `${props.label}を${props.imgUrl === '' ? '選択' : '変更'}` : 'ファイルをアップロード'"
       flat
       @click="onClick"
+      @keydown.enter.prevent="onClick"
+      @keydown.space.prevent="onClick"
     >
       <v-card-text>
         <div class="mb-4">
@@ -90,6 +94,7 @@ const onChangeFile = (): void => {
     </v-card>
     <p
       v-show="props.error"
+      role="alert"
       class="text-red ma-0"
     >
       {{ props.message }}
