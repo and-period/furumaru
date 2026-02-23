@@ -1,38 +1,39 @@
-import type { PaymentMethodType, PaymentSystemStatus, PaymentSystem, UpdatePaymentSystemRequest, V1PaymentSystemsMethodTypePatchRequest } from '~/types/api/v1'
+import { useApiClient } from '~/composables/useApiClient'
+import { PaymentSystemApi } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentSystem, PaymentSystemStatus, V1PaymentSystemsMethodTypePatchRequest } from '~/types/api/v1'
 
-export const usePaymentSystemStore = defineStore('paymentSystem', {
-  state: () => ({
-    systems: [] as PaymentSystem[],
-  }),
+export const usePaymentSystemStore = defineStore('paymentSystem', () => {
+  const { create, errorHandler } = useApiClient()
+  const paymentSystemApi = () => create(PaymentSystemApi)
 
-  actions: {
-    /**
-     * 決済システム状態一覧を取得する非同期関数
-     * @returns
-     */
-    async fetchPaymentSystems(): Promise<void> {
-      try {
-        const res = await this.paymentSystemApi().v1PaymentSystemsGet()
-        this.systems = res.systems
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  const systems = ref<PaymentSystem[]>([])
 
-    async updatePaymentStatus(methodType: PaymentMethodType, status: PaymentSystemStatus) {
-      try {
-        const params: V1PaymentSystemsMethodTypePatchRequest = {
-          methodType,
-          updatePaymentSystemRequest: {
-            status,
-          },
-        }
-        await this.paymentSystemApi().v1PaymentSystemsMethodTypePatch(params)
+  async function fetchPaymentSystems(): Promise<void> {
+    try {
+      const res = await paymentSystemApi().v1PaymentSystemsGet()
+      systems.value = res.systems
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
+
+  async function updatePaymentStatus(methodType: PaymentMethodType, status: PaymentSystemStatus) {
+    try {
+      const params: V1PaymentSystemsMethodTypePatchRequest = {
+        methodType,
+        updatePaymentSystemRequest: { status },
       }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-  },
+      await paymentSystemApi().v1PaymentSystemsMethodTypePatch(params)
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
+
+  return {
+    systems,
+    fetchPaymentSystems,
+    updatePaymentStatus,
+  }
 })

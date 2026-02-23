@@ -1,31 +1,13 @@
 <script lang="ts" setup>
 import dayjs, { unix } from 'dayjs'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import {
-  TitleComponent,
-  GridComponent,
-  TooltipComponent, LegendComponent,
-} from 'echarts/components'
-import { LineChart, PieChart } from 'echarts/charts'
-import VChart from 'vue-echarts'
-
+import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable, mdiTrendingDown, mdiTrendingUp } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { TopOrderPeriodType } from '~/types'
 import { PaymentMethodType } from '~/types/api/v1'
 import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
-import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable, mdiTrendingDown, mdiTrendingUp } from '@mdi/js'
 
-use([
-  GridComponent,
-  CanvasRenderer,
-  LineChart,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-])
+const AppChart = defineAsyncComponent(() => import('~/components/atoms/AppChart.vue'))
 
 const props = defineProps({
   loading: {
@@ -558,10 +540,10 @@ const onChangeEndAt = (): void => {
             売上額推移
           </v-card-title>
           <v-card-text>
-            <v-chart
+            <app-chart
               :option="orderChartOption"
               class="chart"
-              autoresize
+              :autoresize="true"
             />
           </v-card-text>
         </v-card>
@@ -584,10 +566,10 @@ const onChangeEndAt = (): void => {
             支払い方法別
           </v-card-title>
           <v-card-text>
-            <v-chart
+            <app-chart
               :option="paymentChartOption"
               class="payment-chart"
-              autoresize
+              :autoresize="true"
             />
           </v-card-text>
         </v-card>

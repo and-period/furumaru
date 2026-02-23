@@ -1,15 +1,8 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import {
-  TitleComponent,
-  GridComponent,
-  TooltipComponent,
-} from 'echarts/components'
-import { LineChart } from 'echarts/charts'
-import VChart from 'vue-echarts'
 import type { VideoViewerLog } from '~/types/api/v1'
+
+const AppChart = defineAsyncComponent(() => import('~/components/atoms/AppChart.vue'))
 
 const props = defineProps({
   loading: {
@@ -21,14 +14,6 @@ const props = defineProps({
     default: () => [],
   },
 })
-
-use([
-  GridComponent,
-  CanvasRenderer,
-  LineChart,
-  TitleComponent,
-  TooltipComponent,
-])
 
 const option = computed(() => {
   const labels: string[] = []
@@ -80,10 +65,10 @@ const option = computed(() => {
 <template>
   <v-card :loading="loading">
     <v-card-text>
-      <v-chart
+      <app-chart
         :option="option"
         class="chart"
-        autoresize
+        :autoresize="true"
       />
     </v-card-text>
   </v-card>

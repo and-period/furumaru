@@ -1,122 +1,101 @@
+import { useApiClient } from '~/composables/useApiClient'
+import { SpotTypeApi } from '~/types/api/v1'
 import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest, V1SpotTypesGetRequest, V1SpotTypesPostRequest, V1SpotTypesSpotTypeIdDeleteRequest, V1SpotTypesSpotTypeIdPatchRequest } from '~/types/api/v1'
 
-export const useSpotTypeStore = defineStore('spotType', {
-  state: () => ({
-    spotType: {} as SpotType,
-    spotTypes: [] as SpotType[],
-    total: 0,
-  }),
+export const useSpotTypeStore = defineStore('spotType', () => {
+  const { create, errorHandler } = useApiClient()
+  const spotTypeApi = () => create(SpotTypeApi)
 
-  actions: {
-    /**
-     * スポット種別一覧を取得する非同期関数
-     * @param limit 取得上限数
-     * @param offset 取得開始位置
-     */
-    async fetchSpotTypes(limit = 20, offset = 0): Promise<void> {
-      try {
-        const params: V1SpotTypesGetRequest = {
-          limit,
-          offset,
-          name: '',
-        }
-        const res = await this.spotTypeApi().v1SpotTypesGet(params)
-        this.spotTypes = res.spotTypes
-        this.total = res.total
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  const spotType = ref<SpotType>({} as SpotType)
+  const spotTypes = ref<SpotType[]>([])
+  const total = ref<number>(0)
 
-    /**
-     * スポット種別を検索する非同期関数
-     * @param name スポット種別名(あいまい検索)
-     * @param spotTypeIds stateの更新時に残しておく必要があるスポット種別情報
-     */
-    async searchSpotTypes(name = '', spotTypeIds: string[] = []): Promise<void> {
-      try {
-        const params: V1SpotTypesGetRequest = {
-          name,
-        }
-        const res = await this.spotTypeApi().v1SpotTypesGet(params)
-        const spotTypes: SpotType[] = []
-        this.spotTypes.forEach((spotType: SpotType): void => {
-          if (!spotTypeIds.includes(spotType.id)) {
-            return
-          }
-          spotTypes.push(spotType)
-        })
-        res.spotTypes.forEach((spotType: SpotType): void => {
-          if (spotTypes.find((v): boolean => v.id === spotType.id)) {
-            return
-          }
-          spotTypes.push(spotType)
-        })
-        this.spotTypes = spotTypes
-        this.total = res.total
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  async function fetchSpotTypes(limit = 20, offset = 0): Promise<void> {
+    try {
+      const params: V1SpotTypesGetRequest = { limit, offset, name: '' }
+      const res = await spotTypeApi().v1SpotTypesGet(params)
+      spotTypes.value = res.spotTypes
+      total.value = res.total
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
 
-    /**
-     * スポット種別を新規登録する非同期関数
-     * @param payload
-     */
-    async createSpotType(payload: CreateSpotTypeRequest): Promise<void> {
-      try {
-        const params: V1SpotTypesPostRequest = {
-          createSpotTypeRequest: payload,
+  async function searchSpotTypes(name = '', spotTypeIds: string[] = []): Promise<void> {
+    try {
+      const params: V1SpotTypesGetRequest = { name }
+      const res = await spotTypeApi().v1SpotTypesGet(params)
+      const merged: SpotType[] = []
+      spotTypes.value.forEach((st: SpotType): void => {
+        if (!spotTypeIds.includes(st.id)) {
+          return
         }
-        const res = await this.spotTypeApi().v1SpotTypesPost(params)
-        this.spotTypes.unshift(res.spotType)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、内容に誤りがあります。',
-          409: 'このスポット名はすでに登録されています。',
-        })
-      }
-    },
+        merged.push(st)
+      })
+      res.spotTypes.forEach((st: SpotType): void => {
+        if (merged.find((v): boolean => v.id === st.id)) {
+          return
+        }
+        merged.push(st)
+      })
+      spotTypes.value = merged
+      total.value = res.total
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
 
-    /**
-     * スポット種別を更新する非同期関数
-     * @param spotTypeId スポット種別ID
-     * @param payload
-     */
-    async updateSpotType(spotTypeId: string, payload: UpdateSpotTypeRequest): Promise<void> {
-      try {
-        const params: V1SpotTypesSpotTypeIdPatchRequest = {
-          spotTypeId,
-          updateSpotTypeRequest: payload,
-        }
-        await this.spotTypeApi().v1SpotTypesSpotTypeIdPatch(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、内容に誤りがあります。',
-          404: 'このスポット種別は存在しません。',
-          409: 'このスポット種別名はすでに登録されています。',
-        })
-      }
-    },
+  async function createSpotType(payload: CreateSpotTypeRequest): Promise<void> {
+    try {
+      const params: V1SpotTypesPostRequest = { createSpotTypeRequest: payload }
+      const res = await spotTypeApi().v1SpotTypesPost(params)
+      spotTypes.value.unshift(res.spotType)
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '必須項目が不足しているか、内容に誤りがあります。',
+        409: 'このスポット名はすでに登録されています。',
+      })
+    }
+  }
 
-    /**
-     * スポット種別を削除する非同期関数
-     * @param spotTypeId スポット種別ID
-     */
-    async deleteSpotType(spotTypeId: string): Promise<void> {
-      try {
-        const params: V1SpotTypesSpotTypeIdDeleteRequest = {
-          spotTypeId,
-        }
-        await this.spotTypeApi().v1SpotTypesSpotTypeIdDelete(params)
+  async function updateSpotType(spotTypeId: string, payload: UpdateSpotTypeRequest): Promise<void> {
+    try {
+      const params: V1SpotTypesSpotTypeIdPatchRequest = {
+        spotTypeId,
+        updateSpotTypeRequest: payload,
       }
-      catch (err) {
-        return this.errorHandler(err, { 404: 'このスポット種別は存在しません。' })
-      }
-    },
-  },
+      await spotTypeApi().v1SpotTypesSpotTypeIdPatch(params)
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '必須項目が不足しているか、内容に誤りがあります。',
+        404: 'このスポット種別は存在しません。',
+        409: 'このスポット種別名はすでに登録されています。',
+      })
+    }
+  }
+
+  async function deleteSpotType(spotTypeId: string): Promise<void> {
+    try {
+      const params: V1SpotTypesSpotTypeIdDeleteRequest = { spotTypeId }
+      await spotTypeApi().v1SpotTypesSpotTypeIdDelete(params)
+    }
+    catch (err) {
+      return errorHandler(err, { 404: 'このスポット種別は存在しません。' })
+    }
+  }
+
+  return {
+    spotType,
+    spotTypes,
+    total,
+    fetchSpotTypes,
+    searchSpotTypes,
+    createSpotType,
+    updateSpotType,
+    deleteSpotType,
+  }
 })

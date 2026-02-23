@@ -1,29 +1,27 @@
-import type { TopOrderPeriodType } from '~/types'
+import { useApiClient } from '~/composables/useApiClient'
+import { TopApi } from '~/types/api/v1'
 import type { TopOrdersResponse, V1TopOrdersGetRequest } from '~/types/api/v1'
+import type { TopOrderPeriodType } from '~/types'
 
-export const useTopStore = defineStore('top', {
-  state: () => ({
-    orders: {} as TopOrdersResponse,
-  }),
+export const useTopStore = defineStore('top', () => {
+  const { create, errorHandler } = useApiClient()
+  const topApi = () => create(TopApi)
 
-  actions: {
-    /**
-     * 注文集計結果を取得する非同期関数
-     */
-    async fetchOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType): Promise<void> {
-      try {
-        const params: V1TopOrdersGetRequest = {
-          startAt,
-          endAt,
-          periodType,
-        }
-        const res = await this.topApi().v1TopOrdersGet(params)
+  const orders = ref<TopOrdersResponse>({} as TopOrdersResponse)
 
-        this.orders = res
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-  },
+  async function fetchOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType): Promise<void> {
+    try {
+      const params: V1TopOrdersGetRequest = { startAt, endAt, periodType }
+      const res = await topApi().v1TopOrdersGet(params)
+      orders.value = res
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
+
+  return {
+    orders,
+    fetchOrders,
+  }
 })

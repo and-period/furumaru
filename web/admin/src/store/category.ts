@@ -1,3 +1,5 @@
+import { useApiClient } from '~/composables/useApiClient'
+import { CategoryApi } from '~/types/api/v1'
 import type {
   CategoriesResponse,
   Category,
@@ -9,148 +11,125 @@ import type {
   V1CategoriesPostRequest,
 } from '~/types/api/v1'
 
-export const useCategoryStore = defineStore('category', {
-  state: () => ({
-    categories: [] as Category[],
-    total: 0,
-  }),
+export const useCategoryStore = defineStore('category', () => {
+  const { create, errorHandler } = useApiClient()
+  const categoryApi = () => create(CategoryApi)
 
-  actions: {
-    /**
-     * カテゴリ一覧を取得する非同期関数
-     * @param limit 取得上限数
-     * @param offset 取得開始位置
-     * @param orders ソートキー
-     */
-    async fetchCategories(limit = 20, offset = 0, orders = []): Promise<void> {
-      try {
-        const res = await this.listCategories(limit, offset, '', orders)
-        this.categories = res.categories
-        this.total = res.total
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  const categories = ref<Category[]>([])
+  const total = ref<number>(0)
 
-    /**
-     * カテゴリを検索をする非同期関数
-     * @param name カテゴリ名(あいまい検索)
-     * @param categoryIds stateの更新時に残しておく必要があるカテゴリ情報
-     */
-    async searchCategories(name = '', categoryIds: string[] = []): Promise<void> {
-      try {
-        const res = await this.listCategories(undefined, undefined, name, [])
-        const categories: Category[] = []
-        this.categories.forEach((category: Category): void => {
-          if (!categoryIds.includes(category.id)) {
-            return
-          }
-          categories.push(category)
-        })
-        res.categories.forEach((category: Category): void => {
-          if (categories.find((v): boolean => v.id === category.id)) {
-            return
-          }
-          categories.push(category)
-        })
-        this.categories = categories
-        this.total = res.total
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  async function listCategories(limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
+    const params: V1CategoriesGetRequest = {
+      limit,
+      offset,
+      name,
+      orders: orders.join(','),
+    }
+    const res = await categoryApi().v1CategoriesGet(params)
+    return { ...res }
+  }
 
-    /**
-     * カテゴリを追加取得する非同期関数
-     * @param limit 取得上限数
-     * @param offset 取得開始位置
-     * @param orders ソートキー
-     */
-    async moreCategories(limit = 20, offset = 0, orders = []): Promise<void> {
-      try {
-        const res = await this.listCategories(limit, offset, '', orders)
-        this.categories.push(...res.categories)
-        this.total = res.total
-      }
-      catch (err) {
-        return this.errorHandler(err)
-      }
-    },
+  async function fetchCategories(limit = 20, offset = 0, orders = []): Promise<void> {
+    try {
+      const res = await listCategories(limit, offset, '', orders)
+      categories.value = res.categories
+      total.value = res.total
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
 
-    /**
-     * カテゴリを新規登録する非同期関数
-     * @param payload
-     */
-    async createCategory(payload: CreateCategoryRequest): Promise<void> {
-      try {
-        const params: V1CategoriesPostRequest = {
-          createCategoryRequest: payload,
+  async function searchCategories(name = '', categoryIds: string[] = []): Promise<void> {
+    try {
+      const res = await listCategories(undefined, undefined, name, [])
+      const merged: Category[] = []
+      categories.value.forEach((category: Category): void => {
+        if (!categoryIds.includes(category.id)) {
+          return
         }
-        const res = await this.categoryApi().v1CategoriesPost(params)
-        this.categories.unshift(res.category)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、内容に誤りがあります',
-          409: 'このカテゴリー名はすでに登録されています。',
-        })
-      }
-    },
-
-    /**
-     * カテゴリを編集する非同期関数
-     * @param categoryId カテゴリID
-     * @param payload
-     */
-    async updateCategory(categoryId: string, payload: UpdateCategoryRequest) {
-      try {
-        const params: V1CategoriesCategoryIdPatchRequest = {
-          categoryId,
-          updateCategoryRequest: payload,
+        merged.push(category)
+      })
+      res.categories.forEach((category: Category): void => {
+        if (merged.find((v): boolean => v.id === category.id)) {
+          return
         }
-        await this.categoryApi().v1CategoriesCategoryIdPatch(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、内容に誤りがあります',
-          404: '対象のカテゴリーが存在しません',
-          409: 'このカテゴリー名はすでに登録されています。',
-        })
-      }
-      this.fetchCategories()
-    },
+        merged.push(category)
+      })
+      categories.value = merged
+      total.value = res.total
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
 
-    /**
-     * カテゴリを削除する非同期関数
-     * @param categoryId カテゴリID
-     */
-    async deleteCategory(categoryId: string): Promise<void> {
-      try {
-        const params: V1CategoriesCategoryIdDeleteRequest = {
-          categoryId,
-        }
-        await this.categoryApi().v1CategoriesCategoryIdDelete(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          404: '対象のカテゴリーが存在しません',
-          412: '品目と紐付いているため削除できません',
-        })
-      }
-      this.fetchCategories()
-    },
+  async function moreCategories(limit = 20, offset = 0, orders = []): Promise<void> {
+    try {
+      const res = await listCategories(limit, offset, '', orders)
+      categories.value.push(...res.categories)
+      total.value = res.total
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
 
-    async listCategories(limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
-      const params: V1CategoriesGetRequest = {
-        limit,
-        offset,
-        name,
-        orders: orders.join(','),
+  async function createCategory(payload: CreateCategoryRequest): Promise<void> {
+    try {
+      const params: V1CategoriesPostRequest = { createCategoryRequest: payload }
+      const res = await categoryApi().v1CategoriesPost(params)
+      categories.value.unshift(res.category)
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '必須項目が不足しているか、内容に誤りがあります',
+        409: 'このカテゴリー名はすでに登録されています。',
+      })
+    }
+  }
+
+  async function updateCategory(categoryId: string, payload: UpdateCategoryRequest) {
+    try {
+      const params: V1CategoriesCategoryIdPatchRequest = {
+        categoryId,
+        updateCategoryRequest: payload,
       }
-      const res = await this.categoryApi().v1CategoriesGet(params)
-      return { ...res }
-    },
-  },
+      await categoryApi().v1CategoriesCategoryIdPatch(params)
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '必須項目が不足しているか、内容に誤りがあります',
+        404: '対象のカテゴリーが存在しません',
+        409: 'このカテゴリー名はすでに登録されています。',
+      })
+    }
+    fetchCategories()
+  }
+
+  async function deleteCategory(categoryId: string): Promise<void> {
+    try {
+      const params: V1CategoriesCategoryIdDeleteRequest = { categoryId }
+      await categoryApi().v1CategoriesCategoryIdDelete(params)
+    }
+    catch (err) {
+      return errorHandler(err, {
+        404: '対象のカテゴリーが存在しません',
+        412: '品目と紐付いているため削除できません',
+      })
+    }
+    fetchCategories()
+  }
+
+  return {
+    categories,
+    total,
+    fetchCategories,
+    searchCategories,
+    moreCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+    listCategories,
+  }
 })
