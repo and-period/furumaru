@@ -358,11 +358,19 @@ const handlePay = async () => {
           <template v-else>
             <div class="mt-4 flex gap-2">
               <div class="grow">
+                <label
+                  for="promotion-code"
+                  class="sr-only"
+                >
+                  クーポンコード
+                </label>
                 <input
+                  id="promotion-code"
                   v-model="promotionCodeFormValue"
                   type="text"
                   class="w-full border border-gray-300 bg-gray-50 p-2.5 text-sm"
                   placeholder="クーポンコード"
+                  aria-label="クーポンコード"
                 >
               </div>
               <button
