@@ -398,29 +398,40 @@ const onSubmit = async (): Promise<void> => {
       </v-col>
     </v-row>
 
-    <!-- 送信ボタン -->
-    <div class="d-flex justify-end gap-3 mt-6">
-      <v-btn
-        variant="text"
-        size="large"
-        @click="$router.back()"
+    <v-footer
+      app
+      color="white"
+      elevation="8"
+      class="px-6 py-4 fixed-footer-actions"
+    >
+      <v-container
+        fluid
+        class="pa-0"
       >
-        キャンセル
-      </v-btn>
-      <v-btn
-        :loading="props.loading"
-        color="primary"
-        variant="elevated"
-        size="large"
-        @click="onSubmit"
-      >
-        <v-icon
-          :icon="mdiPlus"
-          start
-        />
-        ライブ配信を登録
-      </v-btn>
-    </div>
+        <div class="d-flex align-center justify-center flex-wrap ga-3">
+          <v-btn
+            variant="text"
+            size="large"
+            @click="$router.back()"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            :loading="props.loading"
+            color="primary"
+            variant="elevated"
+            size="large"
+            @click="onSubmit"
+          >
+            <v-icon
+              :icon="mdiPlus"
+              start
+            />
+            ライブ配信を登録
+          </v-btn>
+        </div>
+      </v-container>
+    </v-footer>
   </v-container>
 </template>
 
