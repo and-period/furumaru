@@ -18,7 +18,7 @@ import {
   OrderType,
   RefundType,
 } from '~/types/api/v1'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
+import type { CompleteOrderRequest, Coordinator, Experience, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
