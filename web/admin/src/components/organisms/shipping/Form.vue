@@ -220,6 +220,7 @@ const handleSubmit = async () => {
               color="error"
               variant="text"
               size="small"
+              aria-label="オプションを削除"
               @click="onClickRemoveItem('60', i)"
             />
           </div>
@@ -276,6 +277,7 @@ const handleSubmit = async () => {
               color="error"
               variant="text"
               size="small"
+              aria-label="オプションを削除"
               @click="onClickRemoveItem('80', i)"
             />
           </div>
@@ -332,6 +334,7 @@ const handleSubmit = async () => {
               color="error"
               variant="text"
               size="small"
+              aria-label="オプションを削除"
               @click="onClickRemoveItem('100', i)"
             />
           </div>

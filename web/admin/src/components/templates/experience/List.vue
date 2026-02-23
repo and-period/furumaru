@@ -311,6 +311,7 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
               cover
               :src="getThumbnail(item.media)"
               :srcset="getResizedThumbnails(item.media)"
+              :alt="item.title || '体験画像'"
             />
             <v-icon
               v-else

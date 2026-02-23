@@ -272,13 +272,22 @@ const calcStyle = (i: number) => {
 
 <template>
   <v-app>
+    <a
+      href="#main-content"
+      class="skip-to-content"
+    >
+      コンテンツにスキップ
+    </a>
     <v-app-bar
       color="primary"
       elevation="2"
       :density="$vuetify.display.mobile ? 'compact' : 'default'"
     >
       <template #prepend>
-        <v-app-bar-nav-icon @click="handleClickNavIcon">
+        <v-app-bar-nav-icon
+          aria-label="メニューを開く"
+          @click="handleClickNavIcon"
+        >
           <v-icon
             :icon="mdiMenu"
             color="white"
@@ -305,6 +314,7 @@ const calcStyle = (i: number) => {
               :src="user.thumbnailUrl"
               :srcset="getImages()"
               cover
+              alt="ユーザーアバター"
             />
             <v-icon
               v-else
@@ -319,6 +329,7 @@ const calcStyle = (i: number) => {
         <v-btn
           icon
           variant="text"
+          aria-label="通知"
           @click="handleClickMessage"
         >
           <v-badge
@@ -353,6 +364,7 @@ const calcStyle = (i: number) => {
                 :src="user?.thumbnailUrl"
                 :srcset="getImages()"
                 cover
+                alt="ユーザーアバター"
               />
               <v-icon
                 v-else
@@ -502,7 +514,7 @@ const calcStyle = (i: number) => {
       </template>
     </v-snackbar>
 
-    <v-main>
+    <v-main id="main-content">
       <v-container :class="{ 'container-wide': isWide }">
         <atoms-app-breadcrumbs
           v-if="breadcrumbs.length > 1"

@@ -67,8 +67,12 @@ const onChangeFile = (): void => {
       }"
       class="text-center"
       role="button"
+      tabindex="0"
+      :aria-label="props.label ? `${props.label}を${props.imgUrl === '' ? '選択' : '変更'}` : 'ファイルをアップロード'"
       flat
       @click="onClick"
+      @keydown.enter.prevent="onClick"
+      @keydown.space.prevent="onClick"
     >
       <v-card-text>
         <div class="mb-4">
@@ -82,6 +86,7 @@ const onChangeFile = (): void => {
             :max-height="300"
             aspect-ratio="16/9"
             :src="props.imgUrl"
+            alt="選択された画像"
           />
         </div>
         <input
@@ -98,12 +103,14 @@ const onChangeFile = (): void => {
     </v-card>
     <p
       v-show="props.validationErrorMessage"
+      role="alert"
       class="text-red ma-0"
     >
       {{ props.validationErrorMessage }}
     </p>
     <p
       v-show="props.error"
+      role="alert"
       class="text-red ma-0"
     >
       {{ props.message }}

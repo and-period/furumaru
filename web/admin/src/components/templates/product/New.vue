@@ -455,6 +455,7 @@ const onSubmit = async (): Promise<void> => {
                       :src="img.url"
                       aspect-ratio="1"
                       class="image-preview"
+                      alt="商品画像プレビュー"
                     >
                       <div class="image-overlay">
                         <v-radio
@@ -468,6 +469,7 @@ const onSubmit = async (): Promise<void> => {
                           variant="text"
                           size="small"
                           class="delete-btn"
+                          aria-label="画像を削除"
                           @click.stop="onDeleteThumbnail(i)"
                         />
                       </div>

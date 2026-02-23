@@ -234,6 +234,7 @@ const onClickDelete = (): void => {
                 cover
                 :src="item.thumbnailUrl"
                 :srcset="getImages(item)"
+                :alt="item.username || '生産者画像'"
               />
               <v-icon
                 v-else

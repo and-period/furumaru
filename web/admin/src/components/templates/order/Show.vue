@@ -982,6 +982,7 @@ const onSubmitRefund = (): void => {
                     :src="getThumbnail(item.productId)"
                     :srcset="getResizedThumbnails(item.productId)"
                     aspect-ratio="1"
+                    :alt="getProductName(item.productId) || '商品画像'"
                   />
                 </v-avatar>
               </template>
@@ -1361,6 +1362,7 @@ const onSubmitRefund = (): void => {
                             :src="getThumbnail(item.productId)"
                             :srcset="getResizedThumbnails(item.productId)"
                             aspect-ratio="1"
+                            :alt="getProductName(item.productId) || '商品画像'"
                           />
                         </v-avatar>
                       </template>
@@ -1478,6 +1480,7 @@ const onSubmitRefund = (): void => {
                             :src="getThumbnail(item.productId)"
                             :srcset="getResizedThumbnails(item.productId)"
                             aspect-ratio="1"
+                            :alt="getProductName(item.productId) || '商品画像'"
                           />
                         </v-avatar>
                       </template>

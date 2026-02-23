@@ -211,6 +211,7 @@ const onClickDelete = (): void => {
               cover
               :src="getThumbnail(item)"
               :srcset="getResizedThumbnails(item)"
+              :alt="item.title || '動画サムネイル'"
             />
             <v-icon
               v-else

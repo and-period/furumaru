@@ -35,3 +35,33 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+// Skip to content link
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: var(--color-green-600);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+// Screen reader only utility
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

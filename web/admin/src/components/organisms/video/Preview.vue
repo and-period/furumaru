@@ -50,6 +50,7 @@ const onClickBanComment = (commentId: string): void => {
             <video
               :src="formData.videoUrl"
               controls
+              aria-label="動画プレビュー"
               style="width: 100%; height: auto;"
             />
           </div>

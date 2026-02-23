@@ -59,8 +59,12 @@ const handleDrop = (e: DragEvent) => {
     <div
       class="d-flex justify-center align-center rounded-lg file-upload-area"
       role="button"
+      tabindex="0"
+      :aria-label="props.text || 'ファイルをアップロード'"
       :class="{ active: active }"
       @click="handleClick"
+      @keydown.enter.prevent="handleClick"
+      @keydown.space.prevent="handleClick"
       @dragenter="handleDragenter"
       @dragleave="handleDragleave"
       @drop.prevent="handleDrop"

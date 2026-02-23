@@ -394,6 +394,7 @@ watch(
                 cover
                 :src="producerThumbnailUrl"
                 :srcset="producerThumbnailsSrcset"
+                :alt="producerName || '生産者画像'"
               />
             </v-avatar>
           </template>

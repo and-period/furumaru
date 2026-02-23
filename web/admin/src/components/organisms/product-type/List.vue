@@ -420,6 +420,7 @@ const onSubmitDelete = (): void => {
               cover
               :src="item.iconUrl"
               :srcset="getIcons(item)"
+              :alt="item.name || '品目アイコン'"
             />
             <v-icon
               v-else
