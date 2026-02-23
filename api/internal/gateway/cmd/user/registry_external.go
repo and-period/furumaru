@@ -7,9 +7,7 @@ import (
 	"net/url"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
-	kpayment "github.com/and-period/furumaru/api/internal/store/komoju/payment"
-	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
+	komojupay "github.com/and-period/furumaru/api/internal/store/payment/komoju"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/sentry"
@@ -70,25 +68,16 @@ func (a *app) injectExternal(ctx context.Context, p *params) error {
 	}
 
 	// KOMOJUの設定
-	kpaymentParams := &kpayment.Params{
+	komojuParams := &komojupay.Params{
 		Host:         a.KomojuHost,
 		ClientID:     p.komojuClientID,
 		ClientSecret: p.komojuClientPassword,
+		CaptureMode:  komojupay.CaptureModeManual,
 	}
-	ksessionParams := &ksession.Params{
-		Host:         a.KomojuHost,
-		ClientID:     p.komojuClientID,
-		ClientSecret: p.komojuClientPassword,
-		CaptureMode:  komoju.CaptureModeManual,
+	komojuOpts := []komojupay.Option{
+		komojupay.WithDebugMode(p.debugMode),
 	}
-	komojuOpts := []komoju.Option{
-		komoju.WithDebugMode(p.debugMode),
-	}
-	komojuParams := &komoju.Params{
-		Payment: kpayment.NewClient(&http.Client{}, kpaymentParams, komojuOpts...),
-		Session: ksession.NewClient(&http.Client{}, ksessionParams, komojuOpts...),
-	}
-	p.komoju = komoju.NewKomoju(komojuParams)
+	p.payment = komojupay.NewProvider(&http.Client{}, komojuParams, komojuOpts...)
 
 	// PostalCodeの設定
 	p.postalCode = postalcode.NewClient(&http.Client{})

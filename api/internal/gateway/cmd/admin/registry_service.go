@@ -52,8 +52,9 @@ func (a *app) injectServices(p *params) error {
 		Media:     mediaService,
 	}
 	khandlerParams := &khandler.Params{
-		WaitGroup: p.waitGroup,
-		Store:     storeService,
+		WaitGroup:     p.waitGroup,
+		Store:         storeService,
+		WebhookSecret: p.komojuWebhookSecret,
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
@@ -207,7 +208,7 @@ func (a *app) newStoreService(
 		Media:       media,
 		PostalCode:  p.postalCode,
 		Geolocation: p.geolocation,
-		Komoju:      p.komoju,
+		Payment:     p.payment,
 	}
 	return storesrv.NewService(params), nil
 }

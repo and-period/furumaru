@@ -19,7 +19,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/youtube"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
@@ -41,7 +41,8 @@ type params struct {
 	slack                    slack.Client
 	newRelic                 *newrelic.Application
 	sentry                   sentry.Client
-	komoju                   *komoju.Komoju
+	payment                  payment.Provider
+	komojuWebhookSecret      string
 	adminWebURL              *url.URL
 	userWebURL               *url.URL
 	assetsURL                *url.URL

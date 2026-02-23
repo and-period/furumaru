@@ -10,9 +10,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
-	"go.uber.org/mock/gomock"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNotifyPaymentAuthorized(t *testing.T) {
@@ -80,11 +80,8 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		PaymentID: "payment-id",
 		IssuedAt:  now,
 	}
-	payment := &komoju.PaymentResponse{
-		PaymentInfo: &komoju.PaymentInfo{
-			ID:     "payment-id",
-			Status: komoju.PaymentStatusAuthorized,
-		},
+	showResult := &payment.PaymentResult{
+		Status: entity.PaymentStatusAuthorized,
 	}
 	tests := []struct {
 		name   string
@@ -97,8 +94,8 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(nil)
-				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(&komoju.PaymentResponse{}, nil)
+				mocks.payment.EXPECT().ShowPayment(ctx, "payment-id").Return(showResult, nil)
+				mocks.payment.EXPECT().CapturePayment(ctx, "payment-id").Return(nil)
 				mocks.cache.EXPECT().Get(gomock.Any(), &entity.Cart{SessionID: "session-id"}).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
@@ -129,15 +126,12 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "success when already captured",
 			setup: func(ctx context.Context, mocks *mocks) {
-				payment := &komoju.PaymentResponse{
-					PaymentInfo: &komoju.PaymentInfo{
-						ID:     "payment-id",
-						Status: komoju.PaymentStatusCaptured,
-					},
+				capturedResult := &payment.PaymentResult{
+					Status: entity.PaymentStatusCaptured,
 				}
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
+				mocks.payment.EXPECT().ShowPayment(ctx, "payment-id").Return(capturedResult, nil)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -204,7 +198,7 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(nil, assert.AnError)
+				mocks.payment.EXPECT().ShowPayment(ctx, "payment-id").Return(nil, assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -221,8 +215,8 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(nil, assert.AnError)
+				mocks.payment.EXPECT().ShowPayment(ctx, "payment-id").Return(showResult, nil)
+				mocks.payment.EXPECT().CapturePayment(ctx, "payment-id").Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{

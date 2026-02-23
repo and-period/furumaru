@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"bytes"
+	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httputil"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/types"
+	komojupay "github.com/and-period/furumaru/api/internal/store/payment/komoju"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +25,20 @@ const (
 )
 
 func (h *handler) Event(ctx *gin.Context) {
+	// Webhook署名検証
+	if h.webhookSecret != "" {
+		body, err := io.ReadAll(ctx.Request.Body)
+		if err != nil {
+			ctx.Status(http.StatusBadRequest)
+			return
+		}
+		ctx.Request.Body = io.NopCloser(bytes.NewReader(body))
+		signature := ctx.GetHeader("X-Komoju-Signature")
+		if !komojupay.VerifyWebhookSignature(body, signature, h.webhookSecret) {
+			ctx.Status(http.StatusUnauthorized)
+			return
+		}
+	}
 	event := ctx.GetHeader("X-Komoju-Event")
 	switch EventType(event) {
 	case EventTypePing:

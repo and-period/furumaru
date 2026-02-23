@@ -60,13 +60,13 @@ func (t *transport) RoundTrip(req *http.Request) (res *http.Response, err error)
 	return res, err
 }
 
-type APIClient struct {
+type apiClient struct {
 	client *http.Client
 	opts   *options
 	apiKey string
 }
 
-func NewAPIClient(client *http.Client, basicID, secret string, opts ...Option) *APIClient {
+func newAPIClient(client *http.Client, basicID, secret string, opts ...Option) *apiClient {
 	dopts := &options{
 		maxRetries: defaultMaxRetries,
 		debugMode:  false,
@@ -83,22 +83,22 @@ func NewAPIClient(client *http.Client, basicID, secret string, opts ...Option) *
 		opts: dopts,
 	}
 	auth := fmt.Sprintf("%s:%s", basicID, secret)
-	return &APIClient{
+	return &apiClient{
 		client: client,
 		opts:   dopts,
 		apiKey: base64.StdEncoding.EncodeToString([]byte(auth)),
 	}
 }
 
-func (c *APIClient) Do(ctx context.Context, params *APIParams, res interface{}) (err error) {
+func (c *apiClient) do(ctx context.Context, params *apiParams, res interface{}) (err error) {
 	fn := func() error {
-		return c.do(ctx, params, res)
+		return c.doOnce(ctx, params, res)
 	}
 	retry := backoff.NewExponentialBackoff(c.opts.maxRetries)
 	return backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(c.isRetryable))
 }
 
-func (c *APIClient) do(ctx context.Context, params *APIParams, out interface{}) error {
+func (c *apiClient) doOnce(ctx context.Context, params *apiParams, out interface{}) error {
 	res, err := c.request(ctx, params)
 	if err != nil {
 		return err
@@ -111,24 +111,24 @@ func (c *APIClient) do(ctx context.Context, params *APIParams, out interface{}) 
 	return c.bind(out, res)
 }
 
-func (c *APIClient) isRetryable(err error) bool {
+func (c *apiClient) isRetryable(err error) bool {
 	return errors.Is(err, ErrTooManyRequest) || errors.Is(err, ErrBadGateway) || errors.Is(err, ErrGatewayTimeout)
 }
 
-type ErrorResponse struct {
-	Data *ErrorData `json:"error"`
+type errorResponse struct {
+	Data *errorData `json:"error"`
 }
 
-type ErrorData struct {
+type errorData struct {
 	Param   string `json:"param"`
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
-func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
+func (c *apiClient) statusCheck(res *http.Response, params *apiParams) error {
 	switch res.StatusCode {
 	case http.StatusOK, http.StatusAccepted, http.StatusNoContent:
-		return nil // 正常系
+		return nil
 	case http.StatusTooManyRequests:
 		return ErrTooManyRequest
 	case http.StatusBadGateway:
@@ -136,7 +136,7 @@ func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	case http.StatusGatewayTimeout:
 		return ErrGatewayTimeout
 	}
-	out := &ErrorResponse{}
+	out := &errorResponse{}
 	if err := c.bind(out, res); err != nil {
 		return err
 	}
@@ -158,7 +158,7 @@ func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	}
 }
 
-func (c *APIClient) request(ctx context.Context, params *APIParams) (*http.Response, error) {
+func (c *apiClient) request(ctx context.Context, params *apiParams) (*http.Response, error) {
 	req, err := params.newHTTPRequest(ctx)
 	if err != nil {
 		return nil, err
@@ -166,6 +166,9 @@ func (c *APIClient) request(ctx context.Context, params *APIParams) (*http.Respo
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", c.apiKey))
+	if params.Method == http.MethodPost && params.IdempotencyKey != "" {
+		req.Header.Add("Idempotency-Key", params.IdempotencyKey)
+	}
 	res, err := c.client.Do(req)
 	if err == nil {
 		return res, nil
@@ -176,7 +179,7 @@ func (c *APIClient) request(ctx context.Context, params *APIParams) (*http.Respo
 	return nil, fmt.Errorf("komoju: failed api request: %w", err)
 }
 
-func (c *APIClient) bind(out interface{}, res *http.Response) error {
+func (c *apiClient) bind(out interface{}, res *http.Response) error {
 	if out == nil {
 		return nil
 	}
@@ -195,21 +198,22 @@ func (c *APIClient) bind(out interface{}, res *http.Response) error {
 	return fmt.Errorf("komoju: failed to decode body: %w", err)
 }
 
-func (c *APIClient) closeResponseBody(res *http.Response) error {
+func (c *apiClient) closeResponseBody(res *http.Response) error {
 	//nolint:errcheck
 	io.Copy(io.Discard, res.Body)
 	return res.Body.Close()
 }
 
-type APIParams struct {
-	Host   string
-	Method string
-	Path   string
-	Params []interface{}
-	Body   interface{}
+type apiParams struct {
+	Host           string
+	Method         string
+	Path           string
+	Params         []interface{}
+	Body           interface{}
+	IdempotencyKey string
 }
 
-func (p *APIParams) newHTTPRequest(ctx context.Context) (*http.Request, error) {
+func (p *apiParams) newHTTPRequest(ctx context.Context) (*http.Request, error) {
 	u, err := url.ParseRequestURI(p.Host + fmt.Sprintf(p.Path, p.Params...))
 	if err != nil {
 		return nil, fmt.Errorf("komoju: failed to parse request uri: %w", err)

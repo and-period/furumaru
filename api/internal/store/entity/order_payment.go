@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
@@ -137,55 +136,6 @@ type NewExperienceOrderPaymentParams struct {
 	ElementarySchoolCount int64
 	PreschoolCount        int64
 	SeniorCount           int64
-}
-
-func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
-	switch status {
-	case komoju.PaymentStatusPending:
-		return PaymentStatusPending
-	case komoju.PaymentStatusAuthorized:
-		return PaymentStatusAuthorized
-	case komoju.PaymentStatusCaptured:
-		return PaymentStatusCaptured
-	case komoju.PaymentStatusCancelled:
-		return PaymentStatusCanceled
-	case komoju.PaymentStatusRefunded:
-		return PaymentStatusRefunded
-	case komoju.PaymentStatusExpired, komoju.PaymentStatusFailed:
-		return PaymentStatusFailed
-	default:
-		return PaymentStatusUnknown
-	}
-}
-
-func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
-	switch methodType {
-	case PaymentMethodTypeCash:
-		// 未対応
-		return []komoju.PaymentType{}
-	case PaymentMethodTypeCreditCard:
-		return []komoju.PaymentType{komoju.PaymentTypeCreditCard}
-	case PaymentMethodTypeKonbini:
-		return []komoju.PaymentType{komoju.PaymentTypeKonbini}
-	case PaymentMethodTypeBankTransfer:
-		return []komoju.PaymentType{komoju.PaymentTypeBankTransfer}
-	case PaymentMethodTypePayPay:
-		return []komoju.PaymentType{komoju.PaymentTypePayPay}
-	case PaymentMethodTypeLinePay:
-		return []komoju.PaymentType{komoju.PaymentTypeLinePay}
-	case PaymentMethodTypeMerpay:
-		return []komoju.PaymentType{komoju.PaymentTypeMerpay}
-	case PaymentMethodTypeRakutenPay:
-		return []komoju.PaymentType{komoju.PaymentTypeRakutenPay}
-	case PaymentMethodTypeAUPay:
-		return []komoju.PaymentType{komoju.PaymentTypeAUPay}
-	case PaymentMethodTypePaidy:
-		return []komoju.PaymentType{komoju.PaymentTypePaidy}
-	case PaymentMethodTypePayEasy:
-		return []komoju.PaymentType{komoju.PaymentTypePayEasy}
-	default:
-		return []komoju.PaymentType{}
-	}
 }
 
 func (t PaymentMethodType) String() string {
