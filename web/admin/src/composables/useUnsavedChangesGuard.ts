@@ -1,3 +1,4 @@
+import type { RouteLocationNormalized } from 'vue-router'
 import type { ComputedRef, Ref } from 'vue'
 
 interface UseUnsavedChangesGuardReturn {
@@ -12,10 +13,11 @@ interface UseUnsavedChangesGuardReturn {
 export function useUnsavedChangesGuard<T>(
   formData: Ref<T>,
 ): UseUnsavedChangesGuardReturn {
+  const router = useRouter()
   const snapshot = ref<string>('')
   const showLeaveDialog = ref<boolean>(false)
   const bypassGuard = ref<boolean>(false)
-  let pendingNext: (() => void) | null = null
+  let pendingTo: RouteLocationNormalized | null = null
 
   const isDirty = computed<boolean>(() => {
     return snapshot.value !== '' && JSON.stringify(formData.value) !== snapshot.value
@@ -33,15 +35,15 @@ export function useUnsavedChangesGuard<T>(
   const confirmLeave = (): void => {
     showLeaveDialog.value = false
     bypassGuard.value = true
-    if (pendingNext) {
-      pendingNext()
-      pendingNext = null
+    if (pendingTo) {
+      router.push(pendingTo)
+      pendingTo = null
     }
   }
 
   const cancelLeave = (): void => {
     showLeaveDialog.value = false
-    pendingNext = null
+    pendingTo = null
   }
 
   // Browser tab close / refresh guard
@@ -60,9 +62,9 @@ export function useUnsavedChangesGuard<T>(
   })
 
   // Vue Router navigation guard
-  onBeforeRouteLeave((_to, _from, next) => {
+  onBeforeRouteLeave((to, _from, next) => {
     if (isDirty.value && !bypassGuard.value) {
-      pendingNext = next
+      pendingTo = to
       showLeaveDialog.value = true
       next(false)
     }

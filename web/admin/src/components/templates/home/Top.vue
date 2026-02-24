@@ -544,8 +544,8 @@ const onChangeEndAt = (): void => {
         lg="8"
       >
         <v-skeleton-loader
-          type="image"
-          height="300"
+          type="card"
+          height="460"
         />
       </v-col>
       <v-col
@@ -553,8 +553,8 @@ const onChangeEndAt = (): void => {
         lg="4"
       >
         <v-skeleton-loader
-          type="image"
-          height="300"
+          type="card"
+          height="440"
         />
       </v-col>
     </v-row>

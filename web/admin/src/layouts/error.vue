@@ -38,6 +38,7 @@ useHead({
               :icon="is404 ? mdiFileQuestion : mdiAlertCircle"
               :color="is404 ? 'warning' : 'error'"
               size="80"
+              aria-hidden="true"
             />
           </div>
           <div class="text-h3 font-weight-bold mb-4 text-medium-emphasis">

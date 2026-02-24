@@ -258,7 +258,6 @@ catch (err) {
 <template>
   <div>
     <templates-product-edit
-      ref="productEditRef"
       v-model:form-data="formData"
       v-model:review-form-data="reviewFormData"
       v-model:selected-category-id="selectedCategoryId"
