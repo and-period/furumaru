@@ -1,5 +1,11 @@
 # Changelog
 
+## [v10.0.1](https://github.com/and-period/furumaru/compare/v10.0.0...v10.0.1) - 2026-02-24
+- fix(web/admin): CodeRabbit レビュー指摘事項の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3349
+- feat(api): Stripe 決済プロバイダー対応の基盤実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3350
+- fix(web): Amplify ビルドで shared ライブラリを自動ビルド by @taba2424 in https://github.com/and-period/furumaru/pull/3353
+- fix(api): KOMOJU Webhook の JSON デコードエラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3352
+
 ## [v10.0.0](https://github.com/and-period/furumaru/compare/v9.0.8...v10.0.0) - 2026-02-23
 - chore: dependabotを削除しrenovateに一本化 by @taba2424 in https://github.com/and-period/furumaru/pull/3291
 - docs: 管理者Web UI/UX刷新の設計ドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3296
