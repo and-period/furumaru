@@ -9,6 +9,7 @@ import (
 	"github.com/stripe/stripe-go/v82/customer"
 	"github.com/stripe/stripe-go/v82/paymentintent"
 	"github.com/stripe/stripe-go/v82/paymentmethod"
+	"github.com/stripe/stripe-go/v82/refund"
 	"github.com/stripe/stripe-go/v82/setupintent"
 )
 
@@ -33,6 +34,10 @@ type Client interface {
 	Capture(ctx context.Context, transactionID string) (*stripe.PaymentIntent, error)
 	// 決済キャンセル
 	Cancel(ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason) (*stripe.PaymentIntent, error)
+	// 決済情報取得
+	GetPaymentIntent(ctx context.Context, paymentIntentID string) (*stripe.PaymentIntent, error)
+	// 返金
+	Refund(ctx context.Context, paymentIntentID string, amount int64, reason string) (*stripe.Refund, error)
 	// #############################################
 	// 決済方法 (共通)
 	// #############################################
@@ -69,6 +74,7 @@ type client struct {
 	paymentintent paymentintent.Client
 	paymentmethod paymentmethod.Client
 	setupintent   setupintent.Client
+	refund        refund.Client
 }
 
 type options struct {
@@ -105,6 +111,10 @@ func NewClient(params *Params, opts ...Option) Client {
 			Key: params.SecretKey,
 		},
 		setupintent: setupintent.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
+		refund: refund.Client{
 			B:   stripe.GetBackend(stripe.APIBackend),
 			Key: params.SecretKey,
 		},

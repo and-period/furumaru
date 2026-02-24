@@ -151,6 +151,24 @@ func (c *client) Capture(ctx context.Context, transactionID string) (*stripe.Pay
 	return pi, nil
 }
 
+// reference: https://stripe.com/docs/api/payment_intents/retrieve
+func (c *client) GetPaymentIntent(ctx context.Context, paymentIntentID string) (*stripe.PaymentIntent, error) {
+	params := &stripe.PaymentIntentParams{
+		Params: stripe.Params{Context: ctx},
+	}
+	var pi *stripe.PaymentIntent
+	getFn := func() (err error) {
+		pi, err = c.paymentintent.Get(paymentIntentID, params)
+		return err
+	}
+	if err := c.do(ctx, getFn); err != nil {
+		slog.ErrorContext(ctx, "Failed to get payment intent",
+			slog.String("paymentIntentId", paymentIntentID), log.Error(err))
+		return nil, err
+	}
+	return pi, nil
+}
+
 // reference: https://stripe.com/docs/api/payment_intents/cancel
 func (c *client) Cancel(
 	ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason,

@@ -12,10 +12,11 @@ const (
 )
 
 type PaymentSystem struct {
-	MethodType PaymentMethodType   `gorm:"primaryKey;<-:create"` // 決済種別
-	Status     PaymentSystemStatus `gorm:""`                     // 決済システム状態
-	CreatedAt  time.Time           `gorm:"<-:create"`            // 登録日時
-	UpdatedAt  time.Time           `gorm:""`                     // 更新日時
+	MethodType   PaymentMethodType   `gorm:"primaryKey;<-:create"` // 決済種別
+	ProviderType PaymentProviderType `gorm:"default:1"`            // 決済プロバイダー種別
+	Status       PaymentSystemStatus `gorm:""`                     // 決済システム状態
+	CreatedAt    time.Time           `gorm:"<-:create"`            // 登録日時
+	UpdatedAt    time.Time           `gorm:""`                     // 更新日時
 }
 
 type PaymentSystems []*PaymentSystem
