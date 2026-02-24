@@ -526,8 +526,8 @@ sequenceDiagram
 ### Phase 3: Stripe 統合
 
 * [x] `api/internal/store/payment/stripe/` 実装（`pkg/stripe` を利用）
-* [ ] Stripe Webhook ハンドラー（`gateway/admin/stripe/`）実装
-* [ ] Stripe Webhook の署名検証
+* [x] Stripe Webhook ハンドラー（`gateway/admin/stripe/`）実装
+* [x] Stripe Webhook の署名検証
 * [ ] E2E テスト（Stripe テスト環境）
 * [ ] 管理画面への Stripe 設定 UI 追加
 

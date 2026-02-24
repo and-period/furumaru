@@ -35,6 +35,9 @@ func (a *app) newRouter() *gin.Engine {
 
 	a.v1.Routes(rt.Group(""))
 	a.komoju.Routes(rt.Group(""))
+	if a.stripe != nil {
+		a.stripe.Routes(rt.Group(""))
+	}
 
 	// other routes
 	healthMethods := []string{

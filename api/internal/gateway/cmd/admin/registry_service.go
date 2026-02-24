@@ -5,6 +5,7 @@ import (
 	"time"
 
 	khandler "github.com/and-period/furumaru/api/internal/gateway/admin/komoju/handler"
+	shandler "github.com/and-period/furumaru/api/internal/gateway/admin/stripe/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
@@ -20,6 +21,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 )
@@ -64,6 +66,20 @@ func (a *app) injectServices(p *params) error {
 		khandler.WithEnvironment(a.Environment),
 		khandler.WithSentry(p.sentry),
 	)
+	if p.stripeWebhookSecret != "" {
+		receiver := pkgstripe.NewReceiver(&pkgstripe.Params{
+			WebhookKey: p.stripeWebhookSecret,
+		})
+		shandlerParams := &shandler.Params{
+			WaitGroup: p.waitGroup,
+			Store:     storeService,
+			Receiver:  receiver,
+		}
+		a.stripe = shandler.NewHandler(shandlerParams,
+			shandler.WithEnvironment(a.Environment),
+			shandler.WithSentry(p.sentry),
+		)
+	}
 	return nil
 }
 
