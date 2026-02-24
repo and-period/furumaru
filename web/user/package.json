@@ -9,7 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview --https --ssl-cert ./localhost.pem --ssl-key ./localhost-key.pem",
     "start": "nuxt start",
-    "postinstall": "nuxt prepare",
+    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && yarn install && yarn build)) && nuxt prepare",
     "lint": "eslint .",
     "format": "yarn lint --fix",
     "test": "vitest --run",

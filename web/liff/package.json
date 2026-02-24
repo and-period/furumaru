@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && yarn install && yarn build)) && nuxt prepare",
     "lint": "eslint .",
     "format": "yarn lint --fix",
     "test": "vitest --run",
