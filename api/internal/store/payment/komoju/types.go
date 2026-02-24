@@ -50,7 +50,7 @@ const (
 
 // paymentResponse is the KOMOJU API response for payment operations.
 type paymentResponse struct {
-	*paymentInfo
+	paymentInfo
 }
 
 type paymentInfo struct {

@@ -2402,6 +2402,7 @@ func testOrderPayment(orderID string, addressID int64, transactionID, paymentID 
 	return &entity.OrderPayment{
 		OrderID:           orderID,
 		AddressRevisionID: addressID,
+		ProviderType:      entity.PaymentProviderTypeKomoju,
 		Status:            entity.PaymentStatusCaptured,
 		TransactionID:     transactionID,
 		PaymentID:         paymentID,
