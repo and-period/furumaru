@@ -41,6 +41,7 @@ func TestGetCheckoutState(t *testing.T) {
 				TransactionID:     "transaction-id",
 				Status:            status,
 				MethodType:        entity.PaymentMethodTypeCreditCard,
+				ProviderType:      entity.PaymentProviderTypeKomoju,
 				Subtotal:          1100,
 				Discount:          0,
 				ShippingFee:       500,
@@ -1048,6 +1049,7 @@ func checkoutProductMocks(
 			Status:            entity.PaymentStatusPending,
 			TransactionID:     "transaction-id",
 			MethodType:        methodType,
+			ProviderType:      entity.PaymentProviderTypeKomoju,
 			Subtotal:          1000,
 			Discount:          100,
 			ShippingFee:       500,
@@ -1217,6 +1219,11 @@ func checkoutProductMocks(
 				},
 			},
 		}, nil)
+	m.db.PaymentSystem.EXPECT().Get(gomock.Any(), methodType).Return(&entity.PaymentSystem{
+		MethodType:   methodType,
+		ProviderType: entity.PaymentProviderTypeKomoju,
+		Status:       entity.PaymentSystemStatusInUse,
+	}, nil)
 	m.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(&payment.CreateSessionResult{SessionID: "transaction-id"}, nil)
 	m.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false).AnyTimes()
 	m.db.Order.EXPECT().
@@ -1402,6 +1409,7 @@ func TestCheckoutProduct(t *testing.T) {
 				Status:            entity.PaymentStatusPending,
 				TransactionID:     "transaction-id",
 				MethodType:        entity.PaymentMethodTypeKonbini,
+				ProviderType:      entity.PaymentProviderTypeKomoju,
 				Subtotal:          1000,
 				Discount:          100,
 				ShippingFee:       500,
@@ -1477,6 +1485,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false)
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -1499,7 +1512,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1559,7 +1572,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            0,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1579,6 +1592,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Status:            entity.PaymentStatusPending,
 					TransactionID:     "transaction-id",
 					MethodType:        entity.PaymentMethodTypeKonbini,
+					ProviderType:      entity.PaymentProviderTypeKomoju,
 					Subtotal:          1000,
 					Discount:          100,
 					ShippingFee:       0,
@@ -1613,6 +1627,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false)
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -1637,7 +1656,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            900,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1663,7 +1682,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:                 1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1696,7 +1715,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1729,7 +1748,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1763,7 +1782,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1798,7 +1817,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1835,7 +1854,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1872,7 +1891,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1910,7 +1929,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1947,7 +1966,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1985,7 +2004,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2023,7 +2042,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2061,7 +2080,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2099,7 +2118,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2119,6 +2138,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
@@ -2138,7 +2162,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2159,6 +2183,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -2178,7 +2207,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2199,6 +2228,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(true)
 			},
@@ -2219,7 +2253,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					return nil, &komojupay.Error{Status: http.StatusUnprocessableEntity, Code: komojupay.ErrCodeUnprocessableEntity}
 				},
 			},
@@ -2237,6 +2271,11 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeKonbini).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeKonbini,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false)
 			},
@@ -2257,7 +2296,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					return nil, assert.AnError
 				},
 			},
@@ -2307,7 +2346,7 @@ func TestCheckoutProduct(t *testing.T) {
 					Total:            0,
 				},
 				paymentMethodType: entity.PaymentMethodTypeKonbini,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2463,6 +2502,7 @@ func TestCheckoutExperience(t *testing.T) {
 				Status:            entity.PaymentStatusPending,
 				TransactionID:     "transaction-id",
 				MethodType:        entity.PaymentMethodTypeCreditCard,
+				ProviderType:      entity.PaymentProviderTypeKomoju,
 				Subtotal:          3600,
 				Discount:          360,
 				ShippingFee:       0,
@@ -2520,6 +2560,11 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeCreditCard).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false)
 			},
@@ -2546,7 +2591,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2606,7 +2651,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            0,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2632,7 +2677,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:                    3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2671,7 +2716,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2710,7 +2755,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2751,7 +2796,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2792,7 +2837,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2834,7 +2879,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2876,7 +2921,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2918,7 +2963,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            10000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2960,7 +3005,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            10000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -2978,6 +3023,11 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeCreditCard).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
@@ -3003,7 +3053,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -3022,6 +3072,11 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeCreditCard).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 			},
 			params: &checkoutParams{
@@ -3047,7 +3102,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -3066,6 +3121,11 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeCreditCard).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(true)
 			},
@@ -3092,7 +3152,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					return nil, &komojupay.Error{Status: http.StatusUnprocessableEntity, Code: komojupay.ErrCodeUnprocessableEntity}
 				},
 			},
@@ -3108,6 +3168,11 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.user.EXPECT().GetShop(gomock.Any(), shopIn).Return(shop, nil)
+				mocks.db.PaymentSystem.EXPECT().Get(gomock.Any(), entity.PaymentMethodTypeCreditCard).Return(&entity.PaymentSystem{
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+				}, nil)
 				mocks.payment.EXPECT().CreateSession(gomock.Any(), gomock.Any()).Return(session, nil)
 				mocks.payment.EXPECT().IsSessionFailed(gomock.Any()).Return(false)
 			},
@@ -3134,7 +3199,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            3240,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					return nil, assert.AnError
 				},
 			},
@@ -3187,7 +3252,7 @@ func TestCheckoutExperience(t *testing.T) {
 					Total:            0,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+				payFn: func(ctx context.Context, _ payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
 					res := &payment.OrderResult{
 						RedirectURL: "http://example.com/redirect",
 					}

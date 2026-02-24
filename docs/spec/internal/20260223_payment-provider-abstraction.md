@@ -507,25 +507,25 @@ sequenceDiagram
 
 ### Phase 1: 抽象化層の構築（既存動作に影響なし）
 
-* [ ] `api/internal/store/payment/` パッケージ作成（Provider インターフェース、共通型）
-* [ ] `api/internal/store/payment/komoju/` 実装（既存 KOMOJU を Provider でラップ）
-* [ ] `entity/payment_system.go` に `ProviderType` フィールド追加
-* [ ] `entity/order_payment.go` に `ProviderType` フィールド追加
-* [ ] DB マイグレーション（`provider_type` カラム追加）
-* [ ] `entity/order_payment.go` から KOMOJU 依存（`NewPaymentStatus`, `NewKomojuPaymentTypes`）を除去
+* [x] `api/internal/store/payment/` パッケージ作成（Provider インターフェース、共通型）
+* [x] `api/internal/store/payment/komoju/` 実装（既存 KOMOJU を Provider でラップ）
+* [x] `entity/payment_system.go` に `ProviderType` フィールド追加
+* [x] `entity/order_payment.go` に `ProviderType` フィールド追加
+* [x] DB マイグレーション（`provider_type` カラム追加）
+* [x] `entity/order_payment.go` から KOMOJU 依存（`NewPaymentStatus`, `NewKomojuPaymentTypes`）を除去
 
 ### Phase 2: Service 層のリファクタリング
 
-* [ ] `service.go` の `komoju` フィールドを `payment.Provider` に変更
-* [ ] `checkout.go` の KOMOJU 直接呼び出しを Provider 経由に変更
-* [ ] `checkout_event.go` の KOMOJU 直接呼び出しを Provider 経由に変更
-* [ ] `GetCheckoutState()` の KOMOJU 直接呼び出しを Provider 経由に変更
-* [ ] 全テストの修正・追加
-* [ ] Provider 選択ロジック（`PaymentSystem.ProviderType` に基づく）の実装
+* [x] `service.go` の `komoju` フィールドを `payment.Provider` に変更
+* [x] `checkout.go` の KOMOJU 直接呼び出しを Provider 経由に変更
+* [x] `checkout_event.go` の KOMOJU 直接呼び出しを Provider 経由に変更
+* [x] `GetCheckoutState()` の KOMOJU 直接呼び出しを Provider 経由に変更
+* [x] 全テストの修正・追加
+* [x] Provider 選択ロジック（`PaymentSystem.ProviderType` に基づく）の実装
 
 ### Phase 3: Stripe 統合
 
-* [ ] `api/internal/store/payment/stripe/` 実装（`pkg/stripe` を利用）
+* [x] `api/internal/store/payment/stripe/` 実装（`pkg/stripe` を利用）
 * [ ] Stripe Webhook ハンドラー（`gateway/admin/stripe/`）実装
 * [ ] Stripe Webhook の署名検証
 * [ ] E2E テスト（Stripe テスト環境）

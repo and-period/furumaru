@@ -62,6 +62,8 @@ type app struct {
 	KomojuClientID               string  `default:""               envconfig:"KOMOJU_CLIENT_ID"`
 	KomojuClientPassword         string  `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
 	KomojuSecretName             string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
+	StripeSecretKey              string  `default:""               envconfig:"STRIPE_SECRET_KEY"`
+	StripeSecretName             string  `default:""               envconfig:"STRIPE_SECRET_NAME"`
 	GoogleSecretName             string  `default:""               envconfig:"GOOGLE_SECRET_NAME"`
 	GoogleMapsPlatformAPIKey     string  `default:""               envconfig:"GOOGLE_MAPS_PLATFORM_API_KEY"`
 	JWTIssuer                    string  `default:""               envconfig:"JWT_ISSUER"`

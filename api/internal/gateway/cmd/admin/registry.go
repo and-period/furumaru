@@ -19,6 +19,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/youtube"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -41,8 +42,10 @@ type params struct {
 	slack                    slack.Client
 	newRelic                 *newrelic.Application
 	sentry                   sentry.Client
-	payment                  payment.Provider
+	providers                map[entity.PaymentProviderType]payment.Provider
 	komojuWebhookSecret      string
+	stripeSecretKey          string
+	stripeWebhookSecret      string
 	adminWebURL              *url.URL
 	userWebURL               *url.URL
 	assetsURL                *url.URL

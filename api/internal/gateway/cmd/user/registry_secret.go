@@ -84,6 +84,19 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		return nil
 	})
 	eg.Go(func() error {
+		// Stripe接続情報の取得
+		if a.StripeSecretName == "" {
+			p.stripeSecretKey = a.StripeSecretKey
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.StripeSecretName)
+		if err != nil {
+			return err
+		}
+		p.stripeSecretKey = secrets["secretKey"]
+		return nil
+	})
+	eg.Go(func() error {
 		// Google API認証情報の取得
 		if a.GoogleSecretName == "" {
 			p.googleMapsPlatformAPIKey = a.GoogleMapsPlatformAPIKey
