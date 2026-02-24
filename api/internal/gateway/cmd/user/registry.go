@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
@@ -36,7 +37,7 @@ type params struct {
 	slack                    slack.Client
 	newRelic                 *newrelic.Application
 	sentry                   sentry.Client
-	payment                  payment.Provider
+	providers                map[entity.PaymentProviderType]payment.Provider
 	adminWebURL              *url.URL
 	userWebURL               *url.URL
 	postalCode               postalcode.Client
@@ -56,6 +57,7 @@ type params struct {
 	sentryDsn                string
 	komojuClientID           string
 	komojuClientPassword     string
+	stripeSecretKey          string
 	googleMapsPlatformAPIKey string
 	jwtSecret                string
 }

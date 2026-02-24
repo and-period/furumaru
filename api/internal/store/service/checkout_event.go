@@ -43,7 +43,11 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 		return internalError(err)
 	}
 
-	result, err := s.payment.ShowPayment(ctx, in.PaymentID)
+	prov, err := s.getProviderByType(order.OrderPayment.ProviderType)
+	if err != nil {
+		return internalError(err)
+	}
+	result, err := prov.ShowPayment(ctx, in.PaymentID)
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to get payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
@@ -52,7 +56,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 		slog.WarnContext(ctx, "Payment status is not authorized", slog.String("paymentId", in.PaymentID), slog.Int("status", int(result.Status)))
 		return nil
 	}
-	if err := s.payment.CapturePayment(ctx, in.PaymentID); err != nil {
+	if err := prov.CapturePayment(ctx, in.PaymentID); err != nil {
 		slog.ErrorContext(ctx, "Failed to capture payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
 	}

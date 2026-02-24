@@ -208,7 +208,7 @@ func (a *app) newStoreService(
 		Media:       media,
 		PostalCode:  p.postalCode,
 		Geolocation: p.geolocation,
-		Payment:     p.payment,
+		Providers:   p.providers,
 	}
 	return storesrv.NewService(params), nil
 }

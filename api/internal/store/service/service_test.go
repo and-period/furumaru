@@ -8,6 +8,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
@@ -151,7 +153,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		PostalCode:  mocks.postalCode,
 		Geolocation: mocks.geolocation,
 		Ivs:         mocks.ivs,
-		Payment: mocks.payment,
+		Providers: map[entity.PaymentProviderType]payment.Provider{
+			entity.PaymentProviderTypeKomoju: mocks.payment,
+			entity.PaymentProviderTypeStripe: mocks.payment,
+		},
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

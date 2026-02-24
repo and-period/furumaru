@@ -43,7 +43,7 @@ type Params struct {
 	PostalCode  postalcode.Client
 	Geolocation geolocation.Client
 	Ivs         ivs.Client
-	Payment     payment.Provider
+	Providers   map[entity.PaymentProviderType]payment.Provider
 }
 
 type service struct {
@@ -60,7 +60,7 @@ type service struct {
 	postalCode          postalcode.Client
 	geolocation         geolocation.Client
 	ivs                 ivs.Client
-	payment             payment.Provider
+	providers           map[entity.PaymentProviderType]payment.Provider
 	cartTTL             time.Duration
 	cartRefreshInterval time.Duration
 }
@@ -92,6 +92,10 @@ func NewService(params *Params, opts ...Option) store.Service {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	providers := params.Providers
+	if providers == nil {
+		providers = make(map[entity.PaymentProviderType]payment.Provider)
+	}
 	return &service{
 		now: jst.Now,
 		generateID: func() string {
@@ -108,10 +112,34 @@ func NewService(params *Params, opts ...Option) store.Service {
 		postalCode:          params.PostalCode,
 		geolocation:         params.Geolocation,
 		ivs:                 params.Ivs,
-		payment:             params.Payment,
+		providers:           providers,
 		cartTTL:             dopts.cartTTL,
 		cartRefreshInterval: defaultCartRefreshInterval,
 	}
+}
+
+// getProvider は決済手段に対応するプロバイダーを返す。
+// PaymentSystem テーブルの ProviderType に基づいて適切なプロバイダーを選択する。
+func (s *service) getProvider(ctx context.Context, methodType entity.PaymentMethodType) (payment.Provider, entity.PaymentProviderType, error) {
+	system, err := s.db.PaymentSystem.Get(ctx, methodType)
+	if err != nil {
+		return nil, entity.PaymentProviderTypeUnknown, err
+	}
+	prov, ok := s.providers[system.ProviderType]
+	if !ok {
+		return nil, entity.PaymentProviderTypeUnknown, fmt.Errorf("service: unsupported provider type: %d: %w", system.ProviderType, exception.ErrInternal)
+	}
+	return prov, system.ProviderType, nil
+}
+
+// getProviderByType はプロバイダー種別から直接プロバイダーを返す。
+// 既に注文に記録されたプロバイダー種別から逆引きする際に使用する。
+func (s *service) getProviderByType(providerType entity.PaymentProviderType) (payment.Provider, error) {
+	prov, ok := s.providers[providerType]
+	if !ok {
+		return nil, fmt.Errorf("service: unsupported provider type: %d: %w", providerType, exception.ErrInternal)
+	}
+	return prov, nil
 }
 
 func (s *service) isRetryable(err error) bool {

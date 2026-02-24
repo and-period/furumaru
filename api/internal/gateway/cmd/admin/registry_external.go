@@ -5,7 +5,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/payment"
 	komojupay "github.com/and-period/furumaru/api/internal/store/payment/komoju"
+	stripepay "github.com/and-period/furumaru/api/internal/store/payment/stripe"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/sentry"
@@ -67,7 +70,9 @@ func (a *app) injectExternal(p *params) error {
 		p.slack = slack.NewClient(slackParams)
 	}
 
-	// KOMOJUの設定
+	// 決済プロバイダーの設定
+	p.providers = make(map[entity.PaymentProviderType]payment.Provider)
+	// KOMOJU
 	komojuParams := &komojupay.Params{
 		Host:         a.KomojuHost,
 		ClientID:     p.komojuClientID,
@@ -76,7 +81,14 @@ func (a *app) injectExternal(p *params) error {
 	komojuOpts := []komojupay.Option{
 		komojupay.WithDebugMode(p.debugMode),
 	}
-	p.payment = komojupay.NewProvider(&http.Client{}, komojuParams, komojuOpts...)
+	p.providers[entity.PaymentProviderTypeKomoju] = komojupay.NewProvider(&http.Client{}, komojuParams, komojuOpts...)
+	// Stripe
+	if p.stripeSecretKey != "" {
+		stripeParams := &stripepay.Params{
+			SecretKey: p.stripeSecretKey,
+		}
+		p.providers[entity.PaymentProviderTypeStripe] = stripepay.NewProvider(stripeParams)
+	}
 
 	// PostalCodeの設定
 	p.postalCode = postalcode.NewClient(&http.Client{})

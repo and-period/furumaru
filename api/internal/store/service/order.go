@@ -95,7 +95,11 @@ func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput)
 	if !order.Capturable() {
 		return fmt.Errorf("service: this order cannot be capture: %w", exception.ErrFailedPrecondition)
 	}
-	err = s.payment.CapturePayment(ctx, order.PaymentID)
+	prov, err := s.getProviderByType(order.OrderPayment.ProviderType)
+	if err != nil {
+		return internalError(err)
+	}
+	err = prov.CapturePayment(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -192,7 +196,11 @@ func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) e
 	if !order.Cancelable() {
 		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
 	}
-	err = s.payment.CancelPayment(ctx, order.PaymentID)
+	prov, err := s.getProviderByType(order.OrderPayment.ProviderType)
+	if err != nil {
+		return internalError(err)
+	}
+	err = prov.CancelPayment(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -207,12 +215,16 @@ func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) e
 	if !order.Refundable() {
 		return fmt.Errorf("service: this order cannot be refund: %w", exception.ErrFailedPrecondition)
 	}
+	prov, err := s.getProviderByType(order.OrderPayment.ProviderType)
+	if err != nil {
+		return internalError(err)
+	}
 	rparams := &payment.RefundParams{
 		PaymentID:   order.PaymentID,
 		Amount:      order.Total,
 		Description: in.Description,
 	}
-	err = s.payment.RefundPayment(ctx, rparams)
+	err = prov.RefundPayment(ctx, rparams)
 	return internalError(err)
 }
 
