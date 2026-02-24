@@ -6,7 +6,7 @@ import { useCommonStore, useShippingStore } from '~/store'
 import { useUnsavedChangesGuard } from '~/composables/useUnsavedChangesGuard'
 import type { UpdateDefaultShippingRequest } from '~/types/api/v1'
 import { UpdateDefaultShippingValidationRules } from '~/types/validations'
-import { getSelectablePrefecturesList } from '~/lib/prefectures'
+import { getSelectablePrefecturesList, hasAllPrefecturesCovered } from '~/lib/prefectures'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { mdiClose, mdiPlus, mdiPackageVariant, mdiSnowflake, mdiCurrencyJpy, mdiContentSave } from '@mdi/js'
 import { getErrorMessage } from '~/lib/validations'
@@ -202,7 +202,29 @@ const onClickRemoveItem = (rate: '60' | '80' | '100', index: number): void => {
   }
 }
 
+const prefectureCoverageError = ref<string>('')
+
+const validatePrefectureCoverage = (): boolean => {
+  const sizes = [
+    { name: 'サイズ60', rates: formData.value.box60Rates },
+    { name: 'サイズ80', rates: formData.value.box80Rates },
+    { name: 'サイズ100', rates: formData.value.box100Rates },
+  ]
+  const missing = sizes.filter(s => !hasAllPrefecturesCovered(s.rates))
+  if (missing.length > 0) {
+    const names = missing.map(s => s.name).join('、')
+    prefectureCoverageError.value = `${names}の配送オプションですべての都道府県（47件）を設定してください。`
+    return false
+  }
+  prefectureCoverageError.value = ''
+  return true
+}
+
 const handleSubmit = async (): Promise<void> => {
+  if (!validatePrefectureCoverage()) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
   try {
     loading.value = true
     await shippingStore.updateDefaultShipping(formData.value)
@@ -244,6 +266,12 @@ catch (err) {
       :type="alertType"
       class="mb-6"
       v-text="alertText"
+    />
+    <v-alert
+      v-if="prefectureCoverageError"
+      type="error"
+      class="mb-6"
+      v-text="prefectureCoverageError"
     />
 
     <div class="mb-6">

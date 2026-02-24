@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-var errNotFoundShippingRate = errors.New("entity: not found shipping rate")
+var ErrNotFoundShippingRate = errors.New("entity: not found shipping rate")
 
 // ShippingRevision - 配送設定変更履歴情報
 type ShippingRevision struct {
@@ -126,7 +126,7 @@ func (rs ShippingRates) Find(prefectureCode int32) (*ShippingRate, error) {
 			return rate, nil
 		}
 	}
-	return nil, errNotFoundShippingRate
+	return nil, ErrNotFoundShippingRate
 }
 
 func (rs ShippingRates) Validate() error {

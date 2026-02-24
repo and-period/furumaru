@@ -58,3 +58,8 @@ export const prefecturesList: PrefecturesListItem[] = [
   { id: 46, text: '鹿児島県', value: Prefecture.KAGOSHIMA },
   { id: 47, text: '沖縄県', value: Prefecture.OKINAWA },
 ]
+
+/**
+ * 都道府県の総数
+ */
+export const TOTAL_PREFECTURE_COUNT = 47

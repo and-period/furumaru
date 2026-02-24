@@ -354,7 +354,7 @@ func TestShipping_CalcShippingFee(t *testing.T) {
 			total:          2980,
 			prefectureCode: codes.PrefectureValues["kochi"],
 			expect:         0,
-			expectErr:      errUnknownShippingSize,
+			expectErr:      ErrUnknownShippingSize,
 		},
 	}
 	for _, tt := range tests {

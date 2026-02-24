@@ -423,7 +423,7 @@ func TestProductOrderPayment(t *testing.T) {
 				Promotion: nil,
 			},
 			expect:    nil,
-			expectErr: errNotFoundShippingRate,
+			expectErr: ErrNotFoundShippingRate,
 		},
 		{
 			name: "empty address",

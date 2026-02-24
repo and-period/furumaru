@@ -3,7 +3,7 @@ import { mdiCheckCircle, mdiClose, mdiContentCopy, mdiContentSave, mdiCurrencyJp
 import useVuelidate from '@vuelidate/core'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/components'
-import { getSelectablePrefecturesList } from '~/lib/prefectures'
+import { getSelectablePrefecturesList, hasAllPrefecturesCovered } from '~/lib/prefectures'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { getErrorMessage } from '~/lib/validations'
 import type { CreateShippingRequest, Shipping, UpdateShippingRequest } from '~/types/api/v1'
@@ -205,6 +205,23 @@ const activeDialogValue = computed({
 
 const createFormDataValidate = useVuelidate(CreateShippingValidationRules, createFormDataValue)
 const updateFormDataValidate = useVuelidate(UpdateShippingValidationRules, updateFormDataValue)
+
+const createPrefectureCoverageError = ref<string>('')
+const updatePrefectureCoverageError = ref<string>('')
+
+const validatePrefectureCoverage = (formData: CreateShippingRequest | UpdateShippingRequest): string => {
+  const sizes = [
+    { name: 'サイズ60', rates: formData.box60Rates },
+    { name: 'サイズ80', rates: formData.box80Rates },
+    { name: 'サイズ100', rates: formData.box100Rates },
+  ]
+  const missing = sizes.filter(s => !hasAllPrefecturesCovered(s.rates))
+  if (missing.length > 0) {
+    const names = missing.map(s => s.name).join('、')
+    return `${names}の配送オプションですべての都道府県（47件）を設定してください。`
+  }
+  return ''
+}
 
 const addCreateBox60RateItem = () => {
   createFormDataValue.value.box60Rates.push({
@@ -428,12 +445,20 @@ const onSubmitCreate = async (): Promise<void> => {
   if (!valid) {
     return
   }
+  createPrefectureCoverageError.value = validatePrefectureCoverage(createFormDataValue.value)
+  if (createPrefectureCoverageError.value) {
+    return
+  }
   emit('submit:create')
 }
 
 const onSubmitUpdate = async (): Promise<void> => {
   const valid = await updateFormDataValidate.value.$validate()
   if (!valid) {
+    return
+  }
+  updatePrefectureCoverageError.value = validatePrefectureCoverage(updateFormDataValue.value)
+  if (updatePrefectureCoverageError.value) {
     return
   }
   emit('submit:update')
@@ -464,6 +489,12 @@ const onSubmitActive = (): void => {
         <span class="text-h5 font-weight-medium">配送設定登録</span>
       </v-card-title>
       <v-card-text class="mt-6">
+        <v-alert
+          v-if="createPrefectureCoverageError"
+          type="error"
+          class="mb-6"
+          v-text="createPrefectureCoverageError"
+        />
         <v-card
           class="form-section-card mb-6"
           elevation="2"
@@ -770,6 +801,12 @@ const onSubmitActive = (): void => {
         <span class="text-h5 font-weight-medium">配送設定編集</span>
       </v-card-title>
       <v-card-text class="mt-6">
+        <v-alert
+          v-if="updatePrefectureCoverageError"
+          type="error"
+          class="mb-6"
+          v-text="updatePrefectureCoverageError"
+        />
         <v-card
           class="form-section-card mb-6"
           elevation="2"
@@ -837,7 +874,7 @@ const onSubmitActive = (): void => {
                   color="error"
                   variant="text"
                   size="small"
-                  @click="removeCreateBoxItem('60', i)"
+                  @click="removeUpdateBoxItem('60', i)"
                 />
               </div>
               <molecules-shipping-rate-form
@@ -1013,11 +1050,11 @@ const onSubmitActive = (): void => {
           </v-card-text>
         </v-card>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer />
+      <v-divider />
+      <v-card-actions class="d-flex justify-end pa-6 gap-3">
         <v-btn
-          color="error"
           variant="text"
+          size="large"
           @click="onClickCloseUpdateDialog"
         >
           {{ isUpdatable() ? 'キャンセル' : '閉じる' }}
@@ -1026,7 +1063,8 @@ const onSubmitActive = (): void => {
           v-if="isUpdatable()"
           :loading="props.loading"
           color="primary"
-          variant="outlined"
+          variant="elevated"
+          size="large"
           :prepend-icon="mdiContentSave"
           @click="onSubmitUpdate"
         >

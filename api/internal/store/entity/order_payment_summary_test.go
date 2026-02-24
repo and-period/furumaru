@@ -413,7 +413,7 @@ func TestProductOrderPaymentSummary(t *testing.T) {
 				Promotion: nil,
 			},
 			expect:    nil,
-			expectErr: errNotFoundShippingRate,
+			expectErr: ErrNotFoundShippingRate,
 		},
 	}
 	for _, tt := range tests {
