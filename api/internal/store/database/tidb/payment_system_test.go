@@ -186,9 +186,10 @@ func TestPaymentSystem_Update(t *testing.T) {
 
 func testPaymentSystem(methodType entity.PaymentMethodType, now time.Time) *entity.PaymentSystem {
 	return &entity.PaymentSystem{
-		MethodType: methodType,
-		Status:     entity.PaymentSystemStatusInUse,
-		CreatedAt:  now,
-		UpdatedAt:  now,
+		MethodType:   methodType,
+		ProviderType: entity.PaymentProviderTypeKomoju,
+		Status:       entity.PaymentSystemStatusInUse,
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 }
