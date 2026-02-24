@@ -29,6 +29,7 @@ type app struct {
 	newRelic                          *newrelic.Application
 	v1                                gateway.Handler
 	komoju                            gateway.Handler
+	stripe                            gateway.Handler
 	AppName                           string   `default:"admin-gateway"  envconfig:"APP_NAME"`
 	Environment                       string   `default:"none"           envconfig:"ENV"`
 	Port                              int64    `default:"8080"           envconfig:"PORT"`
