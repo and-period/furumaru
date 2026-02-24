@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
@@ -141,6 +142,9 @@ func internalError(err error) error {
 	if e := geolocationError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
+	if e := entityError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
 
 	switch {
 	case errors.Is(err, context.Canceled):
@@ -217,6 +221,20 @@ func geolocationError(err error) error {
 	switch {
 	case errors.Is(err, geolocation.ErrNotFound):
 		return exception.ErrInvalidArgument
+	default:
+		return nil
+	}
+}
+
+func entityError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, entity.ErrNotFoundShippingRate),
+		errors.Is(err, entity.ErrUnknownShippingSize):
+		return exception.ErrFailedPrecondition
 	default:
 		return nil
 	}

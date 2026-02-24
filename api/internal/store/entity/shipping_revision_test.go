@@ -424,7 +424,7 @@ func TestShippingRates_Find(t *testing.T) {
 			rates:          nil,
 			prefectureCode: codes.PrefectureValues["kagawa"],
 			expect:         nil,
-			expectErr:      errNotFoundShippingRate,
+			expectErr:      ErrNotFoundShippingRate,
 		},
 	}
 	for _, tt := range tests {

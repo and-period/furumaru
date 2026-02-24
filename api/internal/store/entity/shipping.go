@@ -15,7 +15,7 @@ var (
 	errInvalidShippingRateFormat     = errors.New("entity: invalid shipping rate format")
 	errInvalidShippingRatePrefLength = errors.New("entity: unmatch shipping rate prefecture length")
 	errNotUniqueShippingRateNumber   = errors.New("entity: shipping rate number must be unique")
-	errUnknownShippingSize           = errors.New("entity: unknown shipping size")
+	ErrUnknownShippingSize           = errors.New("entity: unknown shipping size")
 )
 
 // ShippingSize - 配送種別
@@ -125,7 +125,7 @@ func (s *Shipping) CalcShippingFee(
 		}
 		rate, err = s.Box100Rates.Find(prefectureCode)
 	default:
-		return 0, errUnknownShippingSize
+		return 0, ErrUnknownShippingSize
 	}
 	if err != nil {
 		return 0, err

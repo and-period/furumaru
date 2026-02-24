@@ -1,4 +1,4 @@
-import { prefecturesList } from '~/constants'
+import { prefecturesList, TOTAL_PREFECTURE_COUNT } from '~/constants'
 import type { PrefecturesListItem } from '~/constants'
 import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api/v1'
 
@@ -28,4 +28,16 @@ export function getSelectablePrefecturesList(
       disabled: unselectedPrefecturesList.includes(item.value),
     }
   })
+}
+
+/**
+ * すべての都道府県がカバーされているかを検証する関数
+ * @param items 配送料設定の配列
+ * @returns すべての都道府県（47件）がカバーされている場合はtrue
+ */
+export function hasAllPrefecturesCovered(
+  items: UpdateDefaultShippingRate[] | UpsertShippingRate[],
+): boolean {
+  const allCodes = new Set(items.flatMap(item => item.prefectureCodes))
+  return allCodes.size === TOTAL_PREFECTURE_COUNT
 }
