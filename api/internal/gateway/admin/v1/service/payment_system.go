@@ -9,6 +9,9 @@ import (
 // PaymentSystemStatus - 決済システム状態
 type PaymentSystemStatus types.PaymentSystemStatus
 
+// PaymentProviderType - 決済プロバイダー種別
+type PaymentProviderType types.PaymentProviderType
+
 type PaymentSystem struct {
 	types.PaymentSystem
 }
@@ -41,13 +44,40 @@ func (s PaymentSystemStatus) Response() types.PaymentSystemStatus {
 	return types.PaymentSystemStatus(s)
 }
 
+func NewPaymentProviderType(providerType entity.PaymentProviderType) PaymentProviderType {
+	switch providerType {
+	case entity.PaymentProviderTypeKomoju:
+		return PaymentProviderType(types.PaymentProviderTypeKomoju)
+	case entity.PaymentProviderTypeStripe:
+		return PaymentProviderType(types.PaymentProviderTypeStripe)
+	default:
+		return PaymentProviderType(types.PaymentProviderTypeUnknown)
+	}
+}
+
+func (t PaymentProviderType) StoreEntity() entity.PaymentProviderType {
+	switch types.PaymentProviderType(t) {
+	case types.PaymentProviderTypeKomoju:
+		return entity.PaymentProviderTypeKomoju
+	case types.PaymentProviderTypeStripe:
+		return entity.PaymentProviderTypeStripe
+	default:
+		return entity.PaymentProviderTypeUnknown
+	}
+}
+
+func (t PaymentProviderType) Response() types.PaymentProviderType {
+	return types.PaymentProviderType(t)
+}
+
 func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {
 	return &PaymentSystem{
 		PaymentSystem: types.PaymentSystem{
-			MethodType: NewPaymentMethodType(system.MethodType).Response(),
-			Status:     NewPaymentSystemStatus(system.Status).Response(),
-			CreatedAt:  jst.Unix(system.CreatedAt),
-			UpdatedAt:  jst.Unix(system.UpdatedAt),
+			MethodType:   NewPaymentMethodType(system.MethodType).Response(),
+			ProviderType: NewPaymentProviderType(system.ProviderType).Response(),
+			Status:       NewPaymentSystemStatus(system.Status).Response(),
+			CreatedAt:    jst.Unix(system.CreatedAt),
+			UpdatedAt:    jst.Unix(system.UpdatedAt),
 		},
 	}
 }

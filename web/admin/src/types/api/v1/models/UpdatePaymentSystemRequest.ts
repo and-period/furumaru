@@ -14,11 +14,17 @@
 
 import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface UpdatePaymentSystemRequest
  */
 export interface UpdatePaymentSystemRequest {
+    /**
+     * 決済プロバイダー種別
+     * @type {number}
+     * @memberof UpdatePaymentSystemRequest
+     */
+    providerType: number;
     /**
      * 決済システム状態
      * @type {number}
@@ -31,6 +37,7 @@ export interface UpdatePaymentSystemRequest {
  * Check if a given object implements the UpdatePaymentSystemRequest interface.
  */
 export function instanceOfUpdatePaymentSystemRequest(value: object): value is UpdatePaymentSystemRequest {
+    if (!('providerType' in value) || value['providerType'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
@@ -44,7 +51,8 @@ export function UpdatePaymentSystemRequestFromJSONTyped(json: any, ignoreDiscrim
         return json;
     }
     return {
-        
+
+        'providerType': json['providerType'],
         'status': json['status'],
     };
 }
@@ -59,7 +67,8 @@ export function UpdatePaymentSystemRequestToJSONTyped(value?: UpdatePaymentSyste
     }
 
     return {
-        
+
+        'providerType': value['providerType'],
         'status': value['status'],
     };
 }

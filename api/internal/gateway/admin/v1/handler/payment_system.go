@@ -73,8 +73,9 @@ func (h *handler) UpdatePaymentSystem(ctx *gin.Context) {
 		return
 	}
 	in := &store.UpdatePaymentStatusInput{
-		MethodType: service.PaymentMethodType(methodType).StoreEntity(),
-		Status:     service.PaymentSystemStatus(req.Status).StoreEntity(),
+		MethodType:   service.PaymentMethodType(methodType).StoreEntity(),
+		Status:       service.PaymentSystemStatus(req.Status).StoreEntity(),
+		ProviderType: service.PaymentProviderType(req.ProviderType).StoreEntity(),
 	}
 	if err := h.store.UpdatePaymentSystem(ctx, in); err != nil {
 		h.httpError(ctx, err)

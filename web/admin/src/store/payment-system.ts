@@ -1,6 +1,6 @@
 import { useApiClient } from '~/composables/useApiClient'
 import { PaymentSystemApi } from '~/types/api/v1'
-import type { PaymentMethodType, PaymentSystem, PaymentSystemStatus, V1PaymentSystemsMethodTypePatchRequest } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentProviderType, PaymentSystem, PaymentSystemStatus, V1PaymentSystemsMethodTypePatchRequest } from '~/types/api/v1'
 
 export const usePaymentSystemStore = defineStore('paymentSystem', () => {
   const { create, errorHandler } = useApiClient()
@@ -18,11 +18,11 @@ export const usePaymentSystemStore = defineStore('paymentSystem', () => {
     }
   }
 
-  async function updatePaymentStatus(methodType: PaymentMethodType, status: PaymentSystemStatus) {
+  async function updatePaymentSystem(methodType: PaymentMethodType, status: PaymentSystemStatus, providerType: PaymentProviderType) {
     try {
       const params: V1PaymentSystemsMethodTypePatchRequest = {
         methodType,
-        updatePaymentSystemRequest: { status },
+        updatePaymentSystemRequest: { status, providerType },
       }
       await paymentSystemApi().v1PaymentSystemsMethodTypePatch(params)
     }
@@ -34,6 +34,6 @@ export const usePaymentSystemStore = defineStore('paymentSystem', () => {
   return {
     systems,
     fetchPaymentSystems,
-    updatePaymentStatus,
+    updatePaymentSystem,
   }
 })

@@ -5,11 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestPaymentSystem(t *testing.T) {
@@ -142,7 +143,7 @@ func TestPaymentSystem_Update(t *testing.T) {
 
 	type args struct {
 		methodType entity.PaymentMethodType
-		status     entity.PaymentSystemStatus
+		params     *database.UpdatePaymentSystemParams
 	}
 	type want struct {
 		err error
@@ -162,7 +163,10 @@ func TestPaymentSystem_Update(t *testing.T) {
 			},
 			args: args{
 				methodType: entity.PaymentMethodTypeCreditCard,
-				status:     entity.PaymentSystemStatusOutage,
+				params: &database.UpdatePaymentSystemParams{
+					Status:       entity.PaymentSystemStatusOutage,
+					ProviderType: entity.PaymentProviderTypeStripe,
+				},
 			},
 			want: want{
 				err: nil,
@@ -178,7 +182,7 @@ func TestPaymentSystem_Update(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &paymentSystem{db: db, now: now}
-			err = db.Update(ctx, tt.args.methodType, tt.args.status)
+			err = db.Update(ctx, tt.args.methodType, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}

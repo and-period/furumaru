@@ -1,4 +1,4 @@
-import { PaymentMethodType } from '~/types/api/v1'
+import { PaymentMethodType, PaymentProviderType } from '~/types/api/v1'
 
 export interface PaymentListItem {
   name: string
@@ -20,4 +20,17 @@ export const paymentsList: PaymentListItem[] = [
   { name: 'QR決済（au PAY）', value: PaymentMethodType.PaymentMethodTypeAUPay },
   { name: 'ペイディ（Paidy）', value: PaymentMethodType.PaymentMethodTypePaidy },
   { name: 'ペイジー（Pay-easy）', value: PaymentMethodType.PaymentMethodTypePayEasy },
+]
+
+export interface PaymentProviderListItem {
+  name: string
+  value: PaymentProviderType
+}
+
+/**
+ * 決済プロバイダー一覧
+ */
+export const paymentProvidersList: PaymentProviderListItem[] = [
+  { name: 'KOMOJU', value: PaymentProviderType.PaymentProviderTypeKomoju },
+  { name: 'Stripe', value: PaymentProviderType.PaymentProviderTypeStripe },
 ]

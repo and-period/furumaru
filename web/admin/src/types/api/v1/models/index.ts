@@ -114,6 +114,7 @@ export * from './OrderStatus';
 export * from './OrderType';
 export * from './OrdersResponse';
 export * from './PaymentMethodType';
+export * from './PaymentProviderType';
 export * from './PaymentStatus';
 export * from './PaymentSystem';
 export * from './PaymentSystemStatus';

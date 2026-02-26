@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -27,6 +28,10 @@ func (s *service) UpdatePaymentSystem(ctx context.Context, in *store.UpdatePayme
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.PaymentSystem.Update(ctx, in.MethodType, in.Status)
+	params := &database.UpdatePaymentSystemParams{
+		Status:       in.Status,
+		ProviderType: in.ProviderType,
+	}
+	err := s.db.PaymentSystem.Update(ctx, in.MethodType, params)
 	return internalError(err)
 }

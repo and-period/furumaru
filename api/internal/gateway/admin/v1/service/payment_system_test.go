@@ -93,6 +93,90 @@ func TestPaymentSystemStatus_Response(t *testing.T) {
 	}
 }
 
+func TestPaymentProviderType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		providerType entity.PaymentProviderType
+		expect       types.PaymentProviderType
+	}{
+		{
+			name:         "komoju",
+			providerType: entity.PaymentProviderTypeKomoju,
+			expect:       types.PaymentProviderTypeKomoju,
+		},
+		{
+			name:         "stripe",
+			providerType: entity.PaymentProviderTypeStripe,
+			expect:       types.PaymentProviderTypeStripe,
+		},
+		{
+			name:         "unknown",
+			providerType: entity.PaymentProviderTypeUnknown,
+			expect:       types.PaymentProviderTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewPaymentProviderType(tt.providerType)
+			assert.Equal(t, tt.expect, actual.Response())
+		})
+	}
+}
+
+func TestPaymentProviderType_StoreEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		providerType PaymentProviderType
+		expect       entity.PaymentProviderType
+	}{
+		{
+			name:         "komoju",
+			providerType: PaymentProviderType(types.PaymentProviderTypeKomoju),
+			expect:       entity.PaymentProviderTypeKomoju,
+		},
+		{
+			name:         "stripe",
+			providerType: PaymentProviderType(types.PaymentProviderTypeStripe),
+			expect:       entity.PaymentProviderTypeStripe,
+		},
+		{
+			name:         "unknown",
+			providerType: PaymentProviderType(types.PaymentProviderTypeUnknown),
+			expect:       entity.PaymentProviderTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.providerType.StoreEntity())
+		})
+	}
+}
+
+func TestPaymentProviderType_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		providerType PaymentProviderType
+		expect       types.PaymentProviderType
+	}{
+		{
+			name:         "success",
+			providerType: PaymentProviderType(types.PaymentProviderTypeKomoju),
+			expect:       types.PaymentProviderTypeKomoju,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.providerType.Response())
+		})
+	}
+}
+
 func TestPaymentSystem(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -103,17 +187,19 @@ func TestPaymentSystem(t *testing.T) {
 		{
 			name: "success",
 			system: &entity.PaymentSystem{
-				MethodType: entity.PaymentMethodTypeCreditCard,
-				Status:     entity.PaymentSystemStatusInUse,
-				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				MethodType:   entity.PaymentMethodTypeCreditCard,
+				ProviderType: entity.PaymentProviderTypeKomoju,
+				Status:       entity.PaymentSystemStatusInUse,
+				CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: types.PaymentMethodTypeCreditCard,
-					Status:     types.PaymentSystemStatusInUse,
-					CreatedAt:  1640962800,
-					UpdatedAt:  1640962800,
+					MethodType:   types.PaymentMethodTypeCreditCard,
+					ProviderType: types.PaymentProviderTypeKomoju,
+					Status:       types.PaymentSystemStatusInUse,
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
 				},
 			},
 		},
@@ -138,17 +224,19 @@ func TestPaymentSystem_Response(t *testing.T) {
 			name: "success",
 			system: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: types.PaymentMethodTypeCreditCard,
-					Status:     types.PaymentSystemStatusInUse,
-					CreatedAt:  1640962800,
-					UpdatedAt:  1640962800,
+					MethodType:   types.PaymentMethodTypeCreditCard,
+					ProviderType: types.PaymentProviderTypeKomoju,
+					Status:       types.PaymentSystemStatusInUse,
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
 				},
 			},
 			expect: &types.PaymentSystem{
-				MethodType: types.PaymentMethodTypeCreditCard,
-				Status:     types.PaymentSystemStatusInUse,
-				CreatedAt:  1640962800,
-				UpdatedAt:  1640962800,
+				MethodType:   types.PaymentMethodTypeCreditCard,
+				ProviderType: types.PaymentProviderTypeKomoju,
+				Status:       types.PaymentSystemStatusInUse,
+				CreatedAt:    1640962800,
+				UpdatedAt:    1640962800,
 			},
 		},
 	}
@@ -171,19 +259,21 @@ func TestPaymentSystems(t *testing.T) {
 			name: "success",
 			systems: entity.PaymentSystems{
 				{
-					MethodType: entity.PaymentMethodTypeCreditCard,
-					Status:     entity.PaymentSystemStatusInUse,
-					CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					MethodType:   entity.PaymentMethodTypeCreditCard,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+					Status:       entity.PaymentSystemStatusInUse,
+					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			expect: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: types.PaymentMethodTypeCreditCard,
-						Status:     types.PaymentSystemStatusInUse,
-						CreatedAt:  1640962800,
-						UpdatedAt:  1640962800,
+						MethodType:   types.PaymentMethodTypeCreditCard,
+						ProviderType: types.PaymentProviderTypeKomoju,
+						Status:       types.PaymentSystemStatusInUse,
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
 					},
 				},
 			},
@@ -210,19 +300,21 @@ func TestPaymentSystems_Response(t *testing.T) {
 			systems: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: types.PaymentMethodTypeCreditCard,
-						Status:     types.PaymentSystemStatusInUse,
-						CreatedAt:  1640962800,
-						UpdatedAt:  1640962800,
+						MethodType:   types.PaymentMethodTypeCreditCard,
+						ProviderType: types.PaymentProviderTypeKomoju,
+						Status:       types.PaymentSystemStatusInUse,
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
 					},
 				},
 			},
 			expect: []*types.PaymentSystem{
 				{
-					MethodType: types.PaymentMethodTypeCreditCard,
-					Status:     types.PaymentSystemStatusInUse,
-					CreatedAt:  1640962800,
-					UpdatedAt:  1640962800,
+					MethodType:   types.PaymentMethodTypeCreditCard,
+					ProviderType: types.PaymentProviderTypeKomoju,
+					Status:       types.PaymentSystemStatusInUse,
+					CreatedAt:    1640962800,
+					UpdatedAt:    1640962800,
 				},
 			},
 		},

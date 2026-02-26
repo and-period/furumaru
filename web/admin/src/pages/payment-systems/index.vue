@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { usePaymentSystemStore } from '~/store'
 import { PaymentSystemStatus } from '~/types/api/v1'
-import type { PaymentMethodType, PaymentSystem } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentProviderType, PaymentSystem } from '~/types/api/v1'
 
 const paymentSystemStore = usePaymentSystemStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -51,7 +51,36 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
 
   try {
     loading.value = true
-    await paymentSystemStore.updatePaymentStatus(methodType, status)
+    await paymentSystemStore.updatePaymentSystem(methodType, status, system.providerType)
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+  finally {
+    loading.value = false
+    fetchState.refresh()
+  }
+}
+
+const handleUpdateProvider = async (methodType: PaymentMethodType, providerType: PaymentProviderType): Promise<void> => {
+  const system = systems.value.find((system: PaymentSystem): boolean => {
+    return system.methodType === methodType
+  })
+  if (!system) {
+    return
+  }
+
+  try {
+    loading.value = true
+    await paymentSystemStore.updatePaymentSystem(methodType, system.status, providerType)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -85,6 +114,7 @@ catch (err) {
     :alert-type="alertType"
     :alert-text="alertText"
     :systems="systems"
-    @submit="handleUpdateStatus"
+    @submit:status="handleUpdateStatus"
+    @submit:provider="handleUpdateProvider"
   />
 </template>

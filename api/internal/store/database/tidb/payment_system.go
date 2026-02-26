@@ -50,11 +50,12 @@ func (s *paymentSystem) Get(
 }
 
 func (s *paymentSystem) Update(
-	ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus,
+	ctx context.Context, methodType entity.PaymentMethodType, params *database.UpdatePaymentSystemParams,
 ) error {
 	updates := map[string]interface{}{
-		"status":     status,
-		"updated_at": s.now(),
+		"status":        params.Status,
+		"provider_type": params.ProviderType,
+		"updated_at":    s.now(),
 	}
 	stmt := s.db.DB.WithContext(ctx).
 		Table(paymentSystemTable).
