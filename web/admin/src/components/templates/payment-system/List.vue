@@ -2,11 +2,11 @@
 import { mdiPencil } from '@mdi/js'
 import type { VDataTable } from 'vuetify/components'
 
-import { paymentsList } from '~/constants'
-import type { PaymentListItem } from '~/constants'
+import { paymentsList, paymentProvidersList } from '~/constants'
+import type { PaymentListItem, PaymentProviderListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
 import { PaymentSystemStatus } from '~/types/api/v1'
-import type { PaymentMethodType, PaymentSystem } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentProviderType, PaymentSystem } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -32,13 +32,19 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'submit', methodType: PaymentMethodType): void
+  (e: 'submit:status', methodType: PaymentMethodType): void
+  (e: 'submit:provider', methodType: PaymentMethodType, providerType: PaymentProviderType): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
     title: '決済システム',
     key: 'methodType',
+    sortable: false,
+  },
+  {
+    title: 'プロバイダー',
+    key: 'providerType',
     sortable: false,
   },
   {
@@ -58,6 +64,13 @@ const getPaymentSystemName = (methodType: PaymentMethodType): string => {
     return paymentItem.value === methodType
   })
   return payment?.name || ''
+}
+
+const getPaymentProviderName = (providerType: PaymentProviderType): string => {
+  const provider = paymentProvidersList.find((item: PaymentProviderListItem): boolean => {
+    return item.value === providerType
+  })
+  return provider?.name || '不明'
 }
 
 const getPaymentSystemStatus = (status: PaymentSystemStatus): string => {
@@ -93,8 +106,12 @@ const getUpdateButtonColor = (status: PaymentSystemStatus): string => {
   }
 }
 
-const onSubmit = (methodType: PaymentMethodType): void => {
-  emit('submit', methodType)
+const onSubmitStatus = (methodType: PaymentMethodType): void => {
+  emit('submit:status', methodType)
+}
+
+const onChangeProvider = (methodType: PaymentMethodType, providerType: PaymentProviderType): void => {
+  emit('submit:provider', methodType, providerType)
 }
 </script>
 
@@ -126,6 +143,19 @@ const onSubmit = (methodType: PaymentMethodType): void => {
         <template #[`item.methodType`]="{ item }">
           {{ getPaymentSystemName(item.methodType) }}
         </template>
+        <template #[`item.providerType`]="{ item }">
+          <v-select
+            :model-value="item.providerType"
+            :items="paymentProvidersList"
+            item-title="name"
+            item-value="value"
+            density="compact"
+            variant="outlined"
+            hide-details
+            style="min-width: 140px;"
+            @update:model-value="(val: PaymentProviderType) => onChangeProvider(item.methodType, val)"
+          />
+        </template>
         <template #[`item.status`]="{ item }">
           {{ getPaymentSystemStatus(item.status) }}
         </template>
@@ -133,7 +163,7 @@ const onSubmit = (methodType: PaymentMethodType): void => {
           <v-btn
             variant="outlined"
             :color="getUpdateButtonColor(item.status)"
-            @click.stop="onSubmit(item.methodType)"
+            @click.stop="onSubmitStatus(item.methodType)"
           >
             <v-icon
               size="small"

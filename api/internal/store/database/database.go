@@ -319,10 +319,15 @@ type AggregateOrdersByPeriodParams struct {
 	CreatedAtLt  time.Time
 }
 
+type UpdatePaymentSystemParams struct {
+	Status       entity.PaymentSystemStatus
+	ProviderType entity.PaymentProviderType
+}
+
 type PaymentSystem interface {
 	MultiGet(ctx context.Context, methodTypes []entity.PaymentMethodType, fields ...string) (entity.PaymentSystems, error)
 	Get(ctx context.Context, methodType entity.PaymentMethodType, fields ...string) (*entity.PaymentSystem, error)
-	Update(ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus) error
+	Update(ctx context.Context, methodType entity.PaymentMethodType, params *UpdatePaymentSystemParams) error
 }
 
 type Product interface {

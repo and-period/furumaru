@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PaymentProviderType } from './PaymentProviderType';
+import {
+    PaymentProviderTypeFromJSON,
+    PaymentProviderTypeFromJSONTyped,
+    PaymentProviderTypeToJSON,
+    PaymentProviderTypeToJSONTyped,
+} from './PaymentProviderType';
 import type { PaymentSystemStatus } from './PaymentSystemStatus';
 import {
     PaymentSystemStatusFromJSON,
@@ -22,7 +29,7 @@ import {
 } from './PaymentSystemStatus';
 
 /**
- * 
+ *
  * @export
  * @interface PaymentSystem
  */
@@ -40,7 +47,13 @@ export interface PaymentSystem {
      */
     methodType: number;
     /**
-     * 
+     * 決済プロバイダー種別
+     * @type {PaymentProviderType}
+     * @memberof PaymentSystem
+     */
+    providerType: PaymentProviderType;
+    /**
+     *
      * @type {PaymentSystemStatus}
      * @memberof PaymentSystem
      */
@@ -61,6 +74,7 @@ export interface PaymentSystem {
 export function instanceOfPaymentSystem(value: object): value is PaymentSystem {
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('methodType' in value) || value['methodType'] === undefined) return false;
+    if (!('providerType' in value) || value['providerType'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -75,9 +89,10 @@ export function PaymentSystemFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
+
         'createdAt': json['createdAt'],
         'methodType': json['methodType'],
+        'providerType': PaymentProviderTypeFromJSON(json['providerType']),
         'status': PaymentSystemStatusFromJSON(json['status']),
         'updatedAt': json['updatedAt'],
     };
@@ -93,9 +108,10 @@ export function PaymentSystemToJSONTyped(value?: PaymentSystem | null, ignoreDis
     }
 
     return {
-        
+
         'createdAt': value['createdAt'],
         'methodType': value['methodType'],
+        'providerType': PaymentProviderTypeToJSON(value['providerType']),
         'status': PaymentSystemStatusToJSON(value['status']),
         'updatedAt': value['updatedAt'],
     };

@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -139,13 +140,18 @@ func TestUpdatePaymentSystem(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				params := &database.UpdatePaymentSystemParams{
+					Status:       entity.PaymentSystemStatusOutage,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+				}
 				mocks.db.PaymentSystem.EXPECT().
-					Update(ctx, entity.PaymentMethodTypeCreditCard, entity.PaymentSystemStatusOutage).
+					Update(ctx, entity.PaymentMethodTypeCreditCard, params).
 					Return(nil)
 			},
 			input: &store.UpdatePaymentStatusInput{
-				MethodType: entity.PaymentMethodTypeCreditCard,
-				Status:     entity.PaymentSystemStatusOutage,
+				MethodType:   entity.PaymentMethodTypeCreditCard,
+				Status:       entity.PaymentSystemStatusOutage,
+				ProviderType: entity.PaymentProviderTypeKomoju,
 			},
 			expectErr: nil,
 		},
@@ -159,13 +165,18 @@ func TestUpdatePaymentSystem(t *testing.T) {
 		{
 			name: "failed to update payment system",
 			setup: func(ctx context.Context, mocks *mocks) {
+				params := &database.UpdatePaymentSystemParams{
+					Status:       entity.PaymentSystemStatusOutage,
+					ProviderType: entity.PaymentProviderTypeKomoju,
+				}
 				mocks.db.PaymentSystem.EXPECT().
-					Update(ctx, entity.PaymentMethodTypeCreditCard, entity.PaymentSystemStatusOutage).
+					Update(ctx, entity.PaymentMethodTypeCreditCard, params).
 					Return(assert.AnError)
 			},
 			input: &store.UpdatePaymentStatusInput{
-				MethodType: entity.PaymentMethodTypeCreditCard,
-				Status:     entity.PaymentSystemStatusOutage,
+				MethodType:   entity.PaymentMethodTypeCreditCard,
+				Status:       entity.PaymentSystemStatusOutage,
+				ProviderType: entity.PaymentProviderTypeKomoju,
 			},
 			expectErr: exception.ErrInternal,
 		},

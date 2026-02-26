@@ -529,7 +529,7 @@ sequenceDiagram
 * [x] Stripe Webhook ハンドラー（`gateway/admin/stripe/`）実装
 * [x] Stripe Webhook の署名検証
 * [ ] E2E テスト（Stripe テスト環境）
-* [ ] 管理画面への Stripe 設定 UI 追加
+* [x] 管理画面への Stripe 設定 UI 追加
 
 ### Phase 4: 移行・運用
 

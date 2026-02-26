@@ -543,8 +543,9 @@ type GetPaymentSystemInput struct {
 }
 
 type UpdatePaymentStatusInput struct {
-	MethodType entity.PaymentMethodType   `validate:"required"`
-	Status     entity.PaymentSystemStatus `validate:"required"`
+	MethodType   entity.PaymentMethodType   `validate:"required"`
+	Status       entity.PaymentSystemStatus `validate:"required"`
+	ProviderType entity.PaymentProviderType `validate:"required"`
 }
 
 /**
