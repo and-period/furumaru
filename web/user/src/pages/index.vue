@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useIntervalFn } from '@vueuse/core'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
+import { useInstagramStore } from '~/store/instagram'
 import type { BannerItem } from '~/types/props'
 import type { I18n } from '~/types/locales'
 
@@ -14,9 +15,14 @@ const topPageStore = useTopPageStore()
 const { archives, lives, productVideos, experienceVideos } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
 
+const instagramStore = useInstagramStore()
+const { instagramPostsPermalinks } = storeToRefs(instagramStore)
+const { listInstagramPostsPermalinkByHashTag } = instagramStore
+
 const tt = (str: keyof I18n['base']['top']) => {
   return i18n.t(`base.top.${str}`)
 }
+// https://www.instagram.com/p/DGh1QXZxqQs/?utm_source=ig_embed&amp;utm_campaign=loading
 
 const isInItLoading = ref<boolean>(false)
 
@@ -35,6 +41,10 @@ useAsyncData('home-content', async () => {
   isInItLoading.value = true
   await getHomeContent()
   isInItLoading.value = false
+})
+
+useAsyncData('instagram-posts', async () => {
+  await listInstagramPostsPermalinkByHashTag()
 })
 
 onMounted(() => {
@@ -439,6 +449,39 @@ useSeoMeta({
               :archived-stream-text="tt('archivedStreamText')"
               class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickExperienceVideoItem(experience.id)"
+            />
+          </div>
+          <div class="absolute right-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveRightButton"
+            >
+              <the-right-arrow-icon />
+            </the-icon-button>
+          </div>
+        </div>
+      </the-content-box>
+      <the-content-box
+        title="Instagram"
+        sub-title="人気の投稿"
+      >
+        <div class="relative mx-auto flex max-w-[1440px]">
+          <div class="absolute left-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveLeftButton"
+            >
+              <the-left-arrow-icon />
+            </the-icon-button>
+          </div>
+          <div
+            ref="archiveRef"
+            class="hidden-scrollbar flex flex-col w-full items-center gap-8 md:flex-row md:items-start md:overflow-x-scroll"
+          >
+            <the-instagram-post
+              v-for="instagramPostsPermalink in instagramPostsPermalinks"
+              :key="instagramPostsPermalink"
+              :permalink="instagramPostsPermalink"
             />
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
