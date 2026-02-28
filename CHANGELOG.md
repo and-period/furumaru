@@ -1,5 +1,12 @@
 # Changelog
 
+## [v10.1.0](https://github.com/and-period/furumaru/compare/v10.0.1...v10.1.0) - 2026-02-28
+- fix: 配送料率未設定時の500エラーを412に修正し、admin-webに都道府県カバレッジバリデーションを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3354
+- feat(api): 決済プロバイダー選択ロジックの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3356
+- feat(api): Stripe Webhook ハンドラーの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3357
+- feat: 管理画面に決済プロバイダー選択UIを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3358
+- fix(api): JSONカラムのbase64エンコード問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3360
+
 ## [v10.0.1](https://github.com/and-period/furumaru/compare/v10.0.0...v10.0.1) - 2026-02-24
 - fix(web/admin): CodeRabbit レビュー指摘事項の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3349
 - feat(api): Stripe 決済プロバイダー対応の基盤実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3350
