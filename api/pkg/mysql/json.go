@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql/driver"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 )
@@ -19,8 +20,13 @@ func NewJSONColumn[T any](val T) JSONColumn[T] {
 }
 
 // Value - driver.Valuer の実装。DBへの書き込み時にJSON文字列に変換する
+// string型で返すことで、ドライバが[]byteをバイナリ(base64)として扱うのを防ぐ
 func (j JSONColumn[T]) Value() (driver.Value, error) {
-	return json.Marshal(j.Val)
+	b, err := json.Marshal(j.Val)
+	if err != nil {
+		return nil, err
+	}
+	return string(b), nil
 }
 
 // Scan - sql.Scanner の実装。DBからの読み込み時にJSONをデシリアライズする
@@ -37,5 +43,16 @@ func (j *JSONColumn[T]) Scan(value interface{}) error {
 	default:
 		return fmt.Errorf("mysql: unsupported type for JSONColumn: %T", value)
 	}
-	return json.Unmarshal(bytes, &j.Val)
+	if err := json.Unmarshal(bytes, &j.Val); err != nil {
+		// TiDBのJSONカラムがbase64エンコードされた文字列として返される場合のフォールバック
+		// 例: "WyJ0YWcxIiwidGFnMiJd" (base64) → ["tag1","tag2"] (JSON)
+		var s string
+		if jsonErr := json.Unmarshal(bytes, &s); jsonErr == nil {
+			if decoded, decErr := base64.StdEncoding.DecodeString(s); decErr == nil {
+				return json.Unmarshal(decoded, &j.Val)
+			}
+		}
+		return err
+	}
+	return nil
 }

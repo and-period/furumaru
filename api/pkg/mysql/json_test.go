@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"encoding/base64"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +16,7 @@ func TestJSONColumn_Value(t *testing.T) {
 		col := NewJSONColumn([]string{"a", "b", "c"})
 		val, err := col.Value()
 		require.NoError(t, err)
-		assert.JSONEq(t, `["a","b","c"]`, string(val.([]byte)))
+		assert.JSONEq(t, `["a","b","c"]`, val.(string))
 	})
 
 	t.Run("int slice", func(t *testing.T) {
@@ -23,7 +24,7 @@ func TestJSONColumn_Value(t *testing.T) {
 		col := NewJSONColumn([]int{1, 2, 3})
 		val, err := col.Value()
 		require.NoError(t, err)
-		assert.JSONEq(t, `[1,2,3]`, string(val.([]byte)))
+		assert.JSONEq(t, `[1,2,3]`, val.(string))
 	})
 
 	t.Run("struct slice", func(t *testing.T) {
@@ -38,7 +39,7 @@ func TestJSONColumn_Value(t *testing.T) {
 		})
 		val, err := col.Value()
 		require.NoError(t, err)
-		assert.JSONEq(t, `[{"name":"apple","price":100},{"name":"banana","price":200}]`, string(val.([]byte)))
+		assert.JSONEq(t, `[{"name":"apple","price":100},{"name":"banana","price":200}]`, val.(string))
 	})
 
 	t.Run("map", func(t *testing.T) {
@@ -46,7 +47,7 @@ func TestJSONColumn_Value(t *testing.T) {
 		col := NewJSONColumn(map[string]int{"x": 1, "y": 2})
 		val, err := col.Value()
 		require.NoError(t, err)
-		assert.JSONEq(t, `{"x":1,"y":2}`, string(val.([]byte)))
+		assert.JSONEq(t, `{"x":1,"y":2}`, val.(string))
 	})
 
 	t.Run("nil slice", func(t *testing.T) {
@@ -54,7 +55,7 @@ func TestJSONColumn_Value(t *testing.T) {
 		col := NewJSONColumn[[]string](nil)
 		val, err := col.Value()
 		require.NoError(t, err)
-		assert.Equal(t, []byte("null"), val.([]byte))
+		assert.Equal(t, "null", val.(string))
 	})
 }
 
@@ -120,6 +121,40 @@ func TestJSONColumn_Scan(t *testing.T) {
 		col := &JSONColumn[[]string]{}
 		err := col.Scan([]byte(`invalid-json`))
 		assert.Error(t, err)
+	})
+
+	t.Run("base64 encoded string slice", func(t *testing.T) {
+		t.Parallel()
+		// base64("["a","b","c"]") → "WyJhIiwiYiIsImMiXQ=="
+		encoded := base64.StdEncoding.EncodeToString([]byte(`["a","b","c"]`))
+		col := &JSONColumn[[]string]{}
+		err := col.Scan([]byte(`"` + encoded + `"`))
+		require.NoError(t, err)
+		assert.Equal(t, []string{"a", "b", "c"}, col.Val)
+	})
+
+	t.Run("base64 encoded struct slice", func(t *testing.T) {
+		t.Parallel()
+		type item struct {
+			Name  string `json:"name"`
+			Price int    `json:"price"`
+		}
+		encoded := base64.StdEncoding.EncodeToString([]byte(`[{"name":"apple","price":100}]`))
+		col := &JSONColumn[[]item]{}
+		err := col.Scan([]byte(`"` + encoded + `"`))
+		require.NoError(t, err)
+		require.Len(t, col.Val, 1)
+		assert.Equal(t, "apple", col.Val[0].Name)
+		assert.Equal(t, 100, col.Val[0].Price)
+	})
+
+	t.Run("base64 encoded map", func(t *testing.T) {
+		t.Parallel()
+		encoded := base64.StdEncoding.EncodeToString([]byte(`{"x":1,"y":2}`))
+		col := &JSONColumn[map[string]int]{}
+		err := col.Scan([]byte(`"` + encoded + `"`))
+		require.NoError(t, err)
+		assert.Equal(t, map[string]int{"x": 1, "y": 2}, col.Val)
 	})
 }
 
