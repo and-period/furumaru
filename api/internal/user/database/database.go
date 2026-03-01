@@ -31,6 +31,7 @@ type Database struct {
 	AdminRole         AdminRole
 	AdminRolePolicy   AdminRolePolicy
 	Administrator     Administrator
+	AuditLog          AuditLog
 	Coordinator       Coordinator
 	FacilityUser      FacilityUser
 	Guest             Guest
@@ -170,6 +171,23 @@ type AdminRolePolicy interface {
 type ListAdminRolePoliciesParams struct {
 	Limit  int
 	Offset int
+}
+
+type AuditLog interface {
+	List(ctx context.Context, params *ListAuditLogsParams, fields ...string) (entity.AuditLogs, error)
+	Count(ctx context.Context, params *ListAuditLogsParams) (int64, error)
+	Create(ctx context.Context, log *entity.AuditLog) error
+	BatchCreate(ctx context.Context, logs entity.AuditLogs) error
+}
+
+type ListAuditLogsParams struct {
+	AdminID      string
+	ResourceType string
+	Action       entity.AuditLogAction
+	StartAt      time.Time
+	EndAt        time.Time
+	Limit        int
+	Offset       int
 }
 
 type Administrator interface {

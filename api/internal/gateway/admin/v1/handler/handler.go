@@ -20,6 +20,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/audit"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -49,11 +50,12 @@ var (
  * ###############################################
  */
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	User      user.Service
-	Store     store.Service
-	Messenger messenger.Service
-	Media     media.Service
+	WaitGroup   *sync.WaitGroup
+	User        user.Service
+	Store       store.Service
+	Messenger   messenger.Service
+	Media       media.Service
+	AuditWriter *audit.Writer
 }
 
 // @title               ふるマル API - 管理者向け
@@ -76,6 +78,7 @@ type handler struct {
 	store          store.Service
 	messenger      messenger.Service
 	media          media.Service
+	auditWriter    *audit.Writer
 	syncMutex      *sync.Mutex
 	syncInterval   time.Duration
 	syncMaxRetries int64
@@ -144,6 +147,7 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		store:          params.Store,
 		messenger:      params.Messenger,
 		media:          params.Media,
+		auditWriter:    params.AuditWriter,
 		syncMutex:      &sync.Mutex{},
 		syncInterval:   dopts.syncInterval,
 		syncMaxRetries: dopts.syncMaxRetries,
@@ -157,7 +161,12 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
+	// 監査ログミドルウェアの適用
+	if h.auditWriter != nil {
+		v1.Use(auditMiddleware(h.auditWriter))
+	}
 	h.administratorRoutes(v1)
+	h.auditLogRoutes(v1)
 	h.authRoutes(v1)
 	h.broadcastRoutes(v1)
 	h.categoryRoutes(v1)
