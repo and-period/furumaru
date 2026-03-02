@@ -5,6 +5,7 @@ import "github.com/and-period/furumaru/api/pkg/cognito"
 // AdminAuth - 管理者認証情報
 type AdminAuth struct {
 	AdminID      string    // 管理者ID
+	CognitoID    string    // 管理者ID (Cognito用)
 	Type         AdminType // 権限
 	GroupIDs     []string  // グループID一覧
 	AccessToken  string    // アクセストークン
@@ -15,6 +16,7 @@ type AdminAuth struct {
 func NewAdminAuth(admin *Admin, rs *cognito.AuthResult) *AdminAuth {
 	return &AdminAuth{
 		AdminID:      admin.ID,
+		CognitoID:    admin.CognitoID,
 		Type:         admin.Type,
 		GroupIDs:     admin.GroupIDs,
 		AccessToken:  rs.AccessToken,

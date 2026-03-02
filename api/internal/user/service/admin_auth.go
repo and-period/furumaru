@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/log"
 )
 
 func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
@@ -62,10 +63,15 @@ func (s *service) RefreshAdminToken(
 	if err != nil {
 		return nil, internalError(err)
 	}
+	// OAuth (Google/LINE) でのサインイン時、Cognitoがemail_verifiedをfalseにリセットする場合がある。
+	// email/パスワード認証が失敗しないよう、email_verified=trueを再設定する。
+	if err := s.adminAuth.AdminVerifyEmail(ctx, auth.CognitoID); err != nil {
+		slog.WarnContext(ctx, "Failed to verify admin email", log.Error(err))
+	}
 	if err := s.db.Admin.UpdateSignInAt(ctx, auth.AdminID); err != nil {
 		return nil, internalError(err)
 	}
-	return auth, internalError(err)
+	return auth, nil
 }
 
 func (s *service) RegisterAdminDevice(ctx context.Context, in *user.RegisterAdminDeviceInput) error {
