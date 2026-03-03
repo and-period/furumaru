@@ -16,6 +16,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Contact:         NewContact(db),
 		ContactCategory: NewContactCategory(db),
 		ContactRead:     NewContactRead(db),
+		FeatureRequest:  NewFeatureRequest(db),
 		Message:         NewMessage(db),
 		MessageTemplate: NewMessageTemplate(db),
 		Notification:    NewNotification(db),

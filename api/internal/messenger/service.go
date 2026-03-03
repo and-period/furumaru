@@ -14,6 +14,12 @@ type Service interface {
 	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)      // 登録
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error                         // 更新
 	DeleteContact(ctx context.Context, in *DeleteContactInput) error                         // 削除
+	// FeatureRequest - 要望リクエスト
+	ListFeatureRequests(ctx context.Context, in *ListFeatureRequestsInput) (entity.FeatureRequests, int64, error) // 一覧取得
+	GetFeatureRequest(ctx context.Context, in *GetFeatureRequestInput) (*entity.FeatureRequest, error)           // １件取得
+	CreateFeatureRequest(ctx context.Context, in *CreateFeatureRequestInput) (*entity.FeatureRequest, error)     // 登録
+	UpdateFeatureRequest(ctx context.Context, in *UpdateFeatureRequestInput) error                               // 更新
+	DeleteFeatureRequest(ctx context.Context, in *DeleteFeatureRequestInput) error                               // 削除
 	// ContactCategory - お問い合わせ種別
 	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)         // 一覧取得
 	MultiGetContactCategories(ctx context.Context, in *MultiGetContactCategoriesInput) (entity.ContactCategories, error) // 一覧取得(ID指定)
