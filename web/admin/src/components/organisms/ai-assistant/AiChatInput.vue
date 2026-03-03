@@ -16,7 +16,9 @@ function handleKeydown(event: KeyboardEvent) {
   // Ctrl+Enter or Cmd+Enter to send
   if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
     event.preventDefault()
-    emit('submit', event)
+    if (!props.loading && !props.disabled && model.value.trim()) {
+      emit('submit', event)
+    }
   }
 }
 </script>
@@ -45,8 +47,8 @@ function handleKeydown(event: KeyboardEvent) {
           variant="text"
           color="primary"
           :loading="loading"
-          :disabled="!model.trim() || disabled"
-          type="submit"
+          :disabled="!model.trim() || disabled || loading"
+          @click.prevent="emit('submit', $event)"
         />
       </template>
     </v-textarea>
