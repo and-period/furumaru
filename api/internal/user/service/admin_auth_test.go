@@ -262,8 +262,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		ExpiresIn:    3600,
 	}
 	admin := &entity.Admin{
-		ID:   "admin-id",
-		Type: entity.AdminTypeAdministrator,
+		ID:        "admin-id",
+		CognitoID: "cognito-id",
+		Type:      entity.AdminTypeAdministrator,
 	}
 
 	tests := []struct {
@@ -279,6 +280,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.adminAuth.EXPECT().AdminVerifyEmail(ctx, "cognito-id").Return(nil)
 				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(nil)
 			},
 			input: &user.RefreshAdminTokenInput{
@@ -286,6 +288,7 @@ func TestRefreshAdminToken(t *testing.T) {
 			},
 			expect: &entity.AdminAuth{
 				AdminID:      "admin-id",
+				CognitoID:    "cognito-id",
 				Type:         entity.AdminTypeAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "",
@@ -344,6 +347,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
+				mocks.adminAuth.EXPECT().AdminVerifyEmail(ctx, "cognito-id").Return(nil)
 				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(assert.AnError)
 			},
 			input: &user.RefreshAdminTokenInput{

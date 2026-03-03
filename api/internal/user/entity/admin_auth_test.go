@@ -36,6 +36,7 @@ func TestAdminAuth(t *testing.T) {
 			},
 			expect: &AdminAuth{
 				AdminID:      "admin-id",
+				CognitoID:    "cognito-id",
 				Type:         AdminTypeAdministrator,
 				GroupIDs:     []string{"group-id"},
 				AccessToken:  "access-token",
