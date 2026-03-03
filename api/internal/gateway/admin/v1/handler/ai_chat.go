@@ -166,7 +166,7 @@ func (h *handler) AiChat(ctx *gin.Context) {
 
 	if err := stream.Err(); err != nil {
 		slog.ErrorContext(ctx, "Anthropic stream error", slog.String("error", err.Error()))
-		errPart := fmt.Sprintf("3:\"%s\"\n", escapeJSON(err.Error()))
+		errPart := fmt.Sprintf("3:%s\n", mustMarshalJSON(err.Error()))
 		fmt.Fprint(ctx.Writer, errPart)
 		ctx.Writer.Flush()
 	}
@@ -336,8 +336,8 @@ func convertToDataStreamParts(event sdk.MessageStreamEventUnion, assistantConten
 			// テキストブロック開始: 特別なパートは不要
 		case "tool_use":
 			// Tool Call 開始
-			part := fmt.Sprintf("9:{\"toolCallId\":\"%s\",\"toolName\":\"%s\"}\n",
-				escapeJSON(cb.ID), escapeJSON(cb.Name))
+			toolCallStart := map[string]string{"toolCallId": cb.ID, "toolName": cb.Name}
+			part := fmt.Sprintf("9:%s\n", mustMarshalJSON(toolCallStart))
 			parts = append(parts, part)
 
 			*assistantContent = append(*assistantContent, map[string]interface{}{
@@ -394,8 +394,8 @@ func convertToDataStreamParts(event sdk.MessageStreamEventUnion, assistantConten
 						break
 					}
 				}
-				part := fmt.Sprintf("b:{\"toolCallId\":\"%s\",\"argsTextDelta\":%s}\n",
-					escapeJSON(toolCallID), mustMarshalJSON(delta.PartialJSON))
+				argsDelta := map[string]string{"toolCallId": toolCallID, "argsTextDelta": delta.PartialJSON}
+				part := fmt.Sprintf("b:%s\n", mustMarshalJSON(argsDelta))
 				parts = append(parts, part)
 			}
 		}
@@ -403,8 +403,14 @@ func convertToDataStreamParts(event sdk.MessageStreamEventUnion, assistantConten
 	case "message_delta":
 		md := event.AsMessageDelta()
 		finishReason := mapStopReason(md.Delta.StopReason)
-		part := fmt.Sprintf("e:{\"finishReason\":\"%s\",\"usage\":{\"promptTokens\":%d,\"completionTokens\":%d}}\n",
-			finishReason, md.Usage.InputTokens, md.Usage.OutputTokens)
+		stepFinish := map[string]interface{}{
+			"finishReason": finishReason,
+			"usage": map[string]int64{
+				"promptTokens":     md.Usage.InputTokens,
+				"completionTokens": md.Usage.OutputTokens,
+			},
+		}
+		part := fmt.Sprintf("e:%s\n", mustMarshalJSON(stepFinish))
 		parts = append(parts, part)
 
 	case "message_stop":
@@ -482,16 +488,6 @@ func mapStopReason(reason sdk.StopReason) string {
 	default:
 		return "stop"
 	}
-}
-
-// escapeJSON は文字列を JSON 安全にエスケープする（ダブルクォートやバックスラッシュ）
-func escapeJSON(s string) string {
-	b, _ := json.Marshal(s)
-	// Remove surrounding quotes
-	if len(b) >= 2 {
-		return string(b[1 : len(b)-1])
-	}
-	return s
 }
 
 // mustMarshalJSON は値を JSON 文字列にマーシャルする
