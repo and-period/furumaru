@@ -20,6 +20,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/anthropic"
 	"github.com/and-period/furumaru/api/pkg/audit"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -55,6 +56,7 @@ type Params struct {
 	Store       store.Service
 	Messenger   messenger.Service
 	Media       media.Service
+	Anthropic   *anthropic.Client
 	AuditWriter *audit.Writer
 }
 
@@ -78,6 +80,7 @@ type handler struct {
 	store          store.Service
 	messenger      messenger.Service
 	media          media.Service
+	anthropic      *anthropic.Client
 	auditWriter    *audit.Writer
 	syncMutex      *sync.Mutex
 	syncInterval   time.Duration
@@ -147,6 +150,7 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		store:          params.Store,
 		messenger:      params.Messenger,
 		media:          params.Media,
+		anthropic:      params.Anthropic,
 		auditWriter:    params.AuditWriter,
 		syncMutex:      &sync.Mutex{},
 		syncInterval:   dopts.syncInterval,
@@ -165,6 +169,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	if h.auditWriter != nil {
 		v1.Use(auditMiddleware(h.auditWriter))
 	}
+	h.aiChatRoutes(v1)
 	h.administratorRoutes(v1)
 	h.auditLogRoutes(v1)
 	h.authRoutes(v1)

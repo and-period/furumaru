@@ -1158,3 +1158,32 @@ type UpdateSpotTypeInput struct {
 type DeleteSpotTypeInput struct {
 	SpotTypeID string `validate:"required"`
 }
+
+/**
+ * AiChat - AIチャット
+ */
+type CreateAiChatSessionInput struct {
+	AdminID   string `validate:"required"`
+	ProductID string `validate:""`
+	Title     string `validate:"max=256"`
+}
+
+type GetAiChatSessionInput struct {
+	SessionID string `validate:"required"`
+}
+
+type ListAiChatSessionsInput struct {
+	AdminID string `validate:"required"`
+	Limit   int64  `validate:"max=200"`
+	Offset  int64  `validate:"min=0"`
+}
+
+type CreateAiChatMessageInput struct {
+	SessionID string `validate:"required"`
+	Role      string `validate:"required,oneof=user assistant"`
+	Content   string `validate:"required"`
+}
+
+type ListAiChatMessagesInput struct {
+	SessionID string `validate:"required"`
+}

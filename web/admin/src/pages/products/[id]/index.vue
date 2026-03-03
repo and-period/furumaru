@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
+import { mdiRobotOutline } from '@mdi/js'
 import { useAlert } from '~/lib/hooks'
+import { useProductAiAssistant } from '~/composables/useProductAiAssistant'
 import {
   useAuthStore,
   useCategoryStore,
@@ -72,6 +74,8 @@ const formData = ref<UpdateProductRequest>({
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
 })
+
+const aiAssistant = useProductAiAssistant(formData as Ref<Record<string, unknown>>)
 
 const { captureSnapshot, markAsSaved, showLeaveDialog, confirmLeave, cancelLeave }
   = useUnsavedChangesGuard(formData)
@@ -274,12 +278,49 @@ catch (err) {
       :product-tags="productTags"
       :admin-type="adminType"
       class="mb-20"
+      :style="aiAssistant.isPanelOpen.value ? 'margin-right: 400px' : ''"
       @update:files="handleImageUpload"
       @update:search-category="handleSearchCategory"
       @update:search-product-type="handleSearchProductType"
       @update:search-product-tag="handleSearchProductTag"
       @submit="handleSubmit"
       @submit:review="handleSubmitReview"
+    />
+
+    <!-- AI Assistant FAB -->
+    <v-btn
+      v-if="!aiAssistant.isPanelOpen.value"
+      color="primary"
+      icon
+      size="large"
+      class="ai-fab"
+      elevation="8"
+      @click="aiAssistant.togglePanel()"
+    >
+      <v-icon :icon="mdiRobotOutline" />
+      <v-tooltip
+        activator="parent"
+        location="left"
+      >
+        AI アシスタント
+      </v-tooltip>
+    </v-btn>
+
+    <!-- AI Chat Panel -->
+    <organisms-ai-assistant-ai-chat-panel
+      v-if="aiAssistant.isPanelOpen.value"
+      :messages="aiAssistant.messages.value"
+      :input="aiAssistant.input.value"
+      :loading="aiAssistant.isChatLoading.value"
+      :error="aiAssistant.chatError.value"
+      :has-pending-approval="aiAssistant.hasPendingApproval.value"
+      :pending-changes="aiAssistant.pendingChanges.value"
+      :pending-tool-name="aiAssistant.pendingToolName.value"
+      @update:input="aiAssistant.input.value = $event"
+      @close="aiAssistant.togglePanel()"
+      @submit="aiAssistant.sendMessage()"
+      @approve="aiAssistant.applyUpdate()"
+      @reject="aiAssistant.rejectUpdate()"
     />
 
     <atoms-app-confirm-dialog
@@ -293,3 +334,12 @@ catch (err) {
     />
   </div>
 </template>
+
+<style scoped>
+.ai-fab {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 100;
+}
+</style>

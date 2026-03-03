@@ -27,7 +27,7 @@ func (a *app) newRouter() *gin.Engine {
 	opts = append(opts, nrgin.Middleware(a.newRelic))
 	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())
-	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
+	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression, ginzip.WithExcludedPaths([]string{"/v1/ai/"})))
 	opts = append(opts, gin.Recovery())
 
 	rt := gin.New()

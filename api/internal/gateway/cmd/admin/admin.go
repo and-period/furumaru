@@ -85,6 +85,8 @@ type app struct {
 	DefaultAdministratorGroupIDs      []string `default:""               envconfig:"DEFAULT_ADMINISTRATOR_GROUPS"`
 	DefaultCoordinatorGroupIDs        []string `default:""               envconfig:"DEFAULT_COORDINATOR_GROUPS"`
 	DefaultProducerGroupIDs           []string `default:""               envconfig:"DEFAULT_PRODUCER_GROUPS"`
+	AnthropicAPIKey                   string   `default:""               envconfig:"ANTHROPIC_API_KEY"`
+	AiModel                           string   `default:"claude-sonnet-4-5-20250514" envconfig:"AI_MODEL"`
 }
 
 func NewApp() *app {

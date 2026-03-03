@@ -7,6 +7,7 @@ import (
 	khandler "github.com/and-period/furumaru/api/internal/gateway/admin/komoju/handler"
 	shandler "github.com/and-period/furumaru/api/internal/gateway/admin/stripe/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
+	pkganthropic "github.com/and-period/furumaru/api/pkg/anthropic"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
@@ -46,6 +47,12 @@ func (a *app) injectServices(p *params) error {
 		return fmt.Errorf("cmd: failed to create store service: %w", err)
 	}
 
+	// Anthropic クライアントの作成
+	var anthropicClient *pkganthropic.Client
+	if a.AnthropicAPIKey != "" {
+		anthropicClient = pkganthropic.NewClient(a.AnthropicAPIKey, a.AiModel)
+	}
+
 	// AuditWriterの設定
 	auditDB, err := a.newTiDB("users", p)
 	if err != nil {
@@ -61,6 +68,7 @@ func (a *app) injectServices(p *params) error {
 		Store:       storeService,
 		Messenger:   messengerService,
 		Media:       mediaService,
+		Anthropic:   anthropicClient,
 		AuditWriter: auditWriter,
 	}
 	khandlerParams := &khandler.Params{
