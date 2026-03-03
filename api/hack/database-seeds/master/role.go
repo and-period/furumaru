@@ -1175,6 +1175,33 @@ var AdminPolicies = entity.AdminPolicies{
 		Method:      "POST",
 		Action:      entity.AdminPolicyActionAllow,
 	},
+	{
+		ID:          "ai_chat",
+		Name:        "AIチャット 送信",
+		Description: "商品登録AIアシスタントへのチャット送信権限です。",
+		Priority:    131,
+		Path:        "/v1/ai/chat",
+		Method:      "POST",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
+		ID:          "ai_chat_sessions",
+		Name:        "AIチャット セッション一覧",
+		Description: "AIチャットセッションの一覧取得権限です。",
+		Priority:    132,
+		Path:        "/v1/ai/chat/sessions",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
+		ID:          "ai_chat_messages",
+		Name:        "AIチャット メッセージ一覧",
+		Description: "AIチャットメッセージの一覧取得権限です。",
+		Priority:    133,
+		Path:        "/v1/ai/chat/sessions/*/messages",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
 }
 
 type AdminRole struct {
@@ -1794,6 +1821,18 @@ var AdminRoles = []AdminRole{
 			"video_get",
 		},
 	},
+	{
+		AdminRole: entity.AdminRole{
+			ID:          "ai_chat_user",
+			Name:        "AIチャット 利用者",
+			Description: "商品登録AIアシスタントの利用権限ロールです。",
+		},
+		PolicyIDs: []string{
+			"ai_chat",
+			"ai_chat_sessions",
+			"ai_chat_messages",
+		},
+	},
 }
 
 type AdminGroup struct {
@@ -1834,6 +1873,7 @@ var AdminGroups = []AdminGroup{
 			"spot_type_editor",
 			"user_editor",
 			"video_editor",
+			"ai_chat_user",
 		},
 	},
 	{
@@ -1866,6 +1906,7 @@ var AdminGroups = []AdminGroup{
 			"spot_type_viewer",
 			"user_viewer",
 			"video_editor",
+			"ai_chat_user",
 		},
 	},
 	{
@@ -1894,6 +1935,7 @@ var AdminGroups = []AdminGroup{
 			"spot_editor",
 			"spot_type_viewer",
 			"video_viewer",
+			"ai_chat_user",
 		},
 	},
 }
