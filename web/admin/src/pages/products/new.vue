@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { mdiRobotOutline } from '@mdi/js'
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
+import { useProductAiAssistant } from '~/composables/useProductAiAssistant'
 import {
   useAuthStore,
   useCategoryStore,
@@ -72,6 +74,8 @@ const formData = ref<CreateProductRequest>({
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
 })
+
+const aiAssistant = useProductAiAssistant(formData as Ref<Record<string, unknown>>)
 
 const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
   try {
@@ -267,22 +271,70 @@ catch (err) {
 </script>
 
 <template>
-  <templates-product-new
-    v-model:form-data="formData"
-    v-model:selected-category-id="selectedCategoryId"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :producers="producers"
-    :categories="categories"
-    :product-types="productTypes"
-    :product-tags="productTags"
-    @update:files="handleImageUpload"
-    @update:search-producer="handleSearchProducer"
-    @update:search-category="handleSearchCategory"
-    @update:search-product-type="handleSearchProductType"
-    @update:search-product-tag="handleSearchProductTag"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-product-new
+      v-model:form-data="formData"
+      v-model:selected-category-id="selectedCategoryId"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :producers="producers"
+      :categories="categories"
+      :product-types="productTypes"
+      :product-tags="productTags"
+      :style="aiAssistant.isPanelOpen.value ? 'margin-right: 400px' : ''"
+      @update:files="handleImageUpload"
+      @update:search-producer="handleSearchProducer"
+      @update:search-category="handleSearchCategory"
+      @update:search-product-type="handleSearchProductType"
+      @update:search-product-tag="handleSearchProductTag"
+      @submit="handleSubmit"
+    />
+
+    <!-- AI Assistant FAB -->
+    <v-btn
+      v-if="!aiAssistant.isPanelOpen.value"
+      color="primary"
+      icon
+      size="large"
+      class="ai-fab"
+      elevation="8"
+      @click="aiAssistant.togglePanel()"
+    >
+      <v-icon :icon="mdiRobotOutline" />
+      <v-tooltip
+        activator="parent"
+        location="left"
+      >
+        AI アシスタント
+      </v-tooltip>
+    </v-btn>
+
+    <!-- AI Chat Panel -->
+    <organisms-ai-assistant-ai-chat-panel
+      v-if="aiAssistant.isPanelOpen.value"
+      :messages="aiAssistant.messages.value"
+      :input="aiAssistant.input.value"
+      :loading="aiAssistant.isChatLoading.value"
+      :error="aiAssistant.chatError.value"
+      :has-pending-approval="aiAssistant.hasPendingApproval.value"
+      :pending-changes="aiAssistant.pendingChanges.value"
+      :pending-tool-name="aiAssistant.pendingToolName.value"
+      @update:input="aiAssistant.input.value = $event"
+      @close="aiAssistant.togglePanel()"
+      @submit="aiAssistant.sendMessage()"
+      @approve="aiAssistant.applyUpdate()"
+      @reject="aiAssistant.rejectUpdate()"
+    />
+  </div>
 </template>
+
+<style scoped>
+.ai-fab {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 100;
+}
+</style>

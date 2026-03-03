@@ -9,6 +9,12 @@ import (
 )
 
 type Service interface {
+	// AiChat - AIチャット
+	CreateAiChatSession(ctx context.Context, in *CreateAiChatSessionInput) (*entity.AiChatSession, error)   // セッション作成
+	GetAiChatSession(ctx context.Context, in *GetAiChatSessionInput) (*entity.AiChatSession, error)         // セッション取得
+	ListAiChatSessions(ctx context.Context, in *ListAiChatSessionsInput) (entity.AiChatSessions, error)    // セッション一覧取得
+	CreateAiChatMessage(ctx context.Context, in *CreateAiChatMessageInput) (*entity.AiChatMessage, error)  // メッセージ作成
+	ListAiChatMessages(ctx context.Context, in *ListAiChatMessagesInput) (entity.AiChatMessages, error)    // メッセージ一覧取得
 	// Cart - 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)                                // 取得
 	CalcCart(ctx context.Context, in *CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) // 購入前の支払い情報取得

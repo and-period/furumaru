@@ -22,6 +22,7 @@ var (
 )
 
 type Database struct {
+	AiChat                   AiChat
 	CartActionLog            CartActionLog
 	Category                 Category
 	Experience               Experience
@@ -46,6 +47,14 @@ type Database struct {
 /**
  * interface
  */
+type AiChat interface {
+	CreateSession(ctx context.Context, session *entity.AiChatSession) error
+	GetSession(ctx context.Context, sessionID string) (*entity.AiChatSession, error)
+	ListSessionsByAdminID(ctx context.Context, adminID string, limit, offset int) (entity.AiChatSessions, error)
+	CreateMessage(ctx context.Context, message *entity.AiChatMessage) error
+	ListMessagesBySessionID(ctx context.Context, sessionID string) (entity.AiChatMessages, error)
+}
+
 type CartActionLog interface {
 	Create(ctx context.Context, log *entity.CartActionLog) error
 }
