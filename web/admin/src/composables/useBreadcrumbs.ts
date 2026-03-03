@@ -39,6 +39,8 @@ const routeLabels: Record<string, string> = {
   '/shippings': '配送設定',
   '/spot-types': 'スポット種別管理',
   '/messages': 'メッセージ',
+  '/feature-requests': '要望リクエスト',
+  '/feature-requests/new': '新規提出',
 }
 
 export function useBreadcrumbs(): ComputedRef<BreadcrumbItem[]> {
