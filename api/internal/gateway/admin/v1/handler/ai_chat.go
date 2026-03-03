@@ -11,6 +11,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/anthropic"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var aiChatTools = []anthropic.Tool{
@@ -70,6 +72,11 @@ func (h *handler) aiChatRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) AiChat(ctx *gin.Context) {
+	if h.anthropic == nil {
+		h.httpError(ctx, status.Error(codes.Unavailable, "AI chat is not available: ANTHROPIC_API_KEY is not configured"))
+		return
+	}
+
 	req := &types.AiChatRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
