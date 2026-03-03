@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import dayjs, { unix } from 'dayjs'
-import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable, mdiTrendingDown, mdiTrendingUp } from '@mdi/js'
+import { mdiAccountMultipleOutline, mdiAlertOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiClipboardListOutline, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable, mdiTrendingDown, mdiTrendingUp } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
+import { orderStatuses } from '~/constants/order'
 import { TopOrderPeriodType } from '~/types'
-import { PaymentMethodType } from '~/types/api/v1'
-import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
+import { OrderStatus, PaymentMethodType } from '~/types/api/v1'
+import type { Order, TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 
 const AppChart = defineAsyncComponent(() => import('~/components/atoms/AppChart.vue'))
@@ -60,12 +61,32 @@ const props = defineProps({
       salesTrends: [],
     }),
   },
+  pendingOrders: {
+    type: Array as PropType<Order[]>,
+    default: () => [],
+  },
+  pendingOrdersTotal: {
+    type: Number,
+    default: 0,
+  },
+  hasPublishedProduct: {
+    type: Boolean,
+    default: true,
+  },
+  hasPublishedExperience: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits<{
   (e: 'update:start-at', startAt: number): void
   (e: 'update:end-at', endAt: number): void
   (e: 'update:period-type', periodType: TopOrderPeriodType): void
+  (e: 'click:order', orderId: string): void
+  (e: 'click:go-orders'): void
+  (e: 'click:go-products'): void
+  (e: 'click:go-experiences'): void
 }>()
 
 const periodTypes = [
@@ -307,6 +328,28 @@ const paymentChartOption = computed(() => {
   }
 })
 
+const getOrderStatusLabel = (status: OrderStatus): string => {
+  const found = orderStatuses.find(s => s.value === status)
+  return found ? found.title : '不明'
+}
+
+const getOrderStatusColor = (status: OrderStatus): string => {
+  switch (status) {
+    case OrderStatus.OrderStatusUnpaid:
+    case OrderStatus.OrderStatusWaiting:
+      return 'secondary'
+    case OrderStatus.OrderStatusPreparing:
+    case OrderStatus.OrderStatusShipped:
+      return 'info'
+    default:
+      return 'grey'
+  }
+}
+
+const showPublicationAlert = computed(() => {
+  return !props.hasPublishedProduct && !props.hasPublishedExperience
+})
+
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${startAtValue.value.date} 00:00:00`)
   emit('update:start-at', startAt.unix())
@@ -373,6 +416,103 @@ const onChangeEndAt = (): void => {
             />
           </v-col>
         </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- Action Items -->
+    <v-alert
+      v-if="showPublicationAlert"
+      type="warning"
+      variant="tonal"
+      :icon="mdiAlertOutline"
+      class="mb-4"
+    >
+      <div class="d-flex flex-column flex-sm-row align-sm-center ga-2">
+        <div class="flex-grow-1">
+          <div class="font-weight-bold">
+            公開中の商品・体験がありません
+          </div>
+          <div class="text-body-2">
+            商品または体験を登録して販売を開始しましょう
+          </div>
+        </div>
+        <div class="d-flex ga-2">
+          <v-btn
+            size="small"
+            variant="outlined"
+            @click="emit('click:go-products')"
+          >
+            商品を登録する
+          </v-btn>
+          <v-btn
+            size="small"
+            variant="outlined"
+            @click="emit('click:go-experiences')"
+          >
+            体験を登録する
+          </v-btn>
+        </div>
+      </div>
+    </v-alert>
+
+    <v-card
+      v-if="pendingOrdersTotal > 0"
+      class="mb-4"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center">
+        <v-icon
+          color="secondary"
+          class="mr-2"
+          :icon="mdiClipboardListOutline"
+        />
+        対応が必要な注文
+        <v-spacer />
+        <v-btn
+          variant="text"
+          size="small"
+          color="primary"
+          @click="emit('click:go-orders')"
+        >
+          全て見る
+        </v-btn>
+      </v-card-title>
+      <v-card-text>
+        <div class="text-body-2 mb-3">
+          未完了の注文が {{ pendingOrdersTotal }}件 あります
+        </div>
+        <v-list density="compact">
+          <v-list-item
+            v-for="order in pendingOrders"
+            :key="order.id"
+            class="px-0"
+            @click="emit('click:order', order.id)"
+          >
+            <template #prepend>
+              <span class="text-body-2 text-grey-darken-1 mr-3">
+                #{{ order.managementId || order.id.slice(-8) }}
+              </span>
+            </template>
+            <template #default>
+              <v-chip
+                :color="getOrderStatusColor(order.status)"
+                size="x-small"
+                label
+                class="mr-3"
+              >
+                {{ getOrderStatusLabel(order.status) }}
+              </v-chip>
+              <span class="text-body-2 text-grey-darken-1 mr-3">
+                {{ unix(order.createdAt).format('YYYY/MM/DD') }}
+              </span>
+            </template>
+            <template #append>
+              <span class="text-body-2 font-weight-medium">
+                &yen;{{ order.payment.total.toLocaleString() }}
+              </span>
+            </template>
+          </v-list-item>
+        </v-list>
       </v-card-text>
     </v-card>
 
