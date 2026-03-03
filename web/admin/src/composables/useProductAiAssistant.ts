@@ -92,9 +92,9 @@ export function useProductAiAssistant(formData: Ref<Record<string, unknown>>) {
       headers: () => ({
         Authorization: `Bearer ${authStore.accessToken}`,
       }),
-      body: computed(() => ({
+      body: () => ({
         formData: extractFormDataForAi(formData.value),
-      })),
+      }),
     }),
     onToolCall({ toolCall }) {
       const { toolName, args, toolCallId } = toolCall as unknown as {
