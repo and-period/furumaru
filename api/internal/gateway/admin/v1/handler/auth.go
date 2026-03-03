@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -127,12 +128,18 @@ func (h *handler) SignIn(ctx *gin.Context) {
 	}
 	auth, err := h.user.SignInAdmin(ctx, in)
 	if err != nil {
+		// SignIn失敗の監査ログ
+		h.recordAuditLog(ctx, entity.AuditLogActionSignIn, "auth", "", entity.AuditLogResultFailure, "", entity.AdminTypeUnknown)
 		h.httpError(ctx, err)
 		return
 	}
 
+	// SignIn成功の監査ログ
+	sauth := service.NewAuth(auth)
+	h.recordAuditLog(ctx, entity.AuditLogActionSignIn, "auth", "", entity.AuditLogResultSuccess, sauth.AdminID, entity.AdminType(sauth.Type))
+
 	res := &types.AuthResponse{
-		Auth: service.NewAuth(auth).Response(),
+		Auth: sauth.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -289,12 +296,21 @@ func (h *handler) SignOut(ctx *gin.Context) {
 		return
 	}
 
+	// SignOut前に認証情報を取得(トークンから管理者IDを解決)
+	authIn := &user.GetAdminAuthInput{AccessToken: token}
+	auth, _ := h.user.GetAdminAuth(ctx, authIn)
+
 	in := &user.SignOutAdminInput{
 		AccessToken: token,
 	}
 	if err := h.user.SignOutAdmin(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
+	}
+
+	// SignOut成功の監査ログ
+	if auth != nil {
+		h.recordAuditLog(ctx, entity.AuditLogActionSignOut, "auth", "", entity.AuditLogResultSuccess, auth.AdminID, auth.Type)
 	}
 
 	ctx.Status(http.StatusNoContent)

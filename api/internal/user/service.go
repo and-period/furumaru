@@ -8,6 +8,8 @@ import (
 )
 
 type Service interface {
+	// AuditLog - 監査ログ
+	ListAuditLogs(ctx context.Context, in *ListAuditLogsInput) (entity.AuditLogs, int64, error) // 一覧取得
 	// Addresss - アドレス帳
 	ListAddresses(ctx context.Context, in *ListAddressesInput) (entity.Addresses, int64, error)                      // 一覧取得
 	ListDefaultAddresses(ctx context.Context, in *ListDefaultAddressesInput) (entity.Addresses, error)               // 一覧取得(デフォルト設定)

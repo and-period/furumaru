@@ -7,6 +7,19 @@ import (
 )
 
 /**
+ * AuditLog - 監査ログ
+ */
+type ListAuditLogsInput struct {
+	AdminID      string               `validate:""`
+	ResourceType string               `validate:""`
+	Action       entity.AuditLogAction `validate:""`
+	StartAt      time.Time            `validate:""`
+	EndAt        time.Time            `validate:""`
+	Limit        int64                `validate:"required,max=200"`
+	Offset       int64                `validate:"min=0"`
+}
+
+/**
  * Address - アドレス帳
  */
 type ListAddressesInput struct {

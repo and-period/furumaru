@@ -20,6 +20,7 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
+	"github.com/and-period/furumaru/api/pkg/audit"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -45,13 +46,22 @@ func (a *app) injectServices(p *params) error {
 		return fmt.Errorf("cmd: failed to create store service: %w", err)
 	}
 
+	// AuditWriterの設定
+	auditDB, err := a.newTiDB("users", p)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to create audit db: %w", err)
+	}
+	auditStore := userdb.NewAuditLog(auditDB)
+	auditWriter := audit.NewWriter(auditStore)
+
 	// Handlerの設定
 	v1Params := &v1.Params{
-		WaitGroup: p.waitGroup,
-		User:      userService,
-		Store:     storeService,
-		Messenger: messengerService,
-		Media:     mediaService,
+		WaitGroup:   p.waitGroup,
+		User:        userService,
+		Store:       storeService,
+		Messenger:   messengerService,
+		Media:       mediaService,
+		AuditWriter: auditWriter,
 	}
 	khandlerParams := &khandler.Params{
 		WaitGroup:     p.waitGroup,
