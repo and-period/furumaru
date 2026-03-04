@@ -1,5 +1,5 @@
-ALTER TABLE `ai_chat_sessions`
-  MODIFY COLUMN `title` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '';
+ALTER TABLE `stores`.`ai_chat_sessions`
+  MODIFY COLUMN `title` VARCHAR(256) NOT NULL DEFAULT '';
 
-ALTER TABLE `ai_chat_messages`
-  MODIFY COLUMN `content` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL;
+ALTER TABLE `stores`.`ai_chat_messages`
+  MODIFY COLUMN `content` LONGTEXT NOT NULL;
