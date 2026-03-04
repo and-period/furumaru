@@ -70,6 +70,7 @@ func newTiDBDSN(params *Params, opts *options) string {
 		Net:                  "tcp",
 		Addr:                 fmt.Sprintf("%s:%s", params.Host, params.Port),
 		DBName:               params.Database,
+		Collation:            "utf8mb4_general_ci",
 		Loc:                  opts.location,
 		MaxAllowedPacket:     opts.maxAllowedPacket,
 		ParseTime:            true,
@@ -80,6 +81,7 @@ func newTiDBDSN(params *Params, opts *options) string {
 		Timeout:              opts.dialTimeout,
 		ReadTimeout:          opts.readTimeout,
 		WriteTimeout:         opts.writeTimeout,
+		Params:               map[string]string{"charset": "utf8mb4"},
 	}
 	return dsn.FormatDSN()
 }
