@@ -40,7 +40,7 @@ func TestNewTiDBDSN(t *testing.T) {
 				readTimeout:          30 * time.Second,
 				writeTimeout:         30 * time.Second,
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?interpolateParams=true&parseTime=true&readTimeout=30s&timeout=10s&tls=tidb&writeTimeout=30s&maxAllowedPacket=4194304",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?collation=utf8mb4_general_ci&interpolateParams=true&parseTime=true&readTimeout=30s&timeout=10s&tls=tidb&writeTimeout=30s&maxAllowedPacket=4194304&charset=utf8mb4",
 		},
 		{
 			name: "success with options",
@@ -64,7 +64,7 @@ func TestNewTiDBDSN(t *testing.T) {
 				readTimeout:          15 * time.Second,
 				writeTimeout:         15 * time.Second,
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?interpolateParams=true&loc=Asia%2FTokyo&parseTime=true&readTimeout=15s&timeout=5s&tls=tidb&writeTimeout=15s&maxAllowedPacket=8388608",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?collation=utf8mb4_general_ci&interpolateParams=true&loc=Asia%2FTokyo&parseTime=true&readTimeout=15s&timeout=5s&tls=tidb&writeTimeout=15s&maxAllowedPacket=8388608&charset=utf8mb4",
 		},
 	}
 
