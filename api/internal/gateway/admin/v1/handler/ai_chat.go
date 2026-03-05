@@ -93,8 +93,9 @@ func (h *handler) AiChat(ctx *gin.Context) {
 			for _, part := range req.Messages[0].Parts {
 				if part.Type == "text" && part.Text != "" {
 					title = part.Text
-					if len(title) > 50 {
-						title = title[:50]
+					runes := []rune(title)
+					if len(runes) > 50 {
+						title = string(runes[:50])
 					}
 					break
 				}
