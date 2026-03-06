@@ -24,6 +24,7 @@ type Database struct {
 	Contact         Contact
 	ContactCategory ContactCategory
 	ContactRead     ContactRead
+	FeatureRequest  FeatureRequest
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -59,6 +60,26 @@ type UpdateContactParams struct {
 	Status      entity.ContactStatus
 	ResponderID string
 	Note        string
+}
+
+type FeatureRequest interface {
+	List(ctx context.Context, params *ListFeatureRequestsParams, fields ...string) (entity.FeatureRequests, error)
+	Count(ctx context.Context, params *ListFeatureRequestsParams) (int64, error)
+	Get(ctx context.Context, featureRequestID string, fields ...string) (*entity.FeatureRequest, error)
+	Create(ctx context.Context, featureRequest *entity.FeatureRequest) error
+	Update(ctx context.Context, featureRequestID string, params *UpdateFeatureRequestParams) error
+	Delete(ctx context.Context, featureRequestID string) error
+}
+
+type ListFeatureRequestsParams struct {
+	SubmittedBy string
+	Limit       int
+	Offset      int
+}
+
+type UpdateFeatureRequestParams struct {
+	Status entity.FeatureRequestStatus
+	Note   string
 }
 
 type ContactCategory interface {

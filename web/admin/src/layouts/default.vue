@@ -17,6 +17,7 @@ import {
   mdiChevronDown,
   mdiChevronUp,
   mdiHelpCircleOutline,
+  mdiLightbulbOutline,
 } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
@@ -184,6 +185,13 @@ const navigationGroups: NavigationGroup[] = [
         to: '/system',
         icon: mdiCog,
         title: 'システム設定',
+        adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
+        category: 'settings',
+      },
+      {
+        to: '/feature-requests',
+        icon: mdiLightbulbOutline,
+        title: '要望リクエスト',
         adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
         category: 'settings',
       },
