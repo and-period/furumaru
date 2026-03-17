@@ -14,7 +14,7 @@ import { FeatureRequestStatus } from '~/types/feature-request'
 export const useFeatureRequestStore = defineStore('feature-request', () => {
   const STORAGE_KEY = 'furumaru:feature-requests'
 
-  const featureRequest = ref<FeatureRequest>({} as FeatureRequest)
+  const featureRequest = ref<FeatureRequest | null>(null)
   const featureRequests = ref<FeatureRequest[]>([])
   const total = ref<number>(0)
 

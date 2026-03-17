@@ -31,11 +31,13 @@ export function useFormPage(options: UseFormPageOptions) {
       if (err instanceof Error) {
         show(err.message)
       }
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      })
-      console.log(err)
+      if (import.meta.client) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
+      }
+      console.error(err)
     }
     finally {
       loading.value = false

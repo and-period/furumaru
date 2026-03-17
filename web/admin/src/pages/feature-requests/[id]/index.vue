@@ -12,7 +12,7 @@ const authStore = useAuthStore()
 const featureRequestStore = useFeatureRequestStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const id = route.params.id as string
+const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
 const { featureRequest } = storeToRefs(featureRequestStore)
 const { adminType } = storeToRefs(authStore)
 
@@ -25,9 +25,11 @@ const formData = ref<UpdateFeatureRequestInput>({
 const fetchState = useAsyncData('feature-request-detail', async (): Promise<void> => {
   try {
     await featureRequestStore.getFeatureRequest(id)
-    formData.value = {
-      status: featureRequest.value.status,
-      note: featureRequest.value.note,
+    if (featureRequest.value) {
+      formData.value = {
+        status: featureRequest.value.status,
+        note: featureRequest.value.note,
+      }
     }
   }
   catch (err) {
@@ -53,7 +55,8 @@ const handleSubmit = async (): Promise<void> => {
   catch (err) {
     if (err instanceof Error)
       show(err.message)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (import.meta.client)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   finally {
     loading.value = false
@@ -83,7 +86,9 @@ try {
   await fetchState.execute()
 }
 catch (err) {
-  console.log('failed to setup', err)
+  console.error('failed to setup', err)
+  if (err instanceof Error)
+    show(err.message)
 }
 </script>
 
@@ -95,7 +100,7 @@ catch (err) {
     :alert-type="alertType"
     :alert-text="alertText"
     :admin-type="adminType"
-    :feature-request="featureRequest"
+    :feature-request="featureRequest ?? undefined"
     @submit="handleSubmit"
     @click:delete="handleClickDelete"
   />

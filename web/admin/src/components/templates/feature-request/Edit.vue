@@ -3,9 +3,9 @@ import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { useFeatureRequestLabels } from '~/composables/useFeatureRequestLabels'
+import { useDeleteDialog } from '~/composables/useDeleteDialog'
 import {
-  FeatureRequestCategory,
-  FeatureRequestPriority,
   FeatureRequestStatus,
 } from '~/types/feature-request'
 import type { FeatureRequest, UpdateFeatureRequestInput } from '~/types/feature-request'
@@ -63,6 +63,9 @@ const emit = defineEmits<{
   (e: 'click:delete'): void
 }>()
 
+const { getStatusLabel, getStatusColor, getCategoryLabel, getPriorityLabel } = useFeatureRequestLabels()
+const { dialogVisible: deleteDialogVisible, open: openDeleteDialog, close: closeDeleteDialog } = useDeleteDialog<string>()
+
 const isAdmin = computed(
   () => props.adminType === AdminType.AdminTypeAdministrator,
 )
@@ -75,49 +78,6 @@ const statuses = [
   { title: '完了', value: FeatureRequestStatus.Done },
   { title: '却下', value: FeatureRequestStatus.Rejected },
 ]
-
-const getCategoryLabel = (category: FeatureRequestCategory): string => {
-  switch (category) {
-    case FeatureRequestCategory.UI: return 'UI/UX改善'
-    case FeatureRequestCategory.Feature: return '新機能'
-    case FeatureRequestCategory.Performance: return 'パフォーマンス改善'
-    case FeatureRequestCategory.Other: return 'その他'
-    default: return '不明'
-  }
-}
-
-const getPriorityLabel = (priority: FeatureRequestPriority): string => {
-  switch (priority) {
-    case FeatureRequestPriority.Low: return '低'
-    case FeatureRequestPriority.Medium: return '中'
-    case FeatureRequestPriority.High: return '高'
-    default: return '不明'
-  }
-}
-
-const getStatusLabel = (status: FeatureRequestStatus): string => {
-  switch (status) {
-    case FeatureRequestStatus.Waiting: return '受付中'
-    case FeatureRequestStatus.Reviewing: return '検討中'
-    case FeatureRequestStatus.Adopted: return '採用決定'
-    case FeatureRequestStatus.InProgress: return '開発中'
-    case FeatureRequestStatus.Done: return '完了'
-    case FeatureRequestStatus.Rejected: return '却下'
-    default: return '不明'
-  }
-}
-
-const getStatusColor = (status: FeatureRequestStatus): string => {
-  switch (status) {
-    case FeatureRequestStatus.Waiting: return 'warning'
-    case FeatureRequestStatus.Reviewing: return 'info'
-    case FeatureRequestStatus.Adopted: return 'secondary'
-    case FeatureRequestStatus.InProgress: return 'primary'
-    case FeatureRequestStatus.Done: return 'success'
-    case FeatureRequestStatus.Rejected: return 'error'
-    default: return 'default'
-  }
-}
 
 const formatDate = (unixTime: number): string => {
   if (!unixTime)
@@ -301,7 +261,7 @@ const onSubmit = async (): Promise<void> => {
             <v-btn
               color="error"
               variant="outlined"
-              @click="emit('click:delete')"
+              @click="openDeleteDialog(featureRequest.id)"
             >
               削除
             </v-btn>
@@ -310,4 +270,33 @@ const onSubmit = async (): Promise<void> => {
       </template>
     </v-card-text>
   </v-card>
+
+  <v-dialog
+    v-model="deleteDialogVisible"
+    width="500"
+  >
+    <v-card>
+      <v-card-title class="text-h7">
+        この要望リクエストを本当に削除しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color=""
+          variant="text"
+          @click="closeDeleteDialog"
+        >
+          キャンセル
+        </v-btn>
+        <v-btn
+          :loading="loading"
+          color="error"
+          variant="text"
+          @click="closeDeleteDialog(); emit('click:delete')"
+        >
+          削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>

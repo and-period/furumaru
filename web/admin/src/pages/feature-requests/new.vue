@@ -14,12 +14,16 @@ const formData = ref<CreateFeatureRequestInput>({
   description: '',
   category: FeatureRequestCategory.Feature,
   priority: FeatureRequestPriority.Medium,
-  submittedBy: adminId.value,
-  submitterName: user.value?.username ?? '',
+  submittedBy: '',
+  submitterName: '',
 })
 
 const { isLoading, isShow, alertType, alertText, handleSubmit } = useFormPage({
-  submitFn: () => featureRequestStore.createFeatureRequest(formData.value),
+  submitFn: () => {
+    formData.value.submittedBy = adminId.value
+    formData.value.submitterName = user.value?.username ?? ''
+    return featureRequestStore.createFeatureRequest(formData.value)
+  },
   successMessage: '要望リクエストを提出しました。',
   redirectPath: '/feature-requests',
 })
