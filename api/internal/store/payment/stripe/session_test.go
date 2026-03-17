@@ -11,6 +11,7 @@ import (
 	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
 	lib "github.com/stripe/stripe-go/v82"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
 
@@ -26,37 +27,43 @@ func TestCreateSession(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, m *mock.MockClient) {
-				m.EXPECT().GuestOrder(ctx, &pkgstripe.GuestOrderParams{
-					Email:             "test@example.com",
-					PaymentMethodType: lib.PaymentMethodTypeCard,
-					Amount:            1000,
-					Description:       "order-id",
-					Metadata:          map[string]string{"order_id": "order-id"},
-				}).Return(&lib.PaymentIntent{
-					ID:           "pi_xxx",
-					ClientSecret: "pi_xxx_secret_xxx",
-				}, nil)
+				m.EXPECT().CreateCheckoutSession(ctx, gomock.Any()).
+					DoAndReturn(func(_ context.Context, in *pkgstripe.CreateCheckoutSessionParams) (*lib.CheckoutSession, error) {
+						require.Equal(t, int64(1000), in.Amount)
+						require.Equal(t, "jpy", in.Currency)
+						require.Equal(t, "order-id", in.Description)
+						require.Equal(t, "test@example.com", in.Email)
+						return &lib.CheckoutSession{
+							ID:  "cs_xxx",
+							URL: "https://checkout.stripe.com/pay/cs_xxx",
+							PaymentIntent: &lib.PaymentIntent{
+								ID: "pi_xxx",
+							},
+						}, nil
+					})
 			},
 			params: &payment.CreateSessionParams{
-				OrderID: "order-id",
-				Amount:  1000,
+				OrderID:     "order-id",
+				Amount:      1000,
+				CallbackURL: "http://example.com/callback",
 				Customer: &payment.CreateSessionCustomer{
 					Email: "test@example.com",
 				},
 			},
 			expect: &payment.CreateSessionResult{
-				SessionID: "pi_xxx",
-				ReturnURL: "pi_xxx_secret_xxx",
+				SessionID:  "pi_xxx",
+				SessionURL: "https://checkout.stripe.com/pay/cs_xxx",
 			},
 		},
 		{
 			name: "error",
 			setup: func(ctx context.Context, m *mock.MockClient) {
-				m.EXPECT().GuestOrder(ctx, gomock.Any()).Return(nil, errors.New("stripe error"))
+				m.EXPECT().CreateCheckoutSession(ctx, gomock.Any()).Return(nil, errors.New("stripe error"))
 			},
 			params: &payment.CreateSessionParams{
-				OrderID: "order-id",
-				Amount:  1000,
+				OrderID:     "order-id",
+				Amount:      1000,
+				CallbackURL: "http://example.com/callback",
 				Customer: &payment.CreateSessionCustomer{
 					Email: "test@example.com",
 				},

@@ -169,6 +169,56 @@ func (c *client) GetPaymentIntent(ctx context.Context, paymentIntentID string) (
 	return pi, nil
 }
 
+type CreateCheckoutSessionParams struct {
+	Amount      int64
+	Currency    string
+	Description string
+	SuccessURL  string
+	CancelURL   string
+	Email       string
+	Metadata    map[string]string
+}
+
+// reference: https://stripe.com/docs/api/checkout/sessions/create
+func (c *client) CreateCheckoutSession(ctx context.Context, in *CreateCheckoutSessionParams) (*stripe.CheckoutSession, error) {
+	params := &stripe.CheckoutSessionParams{
+		Params: stripe.Params{
+			Context:  ctx,
+			Metadata: in.Metadata,
+		},
+		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:        stripe.String(in.SuccessURL),
+		CancelURL:         stripe.String(in.CancelURL),
+		CustomerEmail:     nullString(in.Email),
+		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
+		LineItems: []*stripe.CheckoutSessionLineItemParams{
+			{
+				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+					Currency:   stripe.String(in.Currency),
+					UnitAmount: stripe.Int64(in.Amount),
+					ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+						Name: stripe.String(in.Description),
+					},
+				},
+				Quantity: stripe.Int64(1),
+			},
+		},
+		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
+			CaptureMethod: stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+		},
+	}
+	var cs *stripe.CheckoutSession
+	createFn := func() (err error) {
+		cs, err = c.checkoutsession.New(params)
+		return err
+	}
+	if err := c.do(ctx, createFn); err != nil {
+		slog.ErrorContext(ctx, "Failed to create checkout session", log.Error(err))
+		return nil, err
+	}
+	return cs, nil
+}
+
 // reference: https://stripe.com/docs/api/payment_intents/cancel
 func (c *client) Cancel(
 	ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason,

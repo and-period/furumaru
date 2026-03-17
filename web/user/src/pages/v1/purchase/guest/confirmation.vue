@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import dayjs from 'dayjs'
 import { useAddressStore } from '~/store/address'
 import { useProductCheckoutStore } from '~/store/productCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -121,33 +120,6 @@ const checkoutFormData = ref<GuestCheckoutProductRequest>({
     addressLine2: '',
     phoneNumber: '',
   },
-  creditCard: {
-    name: '',
-    number: '',
-    month: 0,
-    year: 0,
-    verificationValue: '',
-  },
-})
-
-const creditCardMonthValue = computed({
-  get: () => {
-    if (checkoutFormData.value.creditCard.month === 0) {
-      return '0'
-    }
-    if (checkoutFormData.value.creditCard.month < 10) {
-      return `0${checkoutFormData.value.creditCard.month}`
-    }
-    else {
-      return String(checkoutFormData.value.creditCard.month)
-    }
-  },
-  set: (val: string) => {
-    const month = Number(val)
-    if (!isNaN(month)) {
-      checkoutFormData.value.creditCard.month = month
-    }
-  },
 })
 
 const checkoutError = ref<string>('')
@@ -174,11 +146,6 @@ const doCheckout = async () => {
       boxNumber: cartNumber.value ?? 0,
     }
 
-    // クレジットカード決済の場合、カード情報を送信せずKOMOJUホスト決済ページを利用する
-    if (formData.paymentMethod === 2) {
-      formData.creditCard = undefined
-    }
-
     const url = await guestCheckout(formData)
     console.log('debug', 'doCheckout', url)
     addressStore.$reset()
@@ -195,14 +162,6 @@ const doCheckout = async () => {
 }
 
 const handleClickNextStepButton = () => {
-  if (checkoutFormData.value.paymentMethod === 2) {
-    // クレジットカードなら何もしない
-    return
-  }
-  doCheckout()
-}
-
-const handleSubmitCreditCardForm = () => {
   doCheckout()
 }
 
@@ -385,106 +344,6 @@ useSeoMeta({
               </div>
             </div>
 
-            <form
-              v-if="checkoutFormData.paymentMethod === 2"
-              id="credit-card-form"
-              @submit.prevent="handleSubmitCreditCardForm"
-            >
-              <div class="mt-4 flex w-full items-center gap-4">
-                <the-text-input
-                  v-model="checkoutFormData.creditCard.number"
-                  :placeholder="ct('creditCardNumberPlaceholder')"
-                  :with-label="false"
-                  name="cc-number"
-                  type="text"
-                  class="w-full"
-                  pattern="[0-9]*"
-                  required
-                />
-                <div
-                  class="hidden h-[24px] min-w-max items-center gap-2 md:flex"
-                >
-                  <img
-                    src="~/assets/img/cc/visa.png"
-                    alt="visa icon"
-                    class="h-full"
-                  >
-                  <img
-                    src="~/assets/img/cc/jcb.png"
-                    alt="jcb icon"
-                    class="h-full"
-                  >
-                  <img
-                    src="~/assets/img/cc/amex.png"
-                    alt="amex icon"
-                    class="h-full"
-                  >
-                  <img
-                    src="~/assets/img/cc/master.png"
-                    alt="master icon"
-                    class="h-full"
-                  >
-                </div>
-              </div>
-              <the-text-input
-                v-model="checkoutFormData.creditCard.name"
-                :placeholder="ct('cardholderNamePlaceholder')"
-                :with-label="false"
-                name="cc-name"
-                type="text"
-                class="mt-2 w-full"
-                required
-              />
-              <div class="mt-2 flex gap-4">
-                <select
-                  v-model="creditCardMonthValue"
-                  class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
-                >
-                  <option
-                    :value="0"
-                    disabled
-                  >
-                    {{ ct("expirationMonthPlaceholder") }}
-                  </option>
-                  <option
-                    v-for="i in 12"
-                    :key="i"
-                    :value="i < 10 ? `0${i}` : String(i)"
-                  >
-                    {{ i }}
-                  </option>
-                </select>
-
-                <select
-                  v-model="checkoutFormData.creditCard.year"
-                  class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
-                >
-                  <option
-                    value="0"
-                    disabled
-                  >
-                    {{ ct("expirationYearPlaceholder") }}
-                  </option>
-                  <option
-                    v-for="i in 11"
-                    :key="i"
-                    :value="dayjs().year() + i - 1"
-                  >
-                    {{ dayjs().year() + i - 1 }}
-                  </option>
-                </select>
-              </div>
-              <the-text-input
-                v-model="checkoutFormData.creditCard.verificationValue"
-                :placeholder="ct('securityCodePlaceholder')"
-                :with-label="false"
-                name="cc-csc"
-                type="password"
-                pattern="[0-9]*"
-                class="mt-4 w-1/2"
-                required
-              />
-            </form>
           </div>
         </div>
 
@@ -602,10 +461,7 @@ useSeoMeta({
           </button>
           <button
             class="w-full bg-orange p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
-            :type="checkoutFormData.paymentMethod === 2 ? 'submit' : 'button'"
-            :form="
-              checkoutFormData.paymentMethod === 2 ? 'credit-card-form' : ''
-            "
+            type="button"
             @click="handleClickNextStepButton"
           >
             {{ ct("proceedToPaymentButtonText") }}

@@ -661,9 +661,12 @@ func (s *service) executePaymentOrder(
 	if err := s.db.Order.Create(ctx, order); err != nil {
 		return "", nil, internalError(err)
 	}
-	// KOMOJUホスト決済ページを利用する場合（トークンベース決済）
-	// カード入力・3Dセキュア認証をKOMOJU側で処理するため、payFnを呼ばずsession_urlを返す
-	if params.useHostedPage && session.SessionURL != "" {
+	// ホスト決済ページを利用する場合（クレジットカードのカード番号未指定時）
+	// カード入力・3Dセキュア認証を決済プロバイダー側で処理するため、payFnを呼ばずsession_urlを返す
+	if params.useHostedPage {
+		if session.SessionURL == "" {
+			return "", nil, fmt.Errorf("service: session url is empty: %w", exception.ErrInternal)
+		}
 		return session.SessionURL, func(context.Context) {}, nil
 	}
 	// 決済依頼処理
