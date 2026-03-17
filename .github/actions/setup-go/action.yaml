@@ -6,6 +6,10 @@ inputs:
     description: '作業ディレクトリ'
     required: false
     default: '.'
+  skip-tools-and-generate:
+    description: 'ツールインストールとコード生成をスキップする'
+    required: false
+    default: 'false'
 
 runs:
   using: composite
@@ -22,7 +26,9 @@ runs:
       path: |
         ~/.cache/go-build
         ~/go/pkg/mod
-      key: ${{ runner.os }}-go-${{ format('{0}/go.sum', inputs.working-directory) }}
+      key: ${{ runner.os }}-go-${{ hashFiles(format('{0}/go.sum', inputs.working-directory)) }}
+      restore-keys: |
+        ${{ runner.os }}-go-
 
   - name: Download modules
     shell: bash
@@ -30,11 +36,13 @@ runs:
     run: go mod download
 
   - name: Install tools
+    if: inputs.skip-tools-and-generate != 'true'
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go get tool
 
   - name: Generate
+    if: inputs.skip-tools-and-generate != 'true'
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go generate ./...
