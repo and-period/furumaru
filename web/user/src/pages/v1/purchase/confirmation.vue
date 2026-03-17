@@ -309,7 +309,6 @@ useSeoMeta({
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 

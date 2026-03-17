@@ -2,6 +2,7 @@ package stripe
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
@@ -26,6 +27,11 @@ func (p *provider) CreateSession(ctx context.Context, params *payment.CreateSess
 	if err != nil {
 		return nil, err
 	}
+
+	if cs.PaymentIntent == nil {
+		return nil, fmt.Errorf("stripe: checkout session has no payment_intent")
+	}
+
 	return &payment.CreateSessionResult{
 		SessionID:  cs.PaymentIntent.ID,
 		SessionURL: cs.URL,
