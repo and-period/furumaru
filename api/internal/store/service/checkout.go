@@ -59,43 +59,39 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	var payFn func(ctx context.Context, prov payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error)
-	if in.Token != "" {
-		// トークンベース決済（PCI DSS 4.0 準拠）
-		payFn = func(ctx context.Context, prov payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
-			p := &payment.OrderCreditCardParams{
-				SessionID: sessionID,
-				Token:     in.Token,
-				Name:      in.Name,
-				Email:     params.customer.Email(),
-			}
-			return prov.OrderCreditCard(ctx, p)
+	// カード番号が未指定の場合、KOMOJUホスト決済ページを利用する
+	// カード入力・3Dセキュア認証をKOMOJU側で処理する
+	if in.Number == "" {
+		params := &checkoutParams{
+			payload:           &in.CheckoutDetail,
+			paymentMethodType: entity.PaymentMethodTypeCreditCard,
+			useHostedPage:     true,
 		}
-	} else {
-		// 従来フロー（後方互換）
-		cardParams := &entity.NewCreditCardParams{
-			Name:   in.Name,
-			Number: in.Number,
-			Month:  in.Month,
-			Year:   in.Year,
-			CVV:    in.VerificationValue,
+		return s.checkout(ctx, params)
+	}
+	// 従来フロー（後方互換：カード番号直送）
+	cardParams := &entity.NewCreditCardParams{
+		Name:   in.Name,
+		Number: in.Number,
+		Month:  in.Month,
+		Year:   in.Year,
+		CVV:    in.VerificationValue,
+	}
+	card := entity.NewCreditCard(cardParams)
+	if err := card.Validate(s.now()); err != nil {
+		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	payFn := func(ctx context.Context, prov payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
+		p := &payment.OrderCreditCardParams{
+			SessionID:         sessionID,
+			Name:              card.Name,
+			Number:            card.Number,
+			Month:             card.Month,
+			Year:              card.Year,
+			VerificationValue: card.CVV,
+			Email:             params.customer.Email(),
 		}
-		card := entity.NewCreditCard(cardParams)
-		if err := card.Validate(s.now()); err != nil {
-			return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
-		}
-		payFn = func(ctx context.Context, prov payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error) {
-			p := &payment.OrderCreditCardParams{
-				SessionID:         sessionID,
-				Name:              card.Name,
-				Number:            card.Number,
-				Month:             card.Month,
-				Year:              card.Year,
-				VerificationValue: card.CVV,
-				Email:             params.customer.Email(),
-			}
-			return prov.OrderCreditCard(ctx, p)
-		}
+		return prov.OrderCreditCard(ctx, p)
 	}
 	params := &checkoutParams{
 		payload:           &in.CheckoutDetail,
@@ -287,6 +283,7 @@ type checkoutParams struct {
 	customer          *uentity.User
 	billingAddress    *uentity.Address
 	shippingAddress   *uentity.Address
+	useHostedPage     bool // trueの場合、payFnを呼ばずKOMOJUホスト決済ページURLを返す
 	payFn             func(ctx context.Context, prov payment.Provider, sessionID string, params *checkoutDetailParams) (*payment.OrderResult, error)
 }
 
@@ -664,6 +661,11 @@ func (s *service) executePaymentOrder(
 	if err := s.db.Order.Create(ctx, order); err != nil {
 		return "", nil, internalError(err)
 	}
+	// KOMOJUホスト決済ページを利用する場合（トークンベース決済）
+	// カード入力・3Dセキュア認証をKOMOJU側で処理するため、payFnを呼ばずsession_urlを返す
+	if params.useHostedPage && session.SessionURL != "" {
+		return session.SessionURL, func(context.Context) {}, nil
+	}
 	// 決済依頼処理
 	cparams := &checkoutDetailParams{
 		customer:       params.customer,
@@ -676,11 +678,6 @@ func (s *service) executePaymentOrder(
 	}
 	if err != nil {
 		return "", nil, internalError(err)
-	}
-	// リダイレクトURLが空の場合（3Dセキュア不要で即時決済完了など）、コールバックURLにフォールバック
-	if result.RedirectURL == "" {
-		redirectURL := fmt.Sprintf("%s?session_id=%s", params.payload.CallbackURL, session.SessionID)
-		return redirectURL, func(context.Context) {}, nil
 	}
 	return result.RedirectURL, func(context.Context) {}, nil
 }

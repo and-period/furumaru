@@ -239,18 +239,16 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 	)
 	switch types.PaymentMethodType(params.methodType) {
 	case types.PaymentMethodTypeCreditCard:
-		if params.creditCard == nil {
-			h.badRequest(ctx, errors.New("handler: credit card is required"))
-			break
-		}
 		in := &store.CheckoutCreditCardInput{
-			CheckoutDetail:    *params.detail,
-			Token:             params.creditCard.Token,
-			Name:              params.creditCard.Name,
-			Number:            params.creditCard.Number,
-			Month:             params.creditCard.Month,
-			Year:              params.creditCard.Year,
-			VerificationValue: params.creditCard.VerificationValue,
+			CheckoutDetail: *params.detail,
+		}
+		if params.creditCard != nil {
+			in.Token = params.creditCard.Token
+			in.Name = params.creditCard.Name
+			in.Number = params.creditCard.Number
+			in.Month = params.creditCard.Month
+			in.Year = params.creditCard.Year
+			in.VerificationValue = params.creditCard.VerificationValue
 		}
 		redirectURL, err = h.store.CheckoutCreditCard(ctx, in)
 	case types.PaymentMethodTypePayPay:

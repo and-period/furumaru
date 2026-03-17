@@ -30,8 +30,9 @@ type CreateSessionAddress struct {
 
 // CreateSessionResult is the result of creating a payment session.
 type CreateSessionResult struct {
-	SessionID string // セッションID
-	ReturnURL string // リダイレクトURL
+	SessionID  string // セッションID
+	SessionURL string // KOMOJUホスト決済ページURL
+	ReturnURL  string // リダイレクトURL
 }
 
 // GetSessionResult is the result of getting a payment session.
