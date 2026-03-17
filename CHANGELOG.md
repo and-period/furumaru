@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.2.4](https://github.com/and-period/furumaru/compare/v10.2.3...v10.2.4) - 2026-03-17
+- feat(api,web): クレジットカード入力フォームを削除しホスト決済ページに統一 by @taba2424 in https://github.com/and-period/furumaru/pull/3385
+
 ## [v10.2.3](https://github.com/and-period/furumaru/compare/v10.2.2...v10.2.3) - 2026-03-17
 - chore: CI/CDデプロイワークフローの高速化 by @taba2424 in https://github.com/and-period/furumaru/pull/3382
 - fix(api,web): クレジットカード決済をKOMOJUホスト決済ページに切り替え by @taba2424 in https://github.com/and-period/furumaru/pull/3384
