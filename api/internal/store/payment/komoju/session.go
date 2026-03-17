@@ -159,8 +159,9 @@ type creditCardDetails struct {
 }
 
 type creditCardTokenDetails struct {
-	Type  string `json:"type"`
-	Token string `json:"token"`
+	Type         string `json:"type"`
+	Token        string `json:"token"`
+	ThreeDSecure bool   `json:"three_d_secure,omitempty"`
 }
 
 func (p *provider) OrderCreditCard(ctx context.Context, params *payment.OrderCreditCardParams) (*payment.OrderResult, error) {
@@ -168,8 +169,9 @@ func (p *provider) OrderCreditCard(ctx context.Context, params *payment.OrderCre
 	var details interface{}
 	if params.Token != "" {
 		details = &creditCardTokenDetails{
-			Type:  string(PaymentTypeCreditCard),
-			Token: params.Token,
+			Type:         string(PaymentTypeCreditCard),
+			Token:        params.Token,
+			ThreeDSecure: true,
 		}
 	} else {
 		details = &creditCardDetails{
