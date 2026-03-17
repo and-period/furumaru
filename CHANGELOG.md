@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.2.1](https://github.com/and-period/furumaru/compare/v10.2.0...v10.2.1) - 2026-03-17
+- fix(api): KOMOJU決済の3Dセキュア無効化を元に戻す by @taba2424 in https://github.com/and-period/furumaru/pull/3378
+
 ## [v10.1.1](https://github.com/and-period/furumaru/compare/v10.1.0...v10.1.1) - 2026-03-17
 - feat(api): 管理者監査ログ機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3361
 - fix(api): OAuth認証後にemail_verifiedがfalseになる問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3362
