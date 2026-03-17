@@ -349,6 +349,7 @@ type Product interface {
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
 	DecreaseInventory(ctx context.Context, revisionID, quantity int64) error
 	Delete(ctx context.Context, productID string) error
+	UpdatePriority(ctx context.Context, productIDs []string, coordinatorPriorities map[string]int64) error
 }
 
 type ListProductsOrderKey string
@@ -362,7 +363,9 @@ const (
 	ListProductsOrderByOriginCity       ListProductsOrderKey = "origin_city"
 	ListProductsOrderByStartAt          ListProductsOrderKey = "start_at"
 	ListProductsOrderByCreatedAt        ListProductsOrderKey = "created_at"
-	ListProductsOrderByUpdatedAt        ListProductsOrderKey = "updated_at"
+	ListProductsOrderByUpdatedAt            ListProductsOrderKey = "updated_at"
+	ListProductsOrderByCoordinatorPriority  ListProductsOrderKey = "coordinator_priority"
+	ListProductsOrderByPrice                ListProductsOrderKey = "(SELECT pr.price FROM product_revisions pr WHERE pr.product_id = products.id ORDER BY pr.id DESC LIMIT 1)"
 )
 
 type ListProductsParams struct {

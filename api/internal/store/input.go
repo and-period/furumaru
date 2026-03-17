@@ -570,6 +570,8 @@ const (
 	ListProductsOrderByStartAt
 	ListProductsOrderByCreatedAt
 	ListProductsOrderByUpdatedAt
+	ListProductsOrderByCoordinatorPriority
+	ListProductsOrderByPrice
 )
 
 type ListProductsInput struct {
@@ -675,6 +677,11 @@ type UpdateProductMedia struct {
 
 type DeleteProductInput struct {
 	ProductID string `validate:"required"`
+}
+
+type UpdateProductsPriorityInput struct {
+	ShopID     string   `validate:"required"`
+	ProductIDs []string `validate:"required,min=1,dive,required"`
 }
 
 /**

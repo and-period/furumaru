@@ -9,6 +9,7 @@ import type {
   ProductType,
   ProductsResponse,
 } from '~/types/api'
+import { ProductsResponseFromJSON } from '~/types/api'
 
 export const useProductStore = defineStore('product', {
   state: () => {
@@ -33,14 +34,22 @@ export const useProductStore = defineStore('product', {
   },
 
   actions: {
-    async fetchProducts(limit = 20, offset = 0): Promise<void> {
+    async fetchProducts(limit = 20, offset = 0, sort = 'recommend'): Promise<void> {
       try {
         this.productsFetchState.isLoading = true
-        const response: ProductsResponse
-          = await this.productApiClient().v1ListProducts({
-            limit,
-            offset,
-          })
+        const runtimeConfig = useRuntimeConfig()
+        const url = new URL(`${runtimeConfig.public.API_BASE_URL}/v1/products`)
+        url.searchParams.set('limit', String(limit))
+        url.searchParams.set('offset', String(offset))
+        if (sort && sort !== 'recommend') {
+          url.searchParams.set('sort', sort)
+        }
+        const res = await fetch(url.toString(), { credentials: 'include' })
+        if (!res.ok) {
+          throw new Error(`Failed to fetch products: ${res.status}`)
+        }
+        const json = await res.json()
+        const response: ProductsResponse = ProductsResponseFromJSON(json)
         this.productsResponse = response
       }
       catch (error) {

@@ -108,6 +108,7 @@ type Service interface {
 	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)                           // 登録
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                                              // 更新
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                                              // 削除
+	UpdateProductsPriority(ctx context.Context, in *UpdateProductsPriorityInput) error                          // 並び順更新
 	// ProductReview - 商品レビュー
 	ListProductReviews(ctx context.Context, in *ListProductReviewsInput) (entity.ProductReviews, string, error)             // 一覧取得
 	GetProductReview(ctx context.Context, in *GetProductReviewInput) (*entity.ProductReview, error)                         // １件取得

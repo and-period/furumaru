@@ -262,6 +262,31 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 	return dbError(err)
 }
 
+func (p *product) UpdatePriority(ctx context.Context, productIDs []string, coordinatorPriorities map[string]int64) error {
+	if len(productIDs) == 0 {
+		return nil
+	}
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := p.now()
+		for _, id := range productIDs {
+			priority, ok := coordinatorPriorities[id]
+			if !ok {
+				continue
+			}
+			updates := map[string]interface{}{
+				"coordinator_priority": priority,
+				"updated_at":          now,
+			}
+			stmt := tx.WithContext(ctx).Table(productTable).Where("id = ?", id)
+			if err := stmt.Updates(updates).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return dbError(err)
+}
+
 func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string, fields ...string) (entity.Products, error) {
 	var internal internalProducts
 

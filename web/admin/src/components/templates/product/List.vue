@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus, mdiContentCopy, mdiPackageVariant, mdiCoffee } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiContentCopy, mdiPackageVariant, mdiCoffee, mdiSwapVertical, mdiCheck, mdiClose } from '@mdi/js'
 import type { VDataTable } from 'vuetify/components'
 import { productStatuses } from '~/constants'
 
@@ -61,6 +61,14 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  isSortMode: {
+    type: Boolean,
+    default: false,
+  },
+  sortableProducts: {
+    type: Array<Product>,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -71,6 +79,9 @@ const emit = defineEmits<{
   (e: 'click:copyItem'): void
   (e: 'click:delete', productId: string): void
   (e: 'update:selectedItemId', v: string): void
+  (e: 'update:sort-mode', value: boolean): void
+  (e: 'update:sortable-products', value: Product[]): void
+  (e: 'click:save-sort'): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -232,6 +243,26 @@ const onClickDelete = (): void => {
 const onClickCopyItem = (): void => {
   emit('click:copyItem')
 }
+
+const isSortable = (): boolean => {
+  return props.adminType === AdminType.AdminTypeCoordinator
+}
+
+const onClickToggleSortMode = (): void => {
+  emit('update:sort-mode', !props.isSortMode)
+}
+
+const onClickCancelSortMode = (): void => {
+  emit('update:sort-mode', false)
+}
+
+const onClickSaveSort = (): void => {
+  emit('click:save-sort')
+}
+
+const onUpdateSortableProducts = (value: Product[]): void => {
+  emit('update:sortable-products', value)
+}
 </script>
 
 <template>
@@ -271,42 +302,87 @@ const onClickCopyItem = (): void => {
         </div>
       </div>
       <div class="d-flex flex-column flex-sm-row ga-2 ga-sm-3 w-100 w-sm-auto">
-        <v-btn
-          v-show="isRegisterable()"
-          variant="outlined"
-          color="secondary"
-          :size="$vuetify.display.smAndDown ? 'default' : 'large'"
-          class="w-100 w-sm-auto"
-          :disabled="selectedItemId === ''"
-          @click="onClickCopyItem"
-        >
-          <v-icon
-            start
-            :icon="mdiContentCopy"
-          />
-          商品複製
-          <v-tooltip
-            v-if="selectedItemId === ''"
-            activator="parent"
-            location="bottom"
+        <template v-if="isSortMode">
+          <v-btn
+            variant="outlined"
+            color="secondary"
+            :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+            class="w-100 w-sm-auto"
+            @click="onClickCancelSortMode"
           >
-            コピー元の商品をチェックする必要があります。
-          </v-tooltip>
-        </v-btn>
-        <v-btn
-          v-show="isRegisterable()"
-          variant="elevated"
-          color="primary"
-          :size="$vuetify.display.smAndDown ? 'default' : 'large'"
-          class="w-100 w-sm-auto"
-          @click="onClickNew"
-        >
-          <v-icon
-            start
-            :icon="mdiPlus"
-          />
-          商品登録
-        </v-btn>
+            <v-icon
+              start
+              :icon="mdiClose"
+            />
+            キャンセル
+          </v-btn>
+          <v-btn
+            variant="elevated"
+            color="primary"
+            :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+            class="w-100 w-sm-auto"
+            :loading="loading"
+            @click="onClickSaveSort"
+          >
+            <v-icon
+              start
+              :icon="mdiCheck"
+            />
+            保存
+          </v-btn>
+        </template>
+        <template v-else>
+          <v-btn
+            v-show="isSortable()"
+            variant="outlined"
+            color="secondary"
+            :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+            class="w-100 w-sm-auto"
+            @click="onClickToggleSortMode"
+          >
+            <v-icon
+              start
+              :icon="mdiSwapVertical"
+            />
+            並び替えモード
+          </v-btn>
+          <v-btn
+            v-show="isRegisterable()"
+            variant="outlined"
+            color="secondary"
+            :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+            class="w-100 w-sm-auto"
+            :disabled="selectedItemId === ''"
+            @click="onClickCopyItem"
+          >
+            <v-icon
+              start
+              :icon="mdiContentCopy"
+            />
+            商品複製
+            <v-tooltip
+              v-if="selectedItemId === ''"
+              activator="parent"
+              location="bottom"
+            >
+              コピー元の商品をチェックする必要があります。
+            </v-tooltip>
+          </v-btn>
+          <v-btn
+            v-show="isRegisterable()"
+            variant="elevated"
+            color="primary"
+            :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+            class="w-100 w-sm-auto"
+            @click="onClickNew"
+          >
+            <v-icon
+              start
+              :icon="mdiPlus"
+            />
+            商品登録
+          </v-btn>
+        </template>
       </div>
     </v-card-title>
 
@@ -315,6 +391,20 @@ const onClickCopyItem = (): void => {
         v-if="loading"
         type="table-heading, table-row-divider@5"
       />
+      <template v-else-if="isSortMode">
+        <v-alert
+          type="info"
+          variant="tonal"
+          class="mb-4"
+        >
+          ドラッグ&ドロップで商品の並び順を変更できます。変更後は「保存」ボタンを押してください。
+        </v-alert>
+        <molecules-sortable-product-list
+          :model-value="sortableProducts"
+          :products="sortableProducts"
+          @update:model-value="onUpdateSortableProducts"
+        />
+      </template>
       <v-data-table-server
         v-else
         :headers="headers"

@@ -31,6 +31,7 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得上限数(max:200)" default(20)
 // @Param       offset query int64 false "取得開始位置(min:0)" default(0)
 // @Param       coordinatorId query string false "コーディネータID"
+// @Param       sort query string false "並び替え(recommend,newer,priceAsc,priceDesc)" default(recommend)
 // @Produce     json
 // @Success     200 {object} types.ProductsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -60,6 +61,8 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		shopID = coordinator.ShopID
 	}
 
+	orders := h.newListProductsOrders(util.GetQuery(ctx, "sort", "recommend"))
+
 	in := &store.ListProductsInput{
 		Limit:            limit,
 		Offset:           offset,
@@ -67,11 +70,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
 		ShopID:           shopID,
-		Orders: []*store.ListProductsOrder{
-			// 売り切れでないもの順 && 公開日時が新しいもの順
-			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
-			{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
-		},
+		Orders:           orders,
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
@@ -383,4 +382,30 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", contentType)
 	ctx.XML(http.StatusOK, res)
+}
+
+func (h *handler) newListProductsOrders(sort string) []*store.ListProductsOrder {
+	switch sort {
+	case "newer":
+		return []*store.ListProductsOrder{
+			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
+			{Key: store.ListProductsOrderByCreatedAt, OrderByASC: false},
+		}
+	case "priceAsc":
+		return []*store.ListProductsOrder{
+			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
+			{Key: store.ListProductsOrderByPrice, OrderByASC: true},
+		}
+	case "priceDesc":
+		return []*store.ListProductsOrder{
+			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
+			{Key: store.ListProductsOrderByPrice, OrderByASC: false},
+		}
+	default: // "recommend"
+		return []*store.ListProductsOrder{
+			// 売り切れでないもの順 && 公開日時が新しいもの順
+			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
+			{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
+		}
+	}
 }

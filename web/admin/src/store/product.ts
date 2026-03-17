@@ -1,5 +1,6 @@
 import { useApiClient } from '~/composables/useApiClient'
 import { fileUpload } from './helper'
+import { useAuthStore } from './auth'
 import { useCategoryStore } from './category'
 import { useCoordinatorStore } from './coordinator'
 import { useProductTypeStore } from './product-type'
@@ -33,6 +34,7 @@ export const useProductStore = defineStore('product', () => {
   const product = ref<Product>({} as Product)
   const products = ref<Product[]>([])
   const totalItems = ref<number>(0)
+  const allProducts = ref<Product[]>([])
 
   async function fetchProducts(limit = 20, offset = 0): Promise<void> {
     try {
@@ -196,6 +198,38 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  async function fetchAllProducts(): Promise<void> {
+    try {
+      const params: V1ProductsGetRequest = { limit: 200, offset: 0 }
+      const res = await productApi().v1ProductsGet(params)
+      allProducts.value = res.products
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
+
+  async function sortProducts(productIds: string[]): Promise<void> {
+    try {
+      const runtimeConfig = useRuntimeConfig()
+      const authStore = useAuthStore()
+      await $fetch(`${runtimeConfig.public.API_BASE_URL}/v1/products/-/sort`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${authStore.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: { productIds },
+      })
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '並び順の更新に失敗しました',
+        403: '商品の並び替え権限がありません',
+      })
+    }
+  }
+
   async function createProductReview(productId: string, payload: CreateProductReviewRequest): Promise<void> {
     try {
       const params: V1ProductsProductIdReviewsPostRequest = {
@@ -217,7 +251,9 @@ export const useProductStore = defineStore('product', () => {
     product,
     products,
     totalItems,
+    allProducts,
     fetchProducts,
+    fetchAllProducts,
     searchProducts,
     getProduct,
     uploadProductMedia,
@@ -225,6 +261,7 @@ export const useProductStore = defineStore('product', () => {
     createProduct,
     updateProduct,
     deleteProduct,
+    sortProducts,
     createProductReview,
   }
 })

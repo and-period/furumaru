@@ -155,6 +155,11 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 			Scopes:           []entity.ProductScope{entity.ProductScopePublic},
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
+			Orders: []*store.ListProductsOrder{
+				{Key: store.ListProductsOrderByCoordinatorPriority, OrderByASC: true},
+				{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
+				{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
+			},
 		}
 		products, err = h.listProducts(ectx, in)
 		return

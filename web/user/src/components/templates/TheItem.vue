@@ -18,6 +18,20 @@ const { fetchProducts } = productStore
 const { addCart } = shoppingCartStore
 const { products, totalProductsCount } = storeToRefs(productStore)
 
+// 並び替えオプション
+const sortOptions = [
+  { value: 'recommend', label: 'おすすめ順' },
+  { value: 'newer', label: '新着順' },
+  { value: 'priceAsc', label: '価格が安い順' },
+  { value: 'priceDesc', label: '価格が高い順' },
+] as const
+
+type SortValue = typeof sortOptions[number]['value']
+
+const currentSort = ref<SortValue>(
+  (route.query.sort as SortValue) || 'recommend',
+)
+
 const { emit } = useEventBus('add-to-cart')
 
 const lt = (str: keyof I18n['items']['list']) => {
@@ -71,12 +85,24 @@ const handleClickPage = (page: number) => {
   })
 }
 
+const handleSortChange = (sort: SortValue) => {
+  currentSort.value = sort
+  router.push({
+    query: {
+      ...route.query,
+      sort,
+      page: 1,
+    },
+  })
+  fetchProducts(pagePerItems.value, 0, sort)
+}
+
 watch(currentPage, () => {
-  fetchProducts(pagePerItems.value, pagination.value.offset)
+  fetchProducts(pagePerItems.value, pagination.value.offset, currentSort.value)
 })
 
 const { status } = useAsyncData('products', async () => {
-  await fetchProducts(pagePerItems.value, pagination.value.offset)
+  await fetchProducts(pagePerItems.value, pagination.value.offset, currentSort.value)
   return true
 })
 
@@ -119,10 +145,7 @@ const hideV1App = false
     </div>
     <hr class="mt-[40px]">
     <div class="mt-[24px] w-full">
-      <div
-        v-if="hideV1App"
-        class="text-right"
-      >
+      <div class="text-right">
         <div
           class="inline-flex text-[12px] tracking-[1.3px] text-typography md:text-[13px]"
         >
@@ -130,14 +153,14 @@ const hideV1App = false
             並び替え：
           </div>
           <div class="inline-flex gap-[22px]">
-            <button class="border-b border-main pb-2 text-main">
-              新着順
-            </button>
-            <button class="pb-2">
-              値段の安い順
-            </button>
-            <button class="pb-2">
-              値段の高い順
+            <button
+              v-for="option in sortOptions"
+              :key="option.value"
+              class="pb-2"
+              :class="currentSort === option.value ? 'border-b border-main text-main' : ''"
+              @click="handleSortChange(option.value)"
+            >
+              {{ option.label }}
             </button>
           </div>
         </div>

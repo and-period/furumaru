@@ -24,6 +24,7 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListProducts)
 	r.POST("", h.CreateProduct)
+	r.PATCH("/-/sort", h.UpdateProductsPriority)
 	r.GET("/:productId", h.filterAccessProduct, h.GetProduct)
 	r.PATCH("/:productId", h.filterAccessProduct, h.UpdateProduct)
 	r.DELETE("/:productId", h.filterAccessProduct, h.DeleteProduct)
@@ -160,6 +161,38 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+// @Summary     商品並び順更新
+// @Description コーディネーターの商品並び順を更新します。
+// @Tags        Product
+// @Router      /v1/products/-/sort [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body types.UpdateProductsPriorityRequest true "商品ID一覧(並び順)"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "権限がない"
+func (h *handler) UpdateProductsPriority(ctx *gin.Context) {
+	req := &types.UpdateProductsPriorityRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	if !getAdminType(ctx).IsCoordinator() {
+		h.forbidden(ctx, errors.New("handler: only coordinators can sort products"))
+		return
+	}
+	in := &store.UpdateProductsPriorityInput{
+		ShopID:     getShopID(ctx),
+		ProductIDs: req.ProductIDs,
+	}
+	if err := h.store.UpdateProductsPriority(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder, error) {
