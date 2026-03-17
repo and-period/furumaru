@@ -79,6 +79,10 @@ func (s *service) newListProductsOrders(in []*store.ListProductsOrder) ([]*datab
 			key = database.ListProductsOrderByCreatedAt
 		case store.ListProductsOrderByUpdatedAt:
 			key = database.ListProductsOrderByUpdatedAt
+		case store.ListProductsOrderByCoordinatorPriority:
+			key = database.ListProductsOrderByCoordinatorPriority
+		case store.ListProductsOrderByPrice:
+			key = database.ListProductsOrderByPrice
 		default:
 			return nil, errors.New("service: invalid order key")
 		}
@@ -261,4 +265,30 @@ func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInpu
 	}
 	err = s.db.Product.Delete(ctx, in.ProductID)
 	return internalError(err)
+}
+
+func (s *service) UpdateProductsPriority(ctx context.Context, in *store.UpdateProductsPriorityInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	products, err := s.db.Product.MultiGet(ctx, in.ProductIDs, "id", "shop_id")
+	if err != nil {
+		return internalError(err)
+	}
+	if len(products) != len(in.ProductIDs) {
+		return fmt.Errorf("service: some products not found: %w", exception.ErrInvalidArgument)
+	}
+	for _, p := range products {
+		if p.ShopID != in.ShopID {
+			return fmt.Errorf("service: product does not belong to this shop: %w", exception.ErrForbidden)
+		}
+	}
+	coordinatorPriorities := make(map[string]int64, len(in.ProductIDs))
+	for i, id := range in.ProductIDs {
+		coordinatorPriorities[id] = int64(i + 1)
+	}
+	if err := s.db.Product.UpdatePriority(ctx, in.ProductIDs, coordinatorPriorities); err != nil {
+		return internalError(err)
+	}
+	return nil
 }

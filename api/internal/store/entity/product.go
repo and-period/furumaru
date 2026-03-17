@@ -96,6 +96,7 @@ type Product struct {
 	OriginPrefecture     string            `gorm:"-"`                        // 原産地(都道府県)
 	OriginPrefectureCode int32             `gorm:"column:origin_prefecture"` // 原産地(都道府県コード)
 	OriginCity           string            `gorm:""`                         // 原産地(市区町村)
+	CoordinatorPriority  int64             `gorm:""`                         // コーディネーター並び順
 	StartAt              time.Time         `gorm:""`                         // 販売開始日時
 	EndAt                time.Time         `gorm:""`                         // 販売終了日時
 	CreatedAt            time.Time         `gorm:"<-:create"`                // 登録日時

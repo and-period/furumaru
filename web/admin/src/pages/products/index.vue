@@ -10,6 +10,7 @@ import {
   useProductTagStore,
   useProductTypeStore,
 } from '~/store'
+import type { Product } from '~/types/api/v1'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -30,6 +31,8 @@ const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
 const selectedItemId = ref<string>('')
+const isSortMode = ref<boolean>(false)
+const sortableProducts = ref<Product[]>([])
 
 const fetchState = useAsyncData('products', async (): Promise<void> => {
   await fetchProducts()
@@ -77,6 +80,50 @@ const handleClickCopyItem = (): void => {
   }
 }
 
+const handleToggleSortMode = async (value: boolean): Promise<void> => {
+  if (value) {
+    try {
+      loading.value = true
+      await productStore.fetchAllProducts()
+      sortableProducts.value = [...productStore.allProducts]
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        show(err.message)
+      }
+      console.log(err)
+      return
+    }
+    finally {
+      loading.value = false
+    }
+  }
+  isSortMode.value = value
+}
+
+const handleUpdateSortableProducts = (value: Product[]): void => {
+  sortableProducts.value = value
+}
+
+const handleSaveSortOrder = async (): Promise<void> => {
+  try {
+    loading.value = true
+    const productIds = sortableProducts.value.map(p => p.id)
+    await productStore.sortProducts(productIds)
+    isSortMode.value = false
+    await fetchState.refresh()
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
 const handleClickDelete = async (productId: string): Promise<void> => {
   try {
     loading.value = true
@@ -116,11 +163,16 @@ catch (err) {
     :product-types="productTypes"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
+    :is-sort-mode="isSortMode"
+    :sortable-products="sortableProducts"
     @click:show="handleClickShow"
     @click:new="handleClickNew"
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
     @click:copy-item="handleClickCopyItem"
+    @update:sort-mode="handleToggleSortMode"
+    @update:sortable-products="handleUpdateSortableProducts"
+    @click:save-sort="handleSaveSortOrder"
   />
 </template>

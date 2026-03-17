@@ -153,6 +153,10 @@ type UpdateProductMedia struct {
 	IsThumbnail bool   `json:"isThumbnail"`                 // サムネイルとして使用
 }
 
+type UpdateProductsPriorityRequest struct {
+	ProductIDs []string `json:"productIds"` // 商品ID一覧(並び順)
+}
+
 type ProductResponse struct {
 	Product     *Product      `json:"product"`     // 商品情報
 	Coordinator *Coordinator  `json:"coordinator"` // コーディネータ情報
