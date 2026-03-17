@@ -81,6 +81,13 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		return
 	}
 
+	// コーディネーターの場合、coordinator_priority でソート
+	var orders []*store.ListExperiencesOrder
+	if getAdminType(ctx).IsCoordinator() {
+		orders = []*store.ListExperiencesOrder{
+			{Key: store.ListExperiencesOrderByCoordinatorPriority, OrderByASC: true},
+		}
+	}
 	in := &store.ListExperiencesInput{
 		ShopID:         getShopID(ctx),
 		Name:           util.GetQuery(ctx, "name", ""),
@@ -89,6 +96,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		Limit:          limit,
 		Offset:         offset,
 		NoLimit:        false,
+		Orders:         orders,
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {

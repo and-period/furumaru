@@ -88,6 +88,12 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	}
 
+	// コーディネーターの場合、明示的なソート指定がなければ coordinator_priority でソート
+	if len(orders) == 0 && getAdminType(ctx).IsCoordinator() {
+		orders = []*store.ListProductsOrder{
+			{Key: store.ListProductsOrderByCoordinatorPriority, OrderByASC: true},
+		}
+	}
 	in := &store.ListProductsInput{
 		ShopID:         getShopID(ctx),
 		Name:           util.GetQuery(ctx, "name", ""),
