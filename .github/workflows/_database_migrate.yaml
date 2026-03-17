@@ -29,7 +29,7 @@ jobs:
     - uses: ./.github/actions/setup-go
       with:
         working-directory: ./api
-        service: ${{ env.SERVICE }}
+        skip-tools-and-generate: 'true'
 
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
