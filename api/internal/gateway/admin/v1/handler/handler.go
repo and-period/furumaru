@@ -179,6 +179,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.contactCategoryRoutes(v1)
 	h.contactReadRoutes(v1)
 	h.coordinatorRoutes(v1)
+	h.featureRequestRoutes(v1)
 	h.experienceRoutes(v1)
 	h.experienceTypeRoutes(v1)
 	h.liveRoutes(v1)

@@ -49,6 +49,37 @@ type DeleteContactInput struct {
 }
 
 /**
+ * FeatureRequest - 要望リクエスト
+ */
+type ListFeatureRequestsInput struct {
+	SubmittedBy string `validate:""`
+	Limit       int64  `validate:"required,max=200"`
+	Offset      int64  `validate:"min=0"`
+}
+
+type GetFeatureRequestInput struct {
+	FeatureRequestID string `validate:"required"`
+}
+
+type CreateFeatureRequestInput struct {
+	Title       string                         `validate:"required,max=128"`
+	Description string                         `validate:"required,max=2000"`
+	Category    entity.FeatureRequestCategory  `validate:"required,oneof=1 2 3 4"`
+	Priority    entity.FeatureRequestPriority  `validate:"required,oneof=1 2 3"`
+	SubmittedBy string                         `validate:"required"`
+}
+
+type UpdateFeatureRequestInput struct {
+	FeatureRequestID string                       `validate:"required"`
+	Status           entity.FeatureRequestStatus  `validate:"required,oneof=1 2 3 4 5 6"`
+	Note             string                       `validate:"max=2000"`
+}
+
+type DeleteFeatureRequestInput struct {
+	FeatureRequestID string `validate:"required"`
+}
+
+/**
  * ContactCategory - お問い合わせ種別
  */
 type ListContactCategoriesInput struct {
