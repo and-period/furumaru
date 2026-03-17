@@ -1,5 +1,18 @@
 # Changelog
 
+## [v10.1.1](https://github.com/and-period/furumaru/compare/v10.1.0...v10.1.1) - 2026-03-17
+- feat(api): 管理者監査ログ機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3361
+- fix(api): OAuth認証後にemail_verifiedがfalseになる問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3362
+- feat(web): 管理画面ダッシュボードにアクションアイテム表示を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3364
+- feat: 商品登録AIアシスタントのGo APIバックエンド実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3365
+- fix(web): AIチャットのJSON循環参照エラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3367
+- fix(api): AIチャットエンドポイントの403エラーを修正（RBACポリシー追加） by @taba2424 in https://github.com/and-period/furumaru/pull/3368
+- fix(api): ANTHROPIC_API_KEY未設定時の500エラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3369
+- fix(api): AIチャットテーブルのDB charset エラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3370
+- fix(api): TiDB接続DSNにcharset=utf8mb4を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3371
+- fix(api): AIチャットのタイトル切り詰めでUTF-8文字境界を考慮 by @taba2424 in https://github.com/and-period/furumaru/pull/3372
+- fix(api): KOMOJU決済の3Dセキュアを一時的に無効化 by @taba2424 in https://github.com/and-period/furumaru/pull/3377
+
 ## [v10.1.0](https://github.com/and-period/furumaru/compare/v10.0.1...v10.1.0) - 2026-02-28
 - fix: 配送料率未設定時の500エラーを412に修正し、admin-webに都道府県カバレッジバリデーションを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3354
 - feat(api): 決済プロバイダー選択ロジックの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3356
