@@ -202,17 +202,29 @@ type NotifyPaymentPayload struct {
 /**
  * Experience - 体験
  */
+type ListExperiencesOrderKey int32
+
+const (
+	ListExperiencesOrderByCoordinatorPriority ListExperiencesOrderKey = iota + 1
+)
+
 type ListExperiencesInput struct {
-	Name            string `validate:"max=64"`
-	PrefectureCode  int32  `validate:"min=0,max=47"`
-	ShopID          string `validate:""`
-	ProducerID      string `validate:""`
-	OnlyPublished   bool   `validate:""`
-	ExcludeFinished bool   `validate:""`
-	ExcludeDeleted  bool   `validate:""`
-	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset          int64  `validate:"min=0"`
-	NoLimit         bool   `validate:""`
+	Name            string                  `validate:"max=64"`
+	PrefectureCode  int32                   `validate:"min=0,max=47"`
+	ShopID          string                  `validate:""`
+	ProducerID      string                  `validate:""`
+	OnlyPublished   bool                    `validate:""`
+	ExcludeFinished bool                    `validate:""`
+	ExcludeDeleted  bool                    `validate:""`
+	Limit           int64                   `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64                   `validate:"min=0"`
+	NoLimit         bool                    `validate:""`
+	Orders          []*ListExperiencesOrder `validate:"dive,required"`
+}
+
+type ListExperiencesOrder struct {
+	Key        ListExperiencesOrderKey `validate:"required"`
+	OrderByASC bool                    `validate:""`
 }
 
 type ListExperiencesByGeolocationInput struct {
@@ -308,6 +320,11 @@ type UpdateExperienceMedia struct {
 
 type DeleteExperienceInput struct {
 	ExperienceID string `validate:"required"`
+}
+
+type UpdateExperiencesPriorityInput struct {
+	ShopID        string   `validate:"required"`
+	ExperienceIDs []string `validate:"required,min=1,dive,required"`
 }
 
 /**
@@ -572,6 +589,7 @@ const (
 	ListProductsOrderByUpdatedAt
 	ListProductsOrderByCoordinatorPriority
 	ListProductsOrderByPrice
+	ListProductsOrderByEndAt
 )
 
 type ListProductsInput struct {

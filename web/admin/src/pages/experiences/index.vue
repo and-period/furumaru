@@ -8,6 +8,7 @@ import {
   useExperienceTypeStore,
   useProducerStore,
 } from '~/store'
+import type { Experience } from '~/types/api/v1'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -24,6 +25,8 @@ const { producers } = storeToRefs(producerStore)
 
 const loading = ref<boolean>(false)
 const selectedItemId = ref<string>('')
+const isSortMode = ref<boolean>(false)
+const sortableExperiences = ref<Experience[]>([])
 
 const fetchState = useAsyncData('experiences', async (): Promise<void> => {
   await fetchExperiences()
@@ -71,6 +74,50 @@ const handleClickCopyItem = (): void => {
   }
 }
 
+const handleToggleSortMode = async (value: boolean): Promise<void> => {
+  if (value) {
+    try {
+      loading.value = true
+      await experienceStore.fetchAllExperiences()
+      sortableExperiences.value = [...experienceStore.allExperiences]
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        show(err.message)
+      }
+      console.log(err)
+      return
+    }
+    finally {
+      loading.value = false
+    }
+  }
+  isSortMode.value = value
+}
+
+const handleUpdateSortableExperiences = (value: Experience[]): void => {
+  sortableExperiences.value = value
+}
+
+const handleSaveSortOrder = async (): Promise<void> => {
+  try {
+    loading.value = true
+    const experienceIds = sortableExperiences.value.map(e => e.id)
+    await experienceStore.sortExperiences(experienceIds)
+    isSortMode.value = false
+    await fetchState.refresh()
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
 const handleClickDelete = async (experienceId: string): Promise<void> => {
   try {
     loading.value = true
@@ -108,11 +155,16 @@ catch (err) {
     :producers="producers"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
+    :is-sort-mode="isSortMode"
+    :sortable-experiences="sortableExperiences"
     @click:show="handleClickShow"
     @click:new="handleClickNew"
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
     @click:copy-item="handleClickCopyItem"
+    @update:sort-mode="handleToggleSortMode"
+    @update:sortable-experiences="handleUpdateSortableExperiences"
+    @click:save-sort="handleSaveSortOrder"
   />
 </template>

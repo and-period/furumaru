@@ -52,6 +52,7 @@ type Service interface {
 	CreateExperience(ctx context.Context, in *CreateExperienceInput) (*entity.Experience, error)                           // 登録
 	UpdateExperience(ctx context.Context, in *UpdateExperienceInput) error                                                 // 更新
 	DeleteExperience(ctx context.Context, in *DeleteExperienceInput) error                                                 // 削除
+	UpdateExperiencesPriority(ctx context.Context, in *UpdateExperiencesPriorityInput) error                             // 並び順更新
 	// ExperienceReview - 体験レビュー
 	ListExperienceReviews(ctx context.Context, in *ListExperienceReviewsInput) (entity.ExperienceReviews, string, error)             // 一覧取得
 	GetExperienceReview(ctx context.Context, in *GetExperienceReviewInput) (*entity.ExperienceReview, error)                         // １件取得

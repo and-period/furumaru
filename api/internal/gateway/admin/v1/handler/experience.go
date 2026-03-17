@@ -23,6 +23,7 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListExperiences)
 	r.POST("", h.CreateExperience)
+	r.PATCH("/-/sort", h.UpdateExperiencesPriority)
 	r.GET("/:experienceId", h.filterAccessExperience, h.GetExperience)
 	r.PATCH("/:experienceId", h.filterAccessExperience, h.UpdateExperience)
 	r.DELETE("/:experienceId", h.filterAccessExperience, h.DeleteExperience)
@@ -369,6 +370,38 @@ func (h *handler) UpdateExperience(ctx *gin.Context) {
 		EndAt:                 jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateExperience(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+// @Summary     体験並び順更新
+// @Description コーディネーターの体験並び順を更新します。
+// @Tags        Experience
+// @Router      /v1/experiences/-/sort [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body types.UpdateExperiencesPriorityRequest true "体験ID一覧(並び順)"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "権限がない"
+func (h *handler) UpdateExperiencesPriority(ctx *gin.Context) {
+	req := &types.UpdateExperiencesPriorityRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	if !getAdminType(ctx).IsCoordinator() {
+		h.forbidden(ctx, errors.New("handler: only coordinators can sort experiences"))
+		return
+	}
+	in := &store.UpdateExperiencesPriorityInput{
+		ShopID:        getShopID(ctx),
+		ExperienceIDs: req.ExperienceIDs,
+	}
+	if err := h.store.UpdateExperiencesPriority(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

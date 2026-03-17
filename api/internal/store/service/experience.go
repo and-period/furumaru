@@ -20,6 +20,10 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
+	orders, err := s.newListExperiencesOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list experiences orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	params := &database.ListExperiencesParams{
 		Name:           in.Name,
 		HostPrefecture: in.PrefectureCode,
@@ -29,6 +33,7 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 		ExcludeDeleted: in.ExcludeDeleted,
 		Limit:          int(in.Limit),
 		Offset:         int(in.Offset),
+		Orders:         orders,
 	}
 	if in.ExcludeFinished {
 		params.EndAtGte = s.now()
@@ -50,6 +55,24 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 		return nil, 0, internalError(err)
 	}
 	return experiences, total, nil
+}
+
+func (s *service) newListExperiencesOrders(in []*store.ListExperiencesOrder) ([]*database.ListExperiencesOrder, error) {
+	res := make([]*database.ListExperiencesOrder, len(in))
+	for i := range in {
+		var key database.ListExperiencesOrderKey
+		switch in[i].Key {
+		case store.ListExperiencesOrderByCoordinatorPriority:
+			key = database.ListExperiencesOrderByCoordinatorPriority
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListExperiencesOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) ListExperiencesByGeolocation(
@@ -277,4 +300,30 @@ func (s *service) DeleteExperience(ctx context.Context, in *store.DeleteExperien
 	}
 	err = s.db.Experience.Delete(ctx, in.ExperienceID)
 	return internalError(err)
+}
+
+func (s *service) UpdateExperiencesPriority(ctx context.Context, in *store.UpdateExperiencesPriorityInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	experiences, err := s.db.Experience.MultiGet(ctx, in.ExperienceIDs, "id", "shop_id")
+	if err != nil {
+		return internalError(err)
+	}
+	if len(experiences) != len(in.ExperienceIDs) {
+		return fmt.Errorf("service: some experiences not found: %w", exception.ErrInvalidArgument)
+	}
+	for _, e := range experiences {
+		if e.ShopID != in.ShopID {
+			return fmt.Errorf("service: experience does not belong to this shop: %w", exception.ErrForbidden)
+		}
+	}
+	coordinatorPriorities := make(map[string]int64, len(in.ExperienceIDs))
+	for i, id := range in.ExperienceIDs {
+		coordinatorPriorities[id] = int64(i + 1)
+	}
+	if err := s.db.Experience.UpdatePriority(ctx, in.ExperienceIDs, coordinatorPriorities); err != nil {
+		return internalError(err)
+	}
+	return nil
 }

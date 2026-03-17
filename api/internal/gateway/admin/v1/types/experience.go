@@ -125,6 +125,10 @@ type UpdateExperienceMedia struct {
 	IsThumbnail bool   `json:"isThumbnail"`                 // サムネイルとして使用
 }
 
+type UpdateExperiencesPriorityRequest struct {
+	ExperienceIDs []string `json:"experienceIds"` // 体験ID一覧(並び順)
+}
+
 type ExperienceResponse struct {
 	Experience     *Experience     `json:"experience"`     // 体験情報
 	Coordinator    *Coordinator    `json:"coordinator"`    // コーディネータ情報

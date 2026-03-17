@@ -1,4 +1,5 @@
 import { useApiClient } from '~/composables/useApiClient'
+import { useAuthStore } from './auth'
 import { useExperienceTypeStore } from './experience-type'
 import { fileUpload } from './helper'
 import { useProducerStore } from './producer'
@@ -26,6 +27,7 @@ export const useExperienceStore = defineStore('experience', () => {
   const experience = ref<Experience>({} as Experience)
   const experiences = ref<Experience[]>([])
   const totalItems = ref<number>(0)
+  const allExperiences = ref<Experience[]>([])
 
   async function searchExperiences(name: string = '', producerId: string = '', experienceId: string[] = []) {
     try {
@@ -143,6 +145,38 @@ export const useExperienceStore = defineStore('experience', () => {
     }
   }
 
+  async function fetchAllExperiences(): Promise<void> {
+    try {
+      const params: V1ExperiencesGetRequest = { limit: 200, offset: 0 }
+      const res = await experienceApi().v1ExperiencesGet(params)
+      allExperiences.value = res.experiences
+    }
+    catch (err) {
+      return errorHandler(err)
+    }
+  }
+
+  async function sortExperiences(experienceIds: string[]): Promise<void> {
+    try {
+      const runtimeConfig = useRuntimeConfig()
+      const authStore = useAuthStore()
+      await $fetch(`${runtimeConfig.public.API_BASE_URL}/v1/experiences/-/sort`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${authStore.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: { experienceIds },
+      })
+    }
+    catch (err) {
+      return errorHandler(err, {
+        400: '並び順の更新に失敗しました',
+        403: '体験の並び替え権限がありません',
+      })
+    }
+  }
+
   async function deleteExperience(experienceId: string) {
     try {
       const params: V1ExperiencesExperienceIdDeleteRequest = { experienceId }
@@ -163,13 +197,16 @@ export const useExperienceStore = defineStore('experience', () => {
     experience,
     experiences,
     totalItems,
+    allExperiences,
     searchExperiences,
     fetchExperiences,
+    fetchAllExperiences,
     fetchExperience,
     createExperience,
     updateExperience,
     uploadExperienceMedia,
     getExperienceMediaUploadUrl,
     deleteExperience,
+    sortExperiences,
   }
 })

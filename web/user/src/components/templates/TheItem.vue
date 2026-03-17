@@ -20,7 +20,7 @@ const { products, totalProductsCount } = storeToRefs(productStore)
 
 // 並び替えオプション
 const sortOptions = [
-  { value: 'recommend', label: 'おすすめ順' },
+  { value: 'recommend', label: '販売終了が近い順' },
   { value: 'newer', label: '新着順' },
   { value: 'priceAsc', label: '価格が安い順' },
   { value: 'priceDesc', label: '価格が高い順' },
