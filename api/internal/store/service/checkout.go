@@ -677,6 +677,11 @@ func (s *service) executePaymentOrder(
 	if err != nil {
 		return "", nil, internalError(err)
 	}
+	// リダイレクトURLが空の場合（3Dセキュア不要で即時決済完了など）、コールバックURLにフォールバック
+	if result.RedirectURL == "" {
+		redirectURL := fmt.Sprintf("%s?session_id=%s", params.payload.CallbackURL, session.SessionID)
+		return redirectURL, func(context.Context) {}, nil
+	}
 	return result.RedirectURL, func(context.Context) {}, nil
 }
 

@@ -270,6 +270,63 @@ func TestCheckoutCreditCard(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "success with token",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
+				mocks.payment.EXPECT().OrderCreditCard(gomock.Any(), gomock.Any()).Return(session, nil)
+			},
+			input: &store.CheckoutCreditCardInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+				Token: "tok_test_token",
+				Name:  "AND USER",
+			},
+			expect:    "http://example.com/redirect",
+			expectErr: nil,
+		},
+		{
+			name: "success with token and empty redirect url",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
+				mocks.payment.EXPECT().OrderCreditCard(gomock.Any(), gomock.Any()).
+					Return(&payment.OrderResult{RedirectURL: ""}, nil)
+			},
+			input: &store.CheckoutCreditCardInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+				Token: "tok_test_token",
+				Name:  "AND USER",
+			},
+			expect:    "http://example.com/callback?session_id=transaction-id",
+			expectErr: nil,
+		},
+		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
 				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
