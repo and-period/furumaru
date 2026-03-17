@@ -108,8 +108,9 @@ func (p *provider) CreateSession(ctx context.Context, params *payment.CreateSess
 		return nil, err
 	}
 	return &payment.CreateSessionResult{
-		SessionID: res.ID,
-		ReturnURL: res.ReturnURL,
+		SessionID:  res.ID,
+		SessionURL: res.SessionURL,
+		ReturnURL:  res.ReturnURL,
 	}, nil
 }
 
@@ -159,9 +160,8 @@ type creditCardDetails struct {
 }
 
 type creditCardTokenDetails struct {
-	Type         string `json:"type"`
-	Token        string `json:"token"`
-	ThreeDSecure bool   `json:"three_d_secure,omitempty"`
+	Type  string `json:"type"`
+	Token string `json:"token"`
 }
 
 func (p *provider) OrderCreditCard(ctx context.Context, params *payment.OrderCreditCardParams) (*payment.OrderResult, error) {
@@ -169,9 +169,8 @@ func (p *provider) OrderCreditCard(ctx context.Context, params *payment.OrderCre
 	var details interface{}
 	if params.Token != "" {
 		details = &creditCardTokenDetails{
-			Type:         string(PaymentTypeCreditCard),
-			Token:        params.Token,
-			ThreeDSecure: true,
+			Type:  string(PaymentTypeCreditCard),
+			Token: params.Token,
 		}
 	} else {
 		details = &creditCardDetails{
