@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"math"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -14,6 +17,9 @@ func (s *service) ListFeatureRequests(ctx context.Context, in *messenger.ListFea
 		return nil, 0, internalError(err)
 	}
 
+	if in.Limit > math.MaxInt || in.Offset > math.MaxInt {
+		return nil, 0, fmt.Errorf("service: limit or offset exceeds max int: %w", exception.ErrInvalidArgument)
+	}
 	params := &database.ListFeatureRequestsParams{
 		SubmittedBy: in.SubmittedBy,
 		Limit:       int(in.Limit),
@@ -66,9 +72,6 @@ func (s *service) CreateFeatureRequest(ctx context.Context, in *messenger.Create
 
 func (s *service) UpdateFeatureRequest(ctx context.Context, in *messenger.UpdateFeatureRequestInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	if _, err := s.db.FeatureRequest.Get(ctx, in.FeatureRequestID); err != nil {
 		return internalError(err)
 	}
 	params := &database.UpdateFeatureRequestParams{

@@ -64,14 +64,14 @@ type GetFeatureRequestInput struct {
 type CreateFeatureRequestInput struct {
 	Title       string                         `validate:"required,max=128"`
 	Description string                         `validate:"required,max=2000"`
-	Category    entity.FeatureRequestCategory  `validate:"required"`
-	Priority    entity.FeatureRequestPriority  `validate:"required"`
+	Category    entity.FeatureRequestCategory  `validate:"required,oneof=1 2 3 4"`
+	Priority    entity.FeatureRequestPriority  `validate:"required,oneof=1 2 3"`
 	SubmittedBy string                         `validate:"required"`
 }
 
 type UpdateFeatureRequestInput struct {
 	FeatureRequestID string                       `validate:"required"`
-	Status           entity.FeatureRequestStatus  `validate:"required"`
+	Status           entity.FeatureRequestStatus  `validate:"required,oneof=1 2 3 4 5 6"`
 	Note             string                       `validate:"max=2000"`
 }
 

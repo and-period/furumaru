@@ -64,6 +64,9 @@ type NewFeatureRequestParams struct {
 }
 
 func NewFeatureRequest(params *NewFeatureRequestParams) *FeatureRequest {
+	if params == nil {
+		return nil
+	}
 	return &FeatureRequest{
 		ID:          uuid.Base58Encode(uuid.New()),
 		Title:       params.Title,

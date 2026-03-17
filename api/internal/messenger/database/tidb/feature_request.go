@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/database"
@@ -26,6 +27,9 @@ func NewFeatureRequest(db *mysql.Client) database.FeatureRequest {
 }
 
 func (f *featureRequest) List(ctx context.Context, params *database.ListFeatureRequestsParams, fields ...string) (entity.FeatureRequests, error) {
+	if params == nil {
+		params = &database.ListFeatureRequestsParams{}
+	}
 	var featureRequests entity.FeatureRequests
 
 	stmt := f.db.Statement(ctx, f.db.DB, featureRequestTable, fields...)
@@ -44,6 +48,9 @@ func (f *featureRequest) List(ctx context.Context, params *database.ListFeatureR
 }
 
 func (f *featureRequest) Count(ctx context.Context, params *database.ListFeatureRequestsParams) (int64, error) {
+	if params == nil {
+		params = &database.ListFeatureRequestsParams{}
+	}
 	stmt := f.db.DB.WithContext(ctx).Table(featureRequestTable)
 	if params.SubmittedBy != "" {
 		stmt = stmt.Where("submitted_by = ?", params.SubmittedBy)
@@ -76,8 +83,14 @@ func (f *featureRequest) Update(ctx context.Context, featureRequestID string, pa
 		Table(featureRequestTable).
 		Where("id = ?", featureRequestID)
 
-	err := stmt.Updates(updates).Error
-	return dbError(err)
+	result := stmt.Updates(updates)
+	if err := result.Error; err != nil {
+		return dbError(err)
+	}
+	if result.RowsAffected == 0 {
+		return dbError(fmt.Errorf("%w: feature request not found (id=%s)", gorm.ErrRecordNotFound, featureRequestID))
+	}
+	return nil
 }
 
 func (f *featureRequest) Delete(ctx context.Context, featureRequestID string) error {
@@ -88,8 +101,14 @@ func (f *featureRequest) Delete(ctx context.Context, featureRequestID string) er
 		Table(featureRequestTable).
 		Where("id = ?", featureRequestID)
 
-	err := stmt.Updates(params).Error
-	return dbError(err)
+	result := stmt.Updates(params)
+	if err := result.Error; err != nil {
+		return dbError(err)
+	}
+	if result.RowsAffected == 0 {
+		return dbError(fmt.Errorf("%w: feature request not found (id=%s)", gorm.ErrRecordNotFound, featureRequestID))
+	}
+	return nil
 }
 
 func (f *featureRequest) get(ctx context.Context, tx *gorm.DB, featureRequestID string, fields ...string) (*entity.FeatureRequest, error) {

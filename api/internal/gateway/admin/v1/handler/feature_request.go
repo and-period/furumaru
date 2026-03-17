@@ -96,7 +96,7 @@ func (h *handler) ListFeatureRequests(ctx *gin.Context) {
 // @Accept      json
 // @Param       request body types.CreateFeatureRequestRequest true "要望リクエスト情報"
 // @Produce     json
-// @Success     200 {object} types.FeatureRequestResponse
+// @Success     201 {object} types.FeatureRequestResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateFeatureRequest(ctx *gin.Context) {
 	req := &types.CreateFeatureRequestRequest{}
@@ -129,7 +129,7 @@ func (h *handler) CreateFeatureRequest(ctx *gin.Context) {
 	res := &types.FeatureRequestResponse{
 		FeatureRequest: featureRequest.Response(),
 	}
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusCreated, res)
 }
 
 // @Summary     要望リクエスト取得
@@ -155,10 +155,13 @@ func (h *handler) GetFeatureRequest(ctx *gin.Context) {
 	}
 
 	featureRequest := service.NewFeatureRequest(sfeatureRequest)
-	// コーディネーターは自分の提出のみ参照可
+	// コーディネーターは自分の提出のみ参照可（権限なしの場合も404を返し、存在情報を漏洩しない）
 	if err := filterAccess(ctx, &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			return sfeatureRequest.SubmittedBy == getAdminID(ctx), nil
+			if sfeatureRequest.SubmittedBy != getAdminID(ctx) {
+				return false, fmt.Errorf("handler: feature request not found: %w", exception.ErrNotFound)
+			}
+			return true, nil
 		},
 	}); err != nil {
 		h.httpError(ctx, err)

@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 type FeatureRequest struct {
@@ -23,8 +24,8 @@ func NewFeatureRequest(featureRequest *entity.FeatureRequest) *FeatureRequest {
 			Note:          featureRequest.Note,
 			SubmittedBy:   featureRequest.SubmittedBy,
 			SubmitterName: "",
-			CreatedAt:     featureRequest.CreatedAt.Unix(),
-			UpdatedAt:     featureRequest.UpdatedAt.Unix(),
+			CreatedAt:     jst.Unix(featureRequest.CreatedAt),
+			UpdatedAt:     jst.Unix(featureRequest.UpdatedAt),
 		},
 	}
 }

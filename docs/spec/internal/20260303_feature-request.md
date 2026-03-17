@@ -78,7 +78,7 @@ interface FeatureRequest {
 
 #### ファイル構成
 
-```
+```text
 web/admin/src/
 ├── types/
 │   └── feature-request.ts              # ローカル型定義
