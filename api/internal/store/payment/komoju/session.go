@@ -180,7 +180,7 @@ func (p *provider) OrderCreditCard(ctx context.Context, params *payment.OrderCre
 			Year:              strconv.FormatInt(params.Year, 10),
 			VerificationValue: params.VerificationValue,
 			Name:              params.Name,
-			ThreeDSecure:      false,
+			ThreeDSecure:      true,
 		}
 	}
 	body := &orderCreditCardRequest{
