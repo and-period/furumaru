@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.2.2](https://github.com/and-period/furumaru/compare/v10.2.1...v10.2.2) - 2026-03-17
+- fix(api): トークンベースのクレジットカード決済で3Dセキュアを有効化 by @taba2424 in https://github.com/and-period/furumaru/pull/3380
+
 ## [v10.2.1](https://github.com/and-period/furumaru/compare/v10.2.0...v10.2.1) - 2026-03-17
 - fix(api): KOMOJU決済の3Dセキュア無効化を元に戻す by @taba2424 in https://github.com/and-period/furumaru/pull/3378
 
