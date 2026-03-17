@@ -2,29 +2,39 @@ package stripe
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
-	lib "github.com/stripe/stripe-go/v82"
 )
 
 func (p *provider) CreateSession(ctx context.Context, params *payment.CreateSessionParams) (*payment.CreateSessionResult, error) {
-	in := &pkgstripe.GuestOrderParams{
-		Email:             params.Customer.Email,
-		PaymentMethodType: lib.PaymentMethodTypeCard,
-		Amount:            params.Amount,
-		Description:       params.OrderID,
+	successURL := params.CallbackURL + "?session_id={CHECKOUT_SESSION_ID}"
+	cancelURL := params.CallbackURL + "?canceled=true"
+	in := &pkgstripe.CreateCheckoutSessionParams{
+		Amount:      params.Amount,
+		Currency:    "jpy",
+		Description: params.OrderID,
+		SuccessURL:  successURL,
+		CancelURL:   cancelURL,
+		Email:       params.Customer.Email,
 		Metadata: map[string]string{
 			"order_id": params.OrderID,
 		},
 	}
-	pi, err := p.client.GuestOrder(ctx, in)
+
+	cs, err := p.client.CreateCheckoutSession(ctx, in)
 	if err != nil {
 		return nil, err
 	}
+
+	if cs.PaymentIntent == nil {
+		return nil, fmt.Errorf("stripe: checkout session has no payment_intent")
+	}
+
 	return &payment.CreateSessionResult{
-		SessionID: pi.ID,
-		ReturnURL: pi.ClientSecret,
+		SessionID:  cs.PaymentIntent.ID,
+		SessionURL: cs.URL,
 	}, nil
 }
 

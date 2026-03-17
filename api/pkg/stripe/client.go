@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/stripe/stripe-go/v82"
+	checkoutsession "github.com/stripe/stripe-go/v82/checkout/session"
 	"github.com/stripe/stripe-go/v82/customer"
 	"github.com/stripe/stripe-go/v82/paymentintent"
 	"github.com/stripe/stripe-go/v82/paymentmethod"
@@ -56,6 +57,8 @@ type Client interface {
 	GetCard(ctx context.Context, customerID, paymentID string) (*stripe.PaymentMethod, error)
 	// クレジットカード登録用の一時トークンを発行
 	SetupCard(ctx context.Context, customerID string) (*stripe.SetupIntent, error)
+	// Checkout Session を作成（ホスト決済ページ用）
+	CreateCheckoutSession(ctx context.Context, in *CreateCheckoutSessionParams) (*stripe.CheckoutSession, error)
 }
 
 type Receiver interface {
@@ -69,12 +72,13 @@ type Params struct {
 }
 
 type client struct {
-	maxRetries    int64
-	customer      customer.Client
-	paymentintent paymentintent.Client
-	paymentmethod paymentmethod.Client
-	setupintent   setupintent.Client
-	refund        refund.Client
+	maxRetries      int64
+	customer        customer.Client
+	paymentintent   paymentintent.Client
+	paymentmethod   paymentmethod.Client
+	setupintent     setupintent.Client
+	refund          refund.Client
+	checkoutsession checkoutsession.Client
 }
 
 type options struct {
@@ -115,6 +119,10 @@ func NewClient(params *Params, opts ...Option) Client {
 			Key: params.SecretKey,
 		},
 		refund: refund.Client{
+			B:   stripe.GetBackend(stripe.APIBackend),
+			Key: params.SecretKey,
+		},
+		checkoutsession: checkoutsession.Client{
 			B:   stripe.GetBackend(stripe.APIBackend),
 			Key: params.SecretKey,
 		},
