@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.3.2](https://github.com/and-period/furumaru/compare/v10.3.1...v10.3.2) - 2026-03-17
+- fix(web): 体験注文の「体験準備中」ステータスから受付完了できるよう修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3393
+
 ## [v10.3.1](https://github.com/and-period/furumaru/compare/v10.3.0...v10.3.1) - 2026-03-17
 - fix(api): コーディネーターの商品・体験一覧をcoordinator_priorityでソート by @taba2424 in https://github.com/and-period/furumaru/pull/3391
 
