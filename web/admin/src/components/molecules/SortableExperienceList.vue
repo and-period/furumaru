@@ -4,7 +4,7 @@ import { mdiDrag } from '@mdi/js'
 import { getResizedImages } from '~/lib/helpers'
 import type { Experience, ExperienceMedia } from '~/types/api/v1'
 
-const model = defineModel<any>()
+const model = defineModel<Experience[]>()
 
 interface Props {
   experiences: Experience[]
@@ -60,7 +60,7 @@ const getExperienceThumbnails = (experience: Experience): string => {
           />
         </td>
         <td>{{ experience.title }}</td>
-        <td>{{ experience.priceAdult.toLocaleString() }}</td>
+        <td>{{ experience.priceAdult?.toLocaleString() ?? '-' }}</td>
       </tr>
     </tbody>
   </v-table>
