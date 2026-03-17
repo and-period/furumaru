@@ -172,16 +172,6 @@ func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.Complet
 	if err := s.db.Order.Complete(ctx, in.OrderID, params); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		in := &messenger.NotifyReviewRequestInput{
-			OrderID: order.ID,
-		}
-		if err := s.messenger.NotifyReviewRequest(context.Background(), in); err != nil {
-			slog.Error("Failed to notify review request", slog.String("orderId", order.ID), log.Error(err))
-		}
-	}()
 	return nil
 }
 

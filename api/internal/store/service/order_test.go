@@ -880,9 +880,6 @@ func TestCompleteExperienceOrder(t *testing.T) {
 	params := &database.CompleteOrderParams{
 		CompletedAt: now,
 	}
-	messengerIn := &messenger.NotifyReviewRequestInput{
-		OrderID: "order-id",
-	}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -894,7 +891,6 @@ func TestCompleteExperienceOrder(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyReviewRequest(gomock.Any(), messengerIn).Return(assert.AnError)
 			},
 			input: &store.CompleteExperienceOrderInput{
 				OrderID: "order-id",

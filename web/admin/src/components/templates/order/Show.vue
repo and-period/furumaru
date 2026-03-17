@@ -1821,7 +1821,7 @@ const onSubmitRefund = (): void => {
               start
               :icon="mdiSend"
             />
-            {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : 'レビュー依頼を送信' }}
+            {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : '完了にする' }}
           </v-btn>
           <v-btn
             v-show="isPreservable()"
