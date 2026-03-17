@@ -305,7 +305,7 @@ const isCompletable = (): boolean => {
       targets.push(OrderStatus.OrderStatusPreparing, OrderStatus.OrderStatusShipped)
       break
     case OrderType.OrderTypeExperience:
-      targets.push(OrderStatus.OrderStatusShipped)
+      targets.push(OrderStatus.OrderStatusPreparing, OrderStatus.OrderStatusShipped)
       break
   }
   return targets.includes(props.order.status)
@@ -1821,7 +1821,7 @@ const onSubmitRefund = (): void => {
               start
               :icon="mdiSend"
             />
-            {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : '完了にする' }}
+            {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : '受付完了' }}
           </v-btn>
           <v-btn
             v-show="isPreservable()"
