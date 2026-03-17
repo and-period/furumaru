@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.3.1](https://github.com/and-period/furumaru/compare/v10.3.0...v10.3.1) - 2026-03-17
+- fix(api): コーディネーターの商品・体験一覧をcoordinator_priorityでソート by @taba2424 in https://github.com/and-period/furumaru/pull/3391
+
 ## [v10.3.0](https://github.com/and-period/furumaru/compare/v10.2.4...v10.3.0) - 2026-03-17
 - fix(api,web): 体験注文の完了時にレビュー依頼メールを送信しないよう修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3387
 - feat(web): 管理画面に要望リクエスト機能を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3366
