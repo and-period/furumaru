@@ -31,6 +31,7 @@ func TestListExperiences(t *testing.T) {
 		EndAtGte:       now,
 		Limit:          20,
 		Offset:         0,
+		Orders:         []*database.ListExperiencesOrder{},
 	}
 	experiences := entity.Experiences{
 		{

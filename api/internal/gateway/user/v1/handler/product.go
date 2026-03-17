@@ -403,9 +403,9 @@ func (h *handler) newListProductsOrders(sort string) []*store.ListProductsOrder 
 		}
 	default: // "recommend"
 		return []*store.ListProductsOrder{
-			// 売り切れでないもの順 && 公開日時が新しいもの順
+			// 売り切れでないもの順 && 販売終了が近いもの順
 			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},
-			{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
+			{Key: store.ListProductsOrderByEndAt, OrderByASC: true},
 		}
 	}
 }

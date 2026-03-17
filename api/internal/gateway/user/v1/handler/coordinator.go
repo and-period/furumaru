@@ -170,6 +170,9 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 			OnlyPublished:   true,
 			ExcludeFinished: true,
 			NoLimit:         true,
+			Orders: []*store.ListExperiencesOrder{
+				{Key: store.ListExperiencesOrderByCoordinatorPriority, OrderByASC: true},
+			},
 		}
 		experiences, err = h.listExperiences(ectx, in)
 		return

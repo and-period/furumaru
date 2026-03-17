@@ -97,7 +97,14 @@ type Experience interface {
 	Create(ctx context.Context, experience *entity.Experience) error
 	Update(ctx context.Context, experienceID string, params *UpdateExperienceParams) error
 	Delete(ctx context.Context, experienceID string) error
+	UpdatePriority(ctx context.Context, experienceIDs []string, coordinatorPriorities map[string]int64) error
 }
+
+type ListExperiencesOrderKey string
+
+const (
+	ListExperiencesOrderByCoordinatorPriority ListExperiencesOrderKey = "coordinator_priority"
+)
 
 type ListExperiencesParams struct {
 	Name           string
@@ -109,6 +116,12 @@ type ListExperiencesParams struct {
 	EndAtGte       time.Time
 	Limit          int
 	Offset         int
+	Orders         []*ListExperiencesOrder
+}
+
+type ListExperiencesOrder struct {
+	Key        ListExperiencesOrderKey
+	OrderByASC bool
 }
 
 type ListExperiencesByGeolocationParams struct {
@@ -366,6 +379,7 @@ const (
 	ListProductsOrderByUpdatedAt            ListProductsOrderKey = "updated_at"
 	ListProductsOrderByCoordinatorPriority  ListProductsOrderKey = "coordinator_priority"
 	ListProductsOrderByPrice                ListProductsOrderKey = "(SELECT pr.price FROM product_revisions pr WHERE pr.product_id = products.id ORDER BY pr.id DESC LIMIT 1)"
+	ListProductsOrderByEndAt                ListProductsOrderKey = "end_at"
 )
 
 type ListProductsParams struct {

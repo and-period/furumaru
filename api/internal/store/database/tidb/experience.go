@@ -55,7 +55,19 @@ func (p listExperiencesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.ExcludeDeleted {
 		stmt = stmt.Unscoped()
 	}
-	return stmt.Order("start_at DESC")
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
+	}
+	if len(p.Orders) == 0 {
+		stmt = stmt.Order("start_at DESC")
+	}
+	return stmt
 }
 
 func (p listExperiencesParams) pagination(stmt *gorm.DB) *gorm.DB {
@@ -265,6 +277,31 @@ func (e *experience) Delete(ctx context.Context, experienceID string) error {
 	}
 	stmt := e.db.DB.WithContext(ctx).Table(experienceTable).Where("id = ?", experienceID)
 	err := stmt.Updates(params).Error
+	return dbError(err)
+}
+
+func (e *experience) UpdatePriority(ctx context.Context, experienceIDs []string, coordinatorPriorities map[string]int64) error {
+	if len(experienceIDs) == 0 {
+		return nil
+	}
+	err := e.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := e.now()
+		for _, id := range experienceIDs {
+			priority, ok := coordinatorPriorities[id]
+			if !ok {
+				continue
+			}
+			updates := map[string]interface{}{
+				"coordinator_priority": priority,
+				"updated_at":          now,
+			}
+			stmt := tx.WithContext(ctx).Table(experienceTable).Where("id = ?", id)
+			if err := stmt.Updates(updates).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	return dbError(err)
 }
 

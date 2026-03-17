@@ -83,6 +83,8 @@ func (s *service) newListProductsOrders(in []*store.ListProductsOrder) ([]*datab
 			key = database.ListProductsOrderByCoordinatorPriority
 		case store.ListProductsOrderByPrice:
 			key = database.ListProductsOrderByPrice
+		case store.ListProductsOrderByEndAt:
+			key = database.ListProductsOrderByEndAt
 		default:
 			return nil, errors.New("service: invalid order key")
 		}
