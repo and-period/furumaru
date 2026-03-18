@@ -113,7 +113,9 @@
       "productListSubTitle": "product videos",
       "experienceListSubTitle": "experience videos",
       "archivedStreamText": "archived stream",
-      "archivesLinkText": "View List"
+      "archivesLinkText": "View List",
+      "scrollPrevAriaLabel": "Scroll previous",
+      "scrollNextAriaLabel": "Scroll next"
     },
     "about": {
       "leadSentence": "Find wonderful taste",
@@ -304,7 +306,8 @@
       "completeMessageThird": "you can also check your order details from your order history on your account page.",
       "topLinkText": "Back to the Home Page",
       "cancelMessage": "This order has been canceled.",
-      "cartLinkText": "Return to the Shopping Cart"
+      "cartLinkText": "Return to the Shopping Cart",
+      "completeImageAlt": "Purchase complete"
     }
   },
   "items": {

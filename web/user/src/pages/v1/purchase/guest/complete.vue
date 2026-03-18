@@ -130,7 +130,7 @@ useSeoMeta({
             </div>
             <img
               src="/img/purchase/complete.svg"
-              alt="購入完了"
+              :alt="ct('completeImageAlt')"
             >
           </div>
         </div>
@@ -138,7 +138,7 @@ useSeoMeta({
           <div class="flex justify-center">
             <img
               src="/img/purchase/complete.svg"
-              alt="購入完了"
+              :alt="ct('completeImageAlt')"
             >
           </div>
           <div class="text-[16px] font-bold tracking-[1.6px]">

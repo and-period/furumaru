@@ -102,12 +102,6 @@ export default defineNuxtConfig({
     ],
   },
   routeRules: {
-    '/': { prerender: true },
-    '/about': { prerender: true },
-    '/privacy': { prerender: true },
-    '/legal-notice': { prerender: true },
-    '/terms-of-use': { prerender: true },
-    '/contact': { prerender: true },
     '/items/**': { swr: 3600 },
     '/experiences/**': { swr: 3600 },
     '/account/**': { ssr: false },

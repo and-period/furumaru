@@ -121,7 +121,7 @@ const handleClick = () => {
             <nuxt-img
               provider="cloudFront"
               :src="cnImgSrc"
-              :alt="`${cnName}のーアバター画像`"
+              :alt="`${cnName}のアバター画像`"
               width="40"
               height="40"
               class="h-10 w-10 rounded-full"
