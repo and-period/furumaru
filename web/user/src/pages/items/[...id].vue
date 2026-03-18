@@ -8,6 +8,7 @@ import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
 import { useProductReviewStore } from '~/store/productReview'
 import { useCoordinatorStore } from '~/store/coordinator'
+import { useSeoHead, useProductJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
 
 const i18n = useI18n()
 
@@ -177,9 +178,31 @@ useAsyncData(`reviews-${id.value}`, async () => {
   return true
 })
 
-useSeoMeta({
+useSeoHead({
   title,
+  description: computed(() => product.value.description?.slice(0, 120) || ''),
+  ogImage: computed(() => product.value.thumbnailUrl || ''),
+  ogType: 'product',
+  path: computed(() => `/items/${id.value}`),
 })
+
+useProductJsonLd({
+  name: computed(() => product.value.name || ''),
+  description: computed(() => product.value.description || ''),
+  images: computed(() => product.value.media?.map((m: { url: string }) => m.url) || []),
+  price: computed(() => product.value.price || 0),
+  inventory: computed(() => product.value.inventory || 0),
+  ratingAverage: computed(() => product.value.rate?.average || 0),
+  ratingCount: computed(() => product.value.rate?.count || 0),
+  producerName: computed(() => product.value.producer?.username || ''),
+  url: computed(() => `/items/${id.value}`),
+})
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: 'すべての商品', path: '/items' },
+  { name: product.value.name || '', path: `/items/${id.value}` },
+]))
 </script>
 
 <template>
@@ -192,6 +215,15 @@ useSeoMeta({
       :text="snackbarItem.text"
     />
   </template>
+
+  <the-breadcrumb
+    v-if="status === 'success' && product.name"
+    :items="[
+      { name: 'トップ', path: '/' },
+      { name: 'すべての商品', path: '/items' },
+      { name: product.name, path: `/items/${id}` },
+    ]"
+  />
 
   <!-- スマホ用：下部固定カート追加ボタン -->
   <div

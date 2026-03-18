@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-useSeoMeta({
+import { useSeoHead } from '~/hooks/seo'
+
+useSeoHead({
   title: 'ふるマルについて',
+  path: '/about',
 })
 </script>
 

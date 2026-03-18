@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useIntervalFn } from '@vueuse/core'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
+import { useSeoHead, useWebSiteJsonLd } from '~/hooks/seo'
 import type { BannerItem } from '~/types/props'
 import type { I18n } from '~/types/locales'
 
@@ -123,14 +124,18 @@ useIntervalFn(
   }, 3000,
 )
 
-useSeoMeta({
+useSeoHead({
   title: 'トップページ',
+  description: '産地直送のお取り寄せ通販のふるマルです。生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ。全国の生産者から新鮮な食材やこだわりの特産品をお届けします。',
+  path: '/',
 })
+
+useWebSiteJsonLd()
 </script>
 
 <template>
   <div>
-    <!-- 動画部分 -->
+    <!-- ヒーロー動画セクション -->
     <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-140px)] w-full">
       <div class="absolute bg-black/50 w-full h-full" />
       <div

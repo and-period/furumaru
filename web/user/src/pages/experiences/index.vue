@@ -4,6 +4,7 @@ import { useGeolocation } from '@vueuse/core'
 import { useSpotStore } from '~/store/spot'
 import type { GoogleMapSearchResult } from '~/types/store'
 import { useExperienceStore } from '~/store/experience'
+import { useSeoHead } from '~/hooks/seo'
 
 const config = useRuntimeConfig()
 
@@ -302,8 +303,10 @@ const onMapZoomChanged = () => {
   centerPositionType.value = 'manual'
 }
 
-useSeoMeta({
+useSeoHead({
   title: '体験一覧',
+  description: '産地直送のお取り寄せ通販ふるマルの体験一覧ページです。地図から全国各地の体験を探すことができます。',
+  path: '/experiences',
 })
 </script>
 

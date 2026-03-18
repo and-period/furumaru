@@ -3,6 +3,7 @@ import { priceFormatter } from '~/lib/price'
 import { useAuthStore } from '~/store/auth'
 import { useExperienceStore } from '~/store/experience'
 import { ExperienceStatus } from '~/types/api'
+import { useSeoHead, useExperienceJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
 import type { I18n } from '~/types/locales'
 import type { Snackbar } from '~/types/props'
 
@@ -133,9 +134,36 @@ const handleClickApplyButton = () => {
   }
 }
 
-useSeoMeta({
-  title: data.value?.experience?.title || '',
+useSeoHead({
+  title: computed(() => data.value?.experience?.title || ''),
+  description: computed(() => data.value?.experience?.description?.slice(0, 120) || ''),
+  ogImage: computed(() => data.value?.experience?.thumbnailUrl || ''),
+  path: computed(() => `/experiences/${experienceId.value}`),
 })
+
+useExperienceJsonLd({
+  name: computed(() => data.value?.experience?.title || ''),
+  description: computed(() => data.value?.experience?.description || ''),
+  images: computed(() => data.value?.experience?.media?.map((m: { url: string }) => m.url) || []),
+  price: computed(() => data.value?.experience?.priceAdult || 0),
+  startAt: computed(() => data.value?.experience?.startAt || 0),
+  endAt: computed(() => data.value?.experience?.endAt || 0),
+  address: computed(() => {
+    const exp = data.value?.experience
+    if (!exp) return ''
+    return `${exp.hostPrefecture || ''}${exp.hostCity || ''}${exp.hostAddressLine1 || ''}${exp.hostAddressLine2 || ''}`
+  }),
+  postalCode: computed(() => data.value?.experience?.hostPostalCode || ''),
+  latitude: computed(() => data.value?.experience?.hostLatitude || 0),
+  longitude: computed(() => data.value?.experience?.hostLongitude || 0),
+  url: computed(() => `/experiences/${experienceId.value}`),
+})
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: '体験一覧', path: '/experiences' },
+  { name: data.value?.experience?.title || '', path: `/experiences/${experienceId.value}` },
+]))
 </script>
 
 <template>
@@ -178,6 +206,15 @@ useSeoMeta({
         </the-alert>
       </div>
     </template>
+
+    <the-breadcrumb
+      v-if="data?.experience"
+      :items="[
+        { name: 'トップ', path: '/' },
+        { name: '体験一覧', path: '/experiences' },
+        { name: data.experience.title, path: `/experiences/${experienceId}` },
+      ]"
+    />
 
     <!-- Experience Section -->
     <template v-if="data?.experience">
