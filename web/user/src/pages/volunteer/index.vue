@@ -76,11 +76,13 @@ useSeoHead({
             :to="`/volunteer/${content.id}`"
             class="flex flex-col md:gap-4 gap-2"
           >
-            <img
+            <nuxt-img
+              provider="cloudFront"
               :src="content.eyecatch.url"
               :alt="`${content.title}のサムネイル`"
               class="w-full aspect-video object-cover"
-            >
+              loading="lazy"
+            />
             <div class="flex flex-col md:gap-2 gap-1 md:mt-2">
               <h2
                 class="md:text-[18px] font-semibold md:tracking-[2px] tracking-[1.4px] text-[14px]"
@@ -109,8 +111,7 @@ useSeoHead({
                   {{ category.name }}
                 </span>
               </div>
-            </div>
-          </nuxt-link>
+            </div></nuxt-link>
         </div>
       </template>
       <the-pagination

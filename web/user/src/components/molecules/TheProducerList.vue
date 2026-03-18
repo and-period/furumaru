@@ -31,10 +31,13 @@ const handleClickExperienceItem = (experienceId: string) => {
 <template>
   <div class="mx-auto w-full rounded-3xl bg-white text-main">
     <div class="relative bottom-10">
-      <img
+      <nuxt-img
+        provider="cloudFront"
         :src="imgSrc ? imgSrc : '/img/furuneko.png'"
+        :alt="name ? `${name}のプロフィール画像` : '生産者プロフィール画像'"
         class="mx-auto block aspect-square w-[96px] rounded-full border-4 border-white object-cover md:w-[120px] shadow-lg"
-      >
+        loading="lazy"
+      />
     </div>
     <p
       class="relative bottom-5 text-center text-[16px] tracking-[1.6px] underline md:text-[20px] md:tracking-[2.0px]"

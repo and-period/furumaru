@@ -13,6 +13,12 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const thumbnailAlt = computed(() => {
+  return props.title?.trim()
+    ? `${props.title}のサムネイル`
+    : '体験のサムネイル'
+})
+
 interface Emits {
   (e: 'click:name', id: string): void
 }
@@ -86,12 +92,15 @@ watch(isShowInfoWindow, (newValue) => {
             />
           </div>
           <div v-else>
-            <img
+            <nuxt-img
               v-if="thumbnailUrl"
+              provider="cloudFront"
               :src="thumbnailUrl"
+              :alt="thumbnailAlt"
               class="w-full max-h-[150px] mt-2"
               :title="`${title}の画像`"
-            >
+              loading="lazy"
+            />
           </div>
         </div>
 

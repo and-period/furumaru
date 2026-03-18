@@ -207,6 +207,7 @@ useWebSiteJsonLd()
         muted
         autoplay
         loop
+        preload="auto"
         class="h-full object-cover w-full"
       >
         <source

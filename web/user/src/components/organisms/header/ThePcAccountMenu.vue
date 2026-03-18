@@ -39,10 +39,11 @@ const handleClickLogoutButton = () => {
   <the-dropdown-with-icon ref="dropdownRef">
     <template #icon>
       <template v-if="user && user.thumbnailUrl">
-        <img
+        <nuxt-img
+          provider="cloudFront"
           :src="user.thumbnailUrl"
           class="block h-7 w-7 rounded-full"
-        >
+        />
       </template>
       <template v-else>
         <the-account-icon />
@@ -61,10 +62,11 @@ const handleClickLogoutButton = () => {
         </p>
         <div class="mb-8 px-4">
           <template v-if="user.thumbnailUrl">
-            <img
+            <nuxt-img
+              provider="cloudFront"
               :src="user.thumbnailUrl"
               class="block h-[40px] w-[40px] rounded-full"
-            >
+            />
           </template>
           <template v-else>
             <img
