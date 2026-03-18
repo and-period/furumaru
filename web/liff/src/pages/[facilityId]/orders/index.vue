@@ -44,6 +44,18 @@ const formatPrice = (price: number): string => {
   return `¥${price.toLocaleString('ja-JP')}`;
 };
 
+// 注文ステータスのアイコン（色に依存しない視覚的区別）
+const getOrderStatusIcon = (status: number): string => {
+  const iconMap: Record<number, string> = {
+    1: '⏳',
+    2: '✔',
+    3: '🚚',
+    4: '✅',
+    5: '✕',
+  };
+  return iconMap[status] || '?';
+};
+
 // 注文ステータスの表示名
 const getOrderStatusText = (status: number): string => {
   const statusMap: Record<number, string> = {
@@ -127,9 +139,10 @@ const getProductInfo = (productId: string) => {
             </p>
           </div>
           <span
-            class="px-2 py-1 rounded-full text-xs font-medium"
+            class="px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1"
             :class="getOrderStatusClass(order.payment.status)"
           >
+            <span aria-hidden="true">{{ getOrderStatusIcon(order.payment.status) }}</span>
             {{ getOrderStatusText(order.payment.status) }}
           </span>
         </div>
