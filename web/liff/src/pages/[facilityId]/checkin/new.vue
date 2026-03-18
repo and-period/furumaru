@@ -254,7 +254,7 @@ async function onSubmit() {
       <div class="mt-8 max-w-md mx-auto flex justify-center px-2">
         <button
           type="submit"
-          class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+          class="bg-orange text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
           :disabled="!canSubmit"
         >
           {{ isSubmitting ? '送信中…' : '登録する' }}

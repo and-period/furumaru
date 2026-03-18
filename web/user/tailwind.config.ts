@@ -32,7 +32,7 @@ export default <Partial<Config>>{
       colors: {
         'base': '#F9F6EA',
         'main': '#604C3F',
-        'typography': '#707070',
+        'typography': '#5a5a5a',
         'green': '#7CB342',
         'orange': '#F48D26',
         'apple-red': '#E74C3C',
