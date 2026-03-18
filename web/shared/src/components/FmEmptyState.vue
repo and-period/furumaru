@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Component } from 'vue'
+import { type Component, computed } from 'vue'
 
 interface Props {
   title: string
@@ -14,7 +14,7 @@ interface Emits {
   (e: 'click:action'): void
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   description: '',
   icon: '📭',
   actionText: '',
@@ -23,6 +23,13 @@ withDefaults(defineProps<Props>(), {
 })
 
 const emits = defineEmits<Emits>()
+
+const isNativeButton = computed(() => !props.actionComponent || props.actionComponent === 'button')
+
+const resolvedType = computed(() => {
+  if (!isNativeButton.value) return undefined
+  return (props.actionComponentProps as Record<string, unknown>)?.type as string ?? 'button'
+})
 
 const handleClickAction = () => {
   emits('click:action')
@@ -50,7 +57,7 @@ const handleClickAction = () => {
       <component
         :is="actionComponent || 'button'"
         v-if="actionText"
-        :type="!actionComponent ? 'button' : undefined"
+        :type="resolvedType"
         v-bind="actionComponentProps"
         class="bg-orange text-white px-6 py-2.5 font-medium transition-all duration-200 hover:bg-orange/90"
         @click="handleClickAction"

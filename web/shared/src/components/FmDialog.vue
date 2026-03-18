@@ -85,22 +85,24 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 // 開閉時のフォーカス管理とスクロールロック
 let previousFocus: HTMLElement | null = null
+let previousOverflow: string = ''
 
 const applyOpenState = (isOpen: boolean) => {
   if (typeof document === 'undefined') return
 
   if (isOpen) {
     previousFocus = document.activeElement as HTMLElement
+    previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     nextTick(() => {
       const firstFocusable = dialogRef.value?.querySelector<HTMLElement>(
-        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       )
-      firstFocusable?.focus()
+      ;(firstFocusable ?? dialogRef.value)?.focus()
     })
   }
   else {
-    document.body.style.overflow = ''
+    document.body.style.overflow = previousOverflow
     nextTick(() => {
       previousFocus?.focus()
     })
@@ -117,7 +119,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
-    document.body.style.overflow = ''
+    document.body.style.overflow = previousOverflow
   }
 })
 </script>
@@ -134,6 +136,7 @@ onBeforeUnmount(() => {
         ref="dialogRef"
         role="dialog"
         aria-modal="true"
+        tabindex="-1"
         :aria-labelledby="title ? titleId : undefined"
         :aria-label="!title && ariaLabel ? ariaLabel : undefined"
         class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
