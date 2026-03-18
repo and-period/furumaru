@@ -154,7 +154,7 @@ defineExpose<Expose>({
   >
     <div class="md:hidden">
       <the-icon-button
-        class="h-10 w-10 md:hidden"
+        class="h-11 w-11 md:hidden"
         :aria-label="spMenuOpen ? 'メニューを閉じる' : 'メニューを開く'"
         :aria-expanded="spMenuOpen"
         @click="handleClickMenuIconButton"
@@ -226,7 +226,7 @@ defineExpose<Expose>({
         />
 
         <the-icon-button
-          class="hidden h-10 w-10 md:block xl:hidden"
+          class="hidden h-11 w-11 md:block xl:hidden"
           :aria-label="spMenuOpen ? 'メニューを閉じる' : 'メニューを開く'"
           :aria-expanded="spMenuOpen"
           @click="handleClickMenuIconButton"

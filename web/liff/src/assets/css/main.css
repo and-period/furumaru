@@ -14,7 +14,8 @@
 }
 
 /* フォーカスリングの統一: キーボード操作時のみ表示 */
-:focus-visible {
+/* input/textarea/select は独自のフォーカススタイル（border 変化）を持つため除外 */
+:focus-visible:not(input):not(textarea):not(select) {
 	outline: 2px solid var(--color-orange);
 	outline-offset: 2px;
 }

@@ -32,8 +32,9 @@ const handleClickNextPageButton = () => {
   <div class="text-center text-main">
     <div class="inline-flex gap-4">
       <button
-        class="min-h-[44px] min-w-[44px] flex items-center justify-center"
+        class="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-30"
         aria-label="前のページ"
+        :disabled="currentPage === 1"
         @click="handleClickPreviosPageButton"
       >
         <the-left-arrow-icon class="h-3" />
@@ -52,8 +53,9 @@ const handleClickNextPageButton = () => {
         {{ page }}
       </button>
       <button
-        class="min-h-[44px] min-w-[44px] flex items-center justify-center"
+        class="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-30"
         aria-label="次のページ"
+        :disabled="currentPage === pageArray[pageArray.length - 1]"
         @click="handleClickNextPageButton"
       >
         <the-right-arrow-icon class="h-3" />
