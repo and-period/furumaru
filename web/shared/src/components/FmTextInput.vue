@@ -14,6 +14,8 @@ interface Props {
   pattern?: string
   maxLength?: number
   disabled?: boolean
+  autocomplete?: string
+  inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,6 +30,8 @@ const props = withDefaults(defineProps<Props>(), {
   pattern: '',
   maxLength: undefined,
   disabled: false,
+  autocomplete: undefined,
+  inputmode: undefined,
 })
 
 
@@ -108,6 +112,10 @@ const viewMessage = computed(() => {
           :pattern="pattern || undefined"
           :maxlength="maxLength || undefined"
           :disabled="disabled"
+          :autocomplete="autocomplete || undefined"
+          :inputmode="inputmode || undefined"
+          :aria-invalid="hasError || undefined"
+          :aria-describedby="viewMessage ? `${id}-message` : undefined"
           :class="{
             'block w-full appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none placeholder:text-placeholder': true,
             'border-b-2 border-orange': hasError,
@@ -161,7 +169,11 @@ const viewMessage = computed(() => {
         </button>
       </div>
     </div>
-    <p :class="{ 'text-orange': hasError, 'text-left text-sm text-main': true }">
+    <p
+      :id="`${id}-message`"
+      :class="{ 'text-orange': hasError, 'text-left text-sm text-main': true }"
+      :role="hasError ? 'alert' : undefined"
+    >
       {{ viewMessage }}
     </p>
   </div>

@@ -145,6 +145,7 @@ const originLocationText = computed<string>(() => {
             <video
               :src="`${selectMediaSrcUrl}#t=0.1`"
               class="block h-full w-full object-contain border"
+              :aria-label="`${name} の動画`"
               controls
               loop
             />
@@ -169,12 +170,17 @@ const originLocationText = computed<string>(() => {
           >
             <template v-if="isVideoUrl(media.url)">
               <div
+                role="button"
+                tabindex="0"
+                :aria-label="`${name} の動画 ${index + 1} を選択`"
                 class="aspect-square w-[72px] h-[72px] cursor-pointer border relative"
                 @click="handleClickMediaItem(index)"
+                @keydown.enter="handleClickMediaItem(index)"
               >
                 <video
                   :src="`${media.url}#t=0.1`"
                   class="aspect-square w-full object-contain h-full"
+                  aria-hidden="true"
                 />
                 <div class="absolute h-6 w-6 bottom-0 right-0 p-1 bg-main/80 rounded-full text-white">
                   <svg
@@ -229,12 +235,31 @@ const originLocationText = computed<string>(() => {
           <div class="flex items-center gap-3">
             <div class="inline-flex items-center">
               <!-- Star rating display (simplified) -->
-              <div class="flex items-center">
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-gray-300">★</span>
+              <div
+                class="flex items-center"
+                role="img"
+                :aria-label="`評価: ${rating.average} / 5`"
+              >
+                <span
+                  class="text-yellow-500"
+                  aria-hidden="true"
+                >★</span>
+                <span
+                  class="text-yellow-500"
+                  aria-hidden="true"
+                >★</span>
+                <span
+                  class="text-yellow-500"
+                  aria-hidden="true"
+                >★</span>
+                <span
+                  class="text-yellow-500"
+                  aria-hidden="true"
+                >★</span>
+                <span
+                  class="text-gray-300"
+                  aria-hidden="true"
+                >★</span>
               </div>
               <p class="ms-2 text-sm font-bold text-main">
                 {{ rating.average }}

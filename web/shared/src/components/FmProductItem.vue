@@ -110,7 +110,7 @@ const handleClickAddCartButton = () => {
           <video
             :src="thumbnailUrl"
             class="aspect-square w-full"
-            :alt="`video of ${name}`"
+            :aria-label="`video of ${name}`"
             :title="name"
             preload="metadata"
             autoplay

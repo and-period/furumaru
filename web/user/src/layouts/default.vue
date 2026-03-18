@@ -221,6 +221,8 @@ onUnmounted(() => {
     />
     <div
       id="snackbar"
+      aria-live="polite"
+      role="status"
       class="absolute top-[28px] z-[70] flex min-h-min w-full flex-col gap-2 bg-transparent md:top-[120px]"
     />
   </div>
@@ -237,7 +239,10 @@ onUnmounted(() => {
           class="fixed bottom-10 size-10 md:left-8 left-4 bg-white border-line border-2 md:p-3 p-2 md:w-[170px] md:h-[170px] w-[120px] h-[120px] z-20 rounded-xl flex flex-col"
         >
           <div class="text-right text-line w-full h-5">
-            <button @click="handleClickCloseBanner">
+            <button
+              aria-label="バナーを閉じる"
+              @click="handleClickCloseBanner"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

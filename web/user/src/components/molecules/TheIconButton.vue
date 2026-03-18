@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 interface Props {
   withBadge?: boolean
+  ariaLabel?: string
+  ariaExpanded?: boolean
+  ariaHaspopup?: boolean | string
 }
 
 interface Emits {
@@ -9,6 +12,9 @@ interface Emits {
 
 withDefaults(defineProps<Props>(), {
   withBadge: false,
+  ariaLabel: undefined,
+  ariaExpanded: undefined,
+  ariaHaspopup: undefined,
 })
 
 const emits = defineEmits<Emits>()
@@ -21,6 +27,9 @@ const handleClick = () => {
 <template>
   <button
     class="rounded-full p-2"
+    :aria-label="ariaLabel || undefined"
+    :aria-expanded="ariaExpanded"
+    :aria-haspopup="ariaHaspopup || undefined"
     @click="handleClick"
   >
     <div class="relative">

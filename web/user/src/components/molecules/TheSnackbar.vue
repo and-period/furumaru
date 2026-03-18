@@ -25,12 +25,15 @@ onMounted(() => {
   <Teleport to="#snackbar">
     <div
       v-if="isShow"
+      role="alert"
+      aria-live="polite"
       class="mx-auto flex w-[90%] justify-between rounded-lg border-2 border-orange bg-white p-4 text-main shadow-md md:w-[400px]"
     >
       <div>{{ text }}</div>
       <button
         type="button"
         class="ml-4"
+        aria-label="通知を閉じる"
         @click="handelCloseButton"
       >
         <the-outline-close-icon />
