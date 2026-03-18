@@ -372,8 +372,8 @@ const originLocationText = computed<string>(() => {
   counter-increment: li;
   position: absolute;
   left: 0;
-  background-color: #604c3f;
-  color: #f9f6ea;
+  background-color: var(--color-main, #604c3f);
+  color: var(--color-base, #f9f6ea);
   border-radius: 100%;
   width: 24px;
   height: 24px;
@@ -390,10 +390,10 @@ const originLocationText = computed<string>(() => {
 }
 
 .bg-base {
-  background-color: #f9f6ea;
+  background-color: var(--color-base, #f9f6ea);
 }
 
 .text-main {
-  color: #604c3f;
+  color: var(--color-main, #604c3f);
 }
 </style>

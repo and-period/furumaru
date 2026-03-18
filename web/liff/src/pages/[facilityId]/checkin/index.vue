@@ -263,7 +263,7 @@ const handleCancel = () => {
       <div class="mt-8 max-w-md mx-auto px-2 space-y-3">
         <button
           type="button"
-          class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+          class="bg-orange text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
           :disabled="isLoading"
           @click="handleUpdate"
         >

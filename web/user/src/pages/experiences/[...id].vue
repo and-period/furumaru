@@ -730,8 +730,8 @@ useBreadcrumbJsonLd(computed(() => [
   counter-increment: li;
   position: absolute;
   left: 0;
-  background-color: #604c3f;
-  color: #f9f6ea;
+  background-color: theme('colors.main');
+  color: theme('colors.base');
   border-radius: 100%;
   width: 24px;
   height: 24px;
