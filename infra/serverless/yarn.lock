@@ -2444,7 +2444,7 @@ semver@^7.5.3:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.7.4.tgz#28464e36060e991fa7a11d0279d2d3f3b57a7e8a"
   integrity sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==
 
-serverless-step-functions@^3.21.0:
+serverless-step-functions@3.24.0:
   version "3.24.0"
   resolved "https://registry.yarnpkg.com/serverless-step-functions/-/serverless-step-functions-3.24.0.tgz#38934403e24af60b293aa4b8e0e1bfab38f337aa"
   integrity sha512-p2r26ok+Klzm1XYuvNXWk+aIWdjXVLQnHPecTu9y71K8lU8+ThjB4d8/Cm/tSMvU8a3EkpX7n+DZ1IO9XYj4vA==

@@ -1,5 +1,5 @@
 # ビルド用コンテナ
-FROM golang:1.26.0-bookworm as builder
+FROM golang:1.26.0-bookworm@sha256:2a0ba12e116687098780d3ce700f9ce3cb340783779646aafbabed748fa6677c as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     make build-hack SERVICE=${SERVICE} BUILD_DIR=/dist
 
 # 実行用コンテナ
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:f06537653ac770703bc45b4b113475bd402f451e85223f0f2837acbf89ab020a
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
