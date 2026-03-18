@@ -208,7 +208,6 @@ useWebSiteJsonLd()
         autoplay
         loop
         preload="auto"
-        poster="/img/hero-poster.jpg"
         class="h-full object-cover w-full"
       >
         <source
