@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VolunteerBlogListResponse } from '~/types/cms/volunteer'
+import { useSeoHead } from '~/hooks/seo'
 
 const route = useRoute()
 const router = useRouter()
@@ -52,8 +53,9 @@ const handleClickPage = (page: number) => {
   })
 }
 
-useSeoMeta({
+useSeoHead({
   title: 'ブログ',
+  path: '/volunteer',
 })
 </script>
 

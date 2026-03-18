@@ -175,6 +175,12 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-main"
+  >
+    メインコンテンツへスキップ
+  </a>
   <div class="sticky top-0 z-[60]">
     <the-app-header
       ref="appHeaderRef"
@@ -219,7 +225,10 @@ onUnmounted(() => {
     />
   </div>
   <div class="flex min-h-screen flex-col bg-base">
-    <main class="grow overflow-hidden">
+    <main
+      id="main-content"
+      class="grow overflow-hidden"
+    >
       <div class="mx-auto pb-16">
         <slot />
         <div

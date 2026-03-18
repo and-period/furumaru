@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VolunteerBlogItemResponse } from '~/types/cms/volunteer'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
 const route = useRoute()
 
@@ -22,9 +23,17 @@ if (error.value) {
   throw createError(error.value)
 }
 
-useSeoMeta({
+useSeoHead({
   title,
+  ogImage: computed(() => data.value?.eyecatch?.url || ''),
+  path: computed(() => `/volunteer/${id.value}`),
 })
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: 'ブログ', path: '/volunteer' },
+  { name: title.value, path: `/volunteer/${id.value}` },
+]))
 </script>
 
 <template>

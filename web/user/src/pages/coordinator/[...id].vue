@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useCoordinatorStore } from '~/store/coordinator'
 import type { I18n } from '~/types/locales'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
 const i18n = useI18n()
 
@@ -72,9 +73,17 @@ useAsyncData(`coordinator-${id.value}`, async () => {
   return true
 }, { watch: [id] })
 
-useSeoMeta({
-  title: pageTitle.value,
+useSeoHead({
+  title: pageTitle,
+  description: computed(() => coordinatorInfo.value?.profile || ''),
+  ogImage: computed(() => coordinatorInfo.value?.thumbnailUrl || ''),
+  path: computed(() => `/coordinator/${id.value}`),
 })
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: pageTitle.value, path: `/coordinator/${id.value}` },
+]))
 </script>
 
 <template>

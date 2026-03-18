@@ -76,6 +76,42 @@ export default defineNuxtConfig({
     url: 'https://www.furumaru.and-period.co.jp',
     name: '産地直送のお取り寄せ通販【ふるマル】',
   },
+  robots: {
+    groups: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/account/', '/checkout/', '/cart', '/auth/', '/verify', '/signin', '/signup', '/purchase/', '/register', '/health'],
+      },
+    ],
+    sitemap: 'https://www.furumaru.and-period.co.jp/sitemap.xml',
+  },
+  sitemap: {
+    exclude: [
+      '/account/**',
+      '/signin',
+      '/signup',
+      '/verify',
+      '/auth/**',
+      '/checkout/**',
+      '/purchase/**',
+      '/register',
+      '/health',
+      '/v1/**',
+      '/reviews/**',
+    ],
+  },
+  routeRules: {
+    '/': { prerender: true },
+    '/about': { prerender: true },
+    '/privacy': { prerender: true },
+    '/legal-notice': { prerender: true },
+    '/terms-of-use': { prerender: true },
+    '/contact': { prerender: true },
+    '/items/**': { swr: 3600 },
+    '/experiences/**': { swr: 3600 },
+    '/account/**': { ssr: false },
+  },
   eslint: {
     config: {
       stylistic: {
@@ -99,12 +135,12 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'ja',
-        iso: 'ja',
+        language: 'ja-JP',
         file: 'ja_jp.json',
       },
       {
         code: 'en',
-        iso: 'en',
+        language: 'en-US',
         file: 'en_us.json',
       },
     ],

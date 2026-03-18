@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useLiveStore } from '~/store/live'
+import { useSeoHead } from '~/hooks/seo'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
@@ -63,8 +64,10 @@ useAsyncData('products', () => {
   return fetchArchives(pagePerItems.value, pagination.value.offset)
 })
 
-useSeoMeta({
+useSeoHead({
   title: 'すべてのマルシェ',
+  description: '産地直送のお取り寄せ通販ふるマルのマルシェ一覧ページです。過去のライブ配信アーカイブをご覧いただけます。',
+  path: '/marches',
 })
 </script>
 

@@ -10,6 +10,7 @@ import {
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
 import type { I18n } from '~/types/locales'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
@@ -168,9 +169,17 @@ onMounted(() => {
   })
 })
 
-useSeoMeta({
-  title: 'ライブ配信',
+useSeoHead({
+  title: computed(() => schedule.value?.schedule.title || 'ライブ配信'),
+  description: computed(() => schedule.value?.schedule.description?.slice(0, 120) || ''),
+  ogImage: computed(() => schedule.value?.schedule.thumbnailUrl || ''),
+  path: computed(() => `/live/${scheduleId.value}`),
 })
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: schedule.value?.schedule.title || 'ライブ配信', path: `/live/${scheduleId.value}` },
+]))
 </script>
 
 <template>

@@ -8,6 +8,7 @@ import {
 } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
@@ -125,9 +126,17 @@ onMounted(() => {
   })
 })
 
-useSeoMeta({
-  title: '動画',
+useSeoHead({
+  title: computed(() => video.value?.video.title || '動画'),
+  description: computed(() => video.value?.video.description?.slice(0, 120) || ''),
+  ogImage: computed(() => video.value?.video.thumbnailUrl || ''),
+  path: computed(() => `/video/${videoId.value}`),
 })
+
+useBreadcrumbJsonLd(computed(() => [
+  { name: 'トップ', path: '/' },
+  { name: video.value?.video.title || '動画', path: `/video/${videoId.value}` },
+]))
 </script>
 
 <template>
