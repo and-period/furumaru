@@ -1,5 +1,23 @@
 # Changelog
 
+## [v10.3.3](https://github.com/and-period/furumaru/compare/v10.3.2...v10.3.3) - 2026-03-18
+- docs: Web UI/UX・SEO 総合改善の仕様書を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3395
+- feat(web): Phase 1 SEO 最適化を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3397
+- feat(web): Phase 2 アクセシビリティ改善を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3398
+- feat(web): Phase 3 パフォーマンス最適化を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3399
+- feat(web): Phase 5 デザイントークン統一・カラーコントラスト改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3400
+- fix(web): 残りのアクセシビリティギャップを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3401
+- fix(web): prerender ルールを削除して 502 エラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3404
+- chore(deps): pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3402
+- chore(deps): update admin web dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3403
+- docs: Web UI/UX・SEO 再評価と追加改善提案 by @taba2424 in https://github.com/and-period/furumaru/pull/3405
+- feat(web): 残存する技術的改善項目を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3406
+- feat(web): フォーカストラップ実装 + 注文ステータスにアイコン追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3407
+- feat(web): 共通コンポーネント FmButton / FmLoadingSpinner / FmEmptyState / FmDialog を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3408
+- feat(web): チェックアウト進捗インジケーターを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3411
+- feat(web): 最近チェックした商品機能を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3409
+- feat(web): カート内数量変更機能を追加（web/liff） by @taba2424 in https://github.com/and-period/furumaru/pull/3410
+
 ## [v10.3.2](https://github.com/and-period/furumaru/compare/v10.3.1...v10.3.2) - 2026-03-17
 - fix(web): 体験注文の「体験準備中」ステータスから受付完了できるよう修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3393
 
