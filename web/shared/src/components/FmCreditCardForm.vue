@@ -65,10 +65,13 @@ const handleSubmit = () => {
   >
     <div class="mt-4 flex w-full items-center gap-4">
       <FmTextInput
+        id="cc-number"
         v-model="creditCardData.number"
         :placeholder="creditCardNumberPlaceholder"
         name="cc-number"
         type="text"
+        autocomplete="cc-number"
+        inputmode="numeric"
         class="w-full"
         pattern="[0-9]*"
         required
@@ -100,16 +103,20 @@ const handleSubmit = () => {
       </div>
     </div>
     <FmTextInput
+      id="cc-name"
       v-model="creditCardData.name"
       :placeholder="cardholderNamePlaceholder"
       name="cc-name"
       type="text"
+      autocomplete="cc-name"
       class="mt-2 w-full"
       required
     />
     <div class="mt-2 flex gap-4">
       <select
         v-model="creditCardMonthValue"
+        name="cc-exp-month"
+        autocomplete="cc-exp-month"
         class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
       >
         <option
@@ -129,6 +136,8 @@ const handleSubmit = () => {
 
       <select
         v-model="creditCardData.year"
+        name="cc-exp-year"
+        autocomplete="cc-exp-year"
         class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
       >
         <option
@@ -147,11 +156,13 @@ const handleSubmit = () => {
       </select>
     </div>
     <FmTextInput
+      id="cc-csc"
       v-model="creditCardData.verificationValue"
       :placeholder="securityCodePlaceholder"
       name="cc-csc"
       type="password"
-      pattern="[0-9]*"
+      autocomplete="cc-csc"
+      inputmode="numeric"
       class="mt-4 w-1/2"
       required
     />

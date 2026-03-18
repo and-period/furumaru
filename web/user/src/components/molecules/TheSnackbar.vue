@@ -31,6 +31,7 @@ onMounted(() => {
       <button
         type="button"
         class="ml-4"
+        aria-label="通知を閉じる"
         @click="handelCloseButton"
       >
         <the-outline-close-icon />

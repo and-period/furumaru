@@ -124,6 +124,9 @@ const expirationDateText = computed<string>(() => {
   return `${props.expirationDate}日`;
 });
 
+// Number of filled stars based on rating average
+const filledStars = computed<number>(() => Math.round(props.rating.average));
+
 // Check if product has recommended points
 const hasRecommendedPoints = computed<boolean>(() => {
   return !!(props.recommendedPoint1 || props.recommendedPoint2 || props.recommendedPoint3);
@@ -145,6 +148,7 @@ const originLocationText = computed<string>(() => {
             <video
               :src="`${selectMediaSrcUrl}#t=0.1`"
               class="block h-full w-full object-contain border"
+              :aria-label="`${name} の動画`"
               controls
               loop
             />
@@ -169,12 +173,18 @@ const originLocationText = computed<string>(() => {
           >
             <template v-if="isVideoUrl(media.url)">
               <div
+                role="button"
+                tabindex="0"
+                :aria-label="`${name} の動画 ${index + 1} を選択`"
                 class="aspect-square w-[72px] h-[72px] cursor-pointer border relative"
                 @click="handleClickMediaItem(index)"
+                @keydown.enter="handleClickMediaItem(index)"
+                @keydown.space.prevent="handleClickMediaItem(index)"
               >
                 <video
                   :src="`${media.url}#t=0.1`"
                   class="aspect-square w-full object-contain h-full"
+                  aria-hidden="true"
                 />
                 <div class="absolute h-6 w-6 bottom-0 right-0 p-1 bg-main/80 rounded-full text-white">
                   <svg
@@ -196,11 +206,15 @@ const originLocationText = computed<string>(() => {
             </template>
             <template v-else>
               <img
+                role="button"
+                tabindex="0"
                 width="72px"
                 :src="media.url"
-                :alt="`${name} image ${index + 1}`"
+                :alt="`${name} の画像 ${index + 1} を選択`"
                 class="aspect-square w-[72px] h-[72px] cursor-pointer object-contain border block"
                 @click="handleClickMediaItem(index)"
+                @keydown.enter="handleClickMediaItem(index)"
+                @keydown.space.prevent="handleClickMediaItem(index)"
               >
             </template>
           </template>
@@ -229,12 +243,17 @@ const originLocationText = computed<string>(() => {
           <div class="flex items-center gap-3">
             <div class="inline-flex items-center">
               <!-- Star rating display (simplified) -->
-              <div class="flex items-center">
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-yellow-500">★</span>
-                <span class="text-gray-300">★</span>
+              <div
+                class="flex items-center"
+                role="img"
+                :aria-label="`評価: ${rating.average} / 5`"
+              >
+                <span
+                  v-for="i in 5"
+                  :key="i"
+                  :class="i <= filledStars ? 'text-yellow-500' : 'text-gray-300'"
+                  aria-hidden="true"
+                >★</span>
               </div>
               <p class="ms-2 text-sm font-bold text-main">
                 {{ rating.average }}

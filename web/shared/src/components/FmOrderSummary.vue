@@ -138,7 +138,7 @@ const discountFormatter = (discount: number): string => {
                     height="56px"
                     :src="item.product.thumbnail.url"
                     class="block aspect-square h-[56px] w-[56px]"
-                    :alt="itemThumbnailAlt(item.product.name)"
+                    :aria-label="itemThumbnailAlt(item.product.name)"
                   />
                 </template>
                 <!-- Image Thumbnail -->
