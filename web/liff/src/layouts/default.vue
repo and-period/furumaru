@@ -311,7 +311,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                       >
                         <button
                           class="flex items-center justify-center w-[44px] h-[44px] min-w-[44px] min-h-[44px] rounded-full border border-gray-300 bg-white text-gray-700 text-lg font-bold hover:bg-gray-100 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                          :disabled="updatingQuantityProductId === item.productId || removingProductId === item.productId"
+                          :disabled="!!updatingQuantityProductId || removingProductId === item.productId"
                           :aria-label="`${item.product?.name || '商品'}の数量を減らす`"
                           @click="handleQuantityChange(item.productId, item.quantity - 1, item.product?.inventory)"
                         >
@@ -326,7 +326,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                         </span>
                         <button
                           class="flex items-center justify-center w-[44px] h-[44px] min-w-[44px] min-h-[44px] rounded-full border border-gray-300 bg-white text-gray-700 text-lg font-bold hover:bg-gray-100 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                          :disabled="updatingQuantityProductId === item.productId || removingProductId === item.productId || (item.product?.inventory !== undefined && item.quantity >= item.product.inventory)"
+                          :disabled="!!updatingQuantityProductId || removingProductId === item.productId || (item.product?.inventory !== undefined && item.quantity >= item.product.inventory)"
                           :aria-label="`${item.product?.name || '商品'}の数量を増やす`"
                           @click="handleQuantityChange(item.productId, item.quantity + 1, item.product?.inventory)"
                         >
