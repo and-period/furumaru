@@ -16,6 +16,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div
+    aria-hidden="true"
     class="animate-pulse bg-gray-200"
     :class="{
       'rounded-md': rounded && !circle,

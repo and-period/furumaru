@@ -111,7 +111,8 @@ useBreadcrumbJsonLd(computed(() => [
               class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
               :src="coordinatorInfo.headerUrl"
               :alt="coordinatorInfo.marcheName + 'のヘッダー画像'"
-              loading="lazy"
+              loading="eager"
+              fetchpriority="high"
             />
           </template>
           <template v-else>

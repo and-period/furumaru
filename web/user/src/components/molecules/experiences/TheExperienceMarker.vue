@@ -90,6 +90,7 @@ watch(isShowInfoWindow, (newValue) => {
               v-if="thumbnailUrl"
               provider="cloudFront"
               :src="thumbnailUrl"
+              :alt="`${title}のサムネイル`"
               class="w-full max-h-[150px] mt-2"
               :title="`${title}の画像`"
               loading="lazy"

@@ -34,6 +34,7 @@ const handleClickExperienceItem = (experienceId: string) => {
       <nuxt-img
         provider="cloudFront"
         :src="imgSrc ? imgSrc : '/img/furuneko.png'"
+        :alt="name ? `${name}のプロフィール画像` : '生産者プロフィール画像'"
         class="mx-auto block aspect-square w-[96px] rounded-full border-4 border-white object-cover md:w-[120px] shadow-lg"
         loading="lazy"
       />

@@ -194,30 +194,29 @@ const handleClickAddCartButton = () => {
           :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full object-cover"
           loading="lazy"
-        >
-          <div>
-            <div class="hidden md:block">
-              <button @click="handleClickCoordinator">
-                <p
-                  class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
-                >
-                  {{ coordinator.marcheName }}
-                </p>
-              </button>
-              <p class="text-[11px]">
-                {{ coordinator.prefecture }} {{ coordinator.city }}
+        />
+        <div>
+          <div class="hidden md:block">
+            <button @click="handleClickCoordinator">
+              <p
+                class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+              >
+                {{ coordinator.marcheName }}
               </p>
-            </div>
-            <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
-              <p class="whitespace-nowrap">
-                {{ lt("coordinatorLabel") }}:
-              </p>
-              <p class="text-[12px] md:text-[14px]">
-                {{ coordinator.username }}
-              </p>
-            </div>
+            </button>
+            <p class="text-[11px]">
+              {{ coordinator.prefecture }} {{ coordinator.city }}
+            </p>
           </div>
-        </nuxt-img>
+          <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
+            <p class="whitespace-nowrap">
+              {{ lt("coordinatorLabel") }}:
+            </p>
+            <p class="text-[12px] md:text-[14px]">
+              {{ coordinator.username }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
