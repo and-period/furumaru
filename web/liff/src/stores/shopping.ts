@@ -191,6 +191,21 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       }
     },
 
+    // カート内アイテムの数量を更新
+    async updateCartItemQuantity(facilityId: string, productId: string, quantity: number) {
+      if (!Number.isFinite(quantity) || !Number.isInteger(quantity)) {
+        throw new Error('quantity must be a finite integer');
+      }
+      if (quantity <= 0) {
+        // 数量が0以下の場合は削除
+        await this.removeCartItem(facilityId, productId);
+        return;
+      }
+      // 既存アイテムを削除してから新しい数量で追加（API が加算方式のため）
+      await this.removeCartItem(facilityId, productId);
+      await this.addCartItem(facilityId, productId, quantity);
+    },
+
     // カートからアイテムを削除
     async removeCartItem(facilityId: string, productId: string) {
       try {
