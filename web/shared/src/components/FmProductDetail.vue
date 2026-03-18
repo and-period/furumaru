@@ -124,6 +124,9 @@ const expirationDateText = computed<string>(() => {
   return `${props.expirationDate}日`;
 });
 
+// Number of filled stars based on rating average
+const filledStars = computed<number>(() => Math.round(props.rating.average));
+
 // Check if product has recommended points
 const hasRecommendedPoints = computed<boolean>(() => {
   return !!(props.recommendedPoint1 || props.recommendedPoint2 || props.recommendedPoint3);
@@ -176,6 +179,7 @@ const originLocationText = computed<string>(() => {
                 class="aspect-square w-[72px] h-[72px] cursor-pointer border relative"
                 @click="handleClickMediaItem(index)"
                 @keydown.enter="handleClickMediaItem(index)"
+                @keydown.space.prevent="handleClickMediaItem(index)"
               >
                 <video
                   :src="`${media.url}#t=0.1`"
@@ -202,11 +206,15 @@ const originLocationText = computed<string>(() => {
             </template>
             <template v-else>
               <img
+                role="button"
+                tabindex="0"
                 width="72px"
                 :src="media.url"
-                :alt="`${name} image ${index + 1}`"
+                :alt="`${name} の画像 ${index + 1} を選択`"
                 class="aspect-square w-[72px] h-[72px] cursor-pointer object-contain border block"
                 @click="handleClickMediaItem(index)"
+                @keydown.enter="handleClickMediaItem(index)"
+                @keydown.space.prevent="handleClickMediaItem(index)"
               >
             </template>
           </template>
@@ -241,23 +249,9 @@ const originLocationText = computed<string>(() => {
                 :aria-label="`評価: ${rating.average} / 5`"
               >
                 <span
-                  class="text-yellow-500"
-                  aria-hidden="true"
-                >★</span>
-                <span
-                  class="text-yellow-500"
-                  aria-hidden="true"
-                >★</span>
-                <span
-                  class="text-yellow-500"
-                  aria-hidden="true"
-                >★</span>
-                <span
-                  class="text-yellow-500"
-                  aria-hidden="true"
-                >★</span>
-                <span
-                  class="text-gray-300"
+                  v-for="i in 5"
+                  :key="i"
+                  :class="i <= filledStars ? 'text-yellow-500' : 'text-gray-300'"
                   aria-hidden="true"
                 >★</span>
               </div>

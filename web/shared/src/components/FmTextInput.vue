@@ -115,7 +115,7 @@ const viewMessage = computed(() => {
           :autocomplete="autocomplete || undefined"
           :inputmode="inputmode || undefined"
           :aria-invalid="hasError || undefined"
-          :aria-describedby="viewMessage ? `${id}-message` : undefined"
+          :aria-describedby="id && viewMessage ? `${id}-message` : undefined"
           :class="{
             'block w-full appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none placeholder:text-placeholder': true,
             'border-b-2 border-orange': hasError,
@@ -170,7 +170,7 @@ const viewMessage = computed(() => {
       </div>
     </div>
     <p
-      :id="`${id}-message`"
+      :id="id ? `${id}-message` : undefined"
       :class="{ 'text-orange': hasError, 'text-left text-sm text-main': true }"
       :role="hasError ? 'alert' : undefined"
     >

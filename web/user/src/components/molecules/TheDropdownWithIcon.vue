@@ -1,4 +1,12 @@
 <script lang="ts" setup>
+interface Props {
+  triggerAriaLabel?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  triggerAriaLabel: 'メニューを開閉',
+})
+
 interface Expose {
   open: () => void
   close: () => void
@@ -65,6 +73,7 @@ defineExpose<Expose>({
     class="relative"
   >
     <the-icon-button
+      :aria-label="triggerAriaLabel"
       :aria-expanded="isShow"
       aria-haspopup="true"
       @click="handleIconClick"
