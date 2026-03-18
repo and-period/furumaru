@@ -191,6 +191,17 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       }
     },
 
+    // カート内アイテムの数量を更新
+    async updateCartItemQuantity(facilityId: string, productId: string, quantity: number) {
+      if (quantity <= 0) {
+        // 数量が0以下の場合は削除
+        await this.removeCartItem(facilityId, productId);
+        return;
+      }
+      // addCartItemを利用して数量を上書き
+      await this.addCartItem(facilityId, productId, quantity);
+    },
+
     // カートからアイテムを削除
     async removeCartItem(facilityId: string, productId: string) {
       try {

@@ -43,6 +43,8 @@ const hasCartItems = computed(() => !cartIsEmpty.value);
 
 // 削除中のプロダクトID
 const removingProductId = ref<string | null>(null);
+// 数量変更中のプロダクトID
+const updatingQuantityProductId = ref<string | null>(null);
 
 const handleRemoveItem = async (productId: string) => {
   if (removingProductId.value) {
@@ -58,6 +60,26 @@ const handleRemoveItem = async (productId: string) => {
   }
   finally {
     removingProductId.value = null;
+  }
+};
+
+const handleQuantityChange = async (productId: string, newQuantity: number, inventory?: number) => {
+  if (updatingQuantityProductId.value) {
+    return;
+  }
+  // 在庫上限を超えない
+  if (inventory !== undefined && newQuantity > inventory) {
+    return;
+  }
+  updatingQuantityProductId.value = productId;
+  try {
+    await shoppingCartStore.updateCartItemQuantity(facilityId.value, productId, newQuantity);
+  }
+  catch (e) {
+    console.error('Failed to update quantity:', e);
+  }
+  finally {
+    updatingQuantityProductId.value = null;
   }
 };
 
@@ -278,9 +300,45 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                     <p class="text-xs text-gray-600">
                       単価: ¥{{ formatPrice(item.product?.price || 0) }}
                     </p>
-                    <p class="text-xs text-gray-600">
-                      数量: {{ item.quantity }}{{ item.product?.itemUnit }}
-                    </p>
+
+                    <!-- 数量変更コントロール -->
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs text-gray-600">数量:</span>
+                      <div
+                        class="flex items-center gap-1"
+                        role="group"
+                        :aria-label="`${item.product?.name || '商品'}の数量変更`"
+                      >
+                        <button
+                          class="flex items-center justify-center w-[44px] h-[44px] min-w-[44px] min-h-[44px] rounded-full border border-gray-300 bg-white text-gray-700 text-lg font-bold hover:bg-gray-100 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                          :disabled="updatingQuantityProductId === item.productId || removingProductId === item.productId"
+                          :aria-label="`${item.product?.name || '商品'}の数量を減らす`"
+                          @click="handleQuantityChange(item.productId, item.quantity - 1, item.product?.inventory)"
+                        >
+                          &minus;
+                        </button>
+                        <span
+                          class="w-8 text-center text-sm font-semibold tabular-nums"
+                          aria-live="polite"
+                          :aria-label="`現在の数量: ${item.quantity}`"
+                        >
+                          {{ updatingQuantityProductId === item.productId ? '…' : item.quantity }}
+                        </span>
+                        <button
+                          class="flex items-center justify-center w-[44px] h-[44px] min-w-[44px] min-h-[44px] rounded-full border border-gray-300 bg-white text-gray-700 text-lg font-bold hover:bg-gray-100 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                          :disabled="updatingQuantityProductId === item.productId || removingProductId === item.productId || (item.product?.inventory !== undefined && item.quantity >= item.product.inventory)"
+                          :aria-label="`${item.product?.name || '商品'}の数量を増やす`"
+                          @click="handleQuantityChange(item.productId, item.quantity + 1, item.product?.inventory)"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <span
+                        v-if="item.product?.itemUnit"
+                        class="text-xs text-gray-500"
+                      >{{ item.product.itemUnit }}</span>
+                    </div>
+
                     <p class="text-sm font-bold text-main">
                       ¥{{ formatPrice((item.product?.price || 0) * item.quantity) }}
                     </p>
@@ -289,7 +347,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                   <div class="mt-2 text-right">
                     <button
                       class="text-xs text-red-600 border border-red-300 px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50"
-                      :disabled="removingProductId === item.productId"
+                      :disabled="removingProductId === item.productId || updatingQuantityProductId === item.productId"
                       @click="handleRemoveItem(item.productId)"
                     >
                       {{ removingProductId === item.productId ? '削除中…' : '削除' }}
