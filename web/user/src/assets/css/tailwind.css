@@ -8,6 +8,12 @@
     @apply text-typography tracking-wide;
     font-family: 'Noto Sans JP', sans-serif;
   }
+
+  /* フォーカスリングの統一: キーボード操作時のみ表示 */
+  /* input/textarea/select は独自のフォーカススタイル（border 変化）を持つため除外 */
+  :focus-visible:not(input):not(textarea):not(select) {
+    @apply outline-2 outline-offset-2 outline-orange;
+  }
 }
 
 @layer utilities {

@@ -46,7 +46,11 @@ export default defineNuxtConfig({
           content: 'https://www.furumaru.and-period.co.jp/ogp/ogp.jpg',
         },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'preconnect', href: 'https://assets.furumaru.and-period.co.jp' },
+        { rel: 'dns-prefetch', href: 'https://assets.furumaru.and-period.co.jp' },
+      ],
     },
   },
   plugins: ['~/plugins/sentry.client'],

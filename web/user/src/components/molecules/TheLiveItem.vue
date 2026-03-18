@@ -94,7 +94,7 @@ const handleClick = () => {
             }}</span>
           </div>
           <button
-            class="h-4 w-4 hover:scale-110"
+            class="min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110"
             aria-label="メニュー"
           >
             <the-ellipsis-vertical-icon class="h-5 w-5" />
