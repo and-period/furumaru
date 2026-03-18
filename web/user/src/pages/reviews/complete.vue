@@ -19,7 +19,10 @@ useSeoMeta({
         <div class=" font-semibold text-lg">
           {{ lt('reviewSubmitSuccessMessage') }}
         </div>
-        <img src="/img/purchase/complete.svg">
+        <img
+          src="/img/purchase/complete.svg"
+          alt="レビュー投稿完了"
+        >
       </div>
 
       <div class=" text-center">

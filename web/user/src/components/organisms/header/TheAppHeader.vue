@@ -155,6 +155,8 @@ defineExpose<Expose>({
     <div class="md:hidden">
       <the-icon-button
         class="h-10 w-10 md:hidden"
+        :aria-label="spMenuOpen ? 'メニューを閉じる' : 'メニューを開く'"
+        :aria-expanded="spMenuOpen"
         @click="handleClickMenuIconButton"
       >
         <the-outline-close-icon v-if="spMenuOpen" />
@@ -225,6 +227,8 @@ defineExpose<Expose>({
 
         <the-icon-button
           class="hidden h-10 w-10 md:block xl:hidden"
+          :aria-label="spMenuOpen ? 'メニューを閉じる' : 'メニューを開く'"
+          :aria-expanded="spMenuOpen"
           @click="handleClickMenuIconButton"
         >
           <the-outline-close-icon v-if="spMenuOpen" />
@@ -266,13 +270,13 @@ defineExpose<Expose>({
       </div>
 
       <div class="my-12 flex justify-center gap-x-3">
-        <the-icon-button>
+        <the-icon-button aria-label="Instagramをフォロー">
           <the-instagram-icon
             id="header-instagram-icon"
             fill="#604C3F"
           />
         </the-icon-button>
-        <the-icon-button>
+        <the-icon-button aria-label="Facebookをフォロー">
           <the-facebook-icon
             id="header-facebook-icon"
             fill="#604C3F"

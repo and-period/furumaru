@@ -555,6 +555,7 @@ useBreadcrumbJsonLd(computed(() => [
                 <img
                   class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
                   src="/img/account.png"
+                  alt="生産者"
                 >
               </template>
               <div

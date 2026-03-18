@@ -256,6 +256,7 @@ useBreadcrumbJsonLd(computed(() => [
             <div class="flex w-full px-4 md:px-0">
               <img
                 src="/img/coordinator/marche.svg"
+                alt=""
                 class="z-10 w-full"
               >
             </div>
@@ -359,6 +360,7 @@ useBreadcrumbJsonLd(computed(() => [
               <img
                 class="w-[120px] md:w-[260px]"
                 src="/img/coordinator/left.svg"
+                alt=""
               >
               <p
                 class="whitespace-nowrap pt-5 text-[14px] font-bold md:text-[20px]"
@@ -368,6 +370,7 @@ useBreadcrumbJsonLd(computed(() => [
               <img
                 class="w-[120px] md:w-[260px]"
                 src="/img/coordinator/right.svg"
+                alt=""
               >
             </div>
             <div

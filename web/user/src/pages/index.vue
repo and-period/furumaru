@@ -335,6 +335,7 @@ useWebSiteJsonLd()
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="前へスクロール"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -361,6 +362,7 @@ useWebSiteJsonLd()
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="次へスクロール"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />
@@ -386,6 +388,7 @@ useWebSiteJsonLd()
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="前へスクロール"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -410,6 +413,7 @@ useWebSiteJsonLd()
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="次へスクロール"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />
@@ -426,6 +430,7 @@ useWebSiteJsonLd()
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="前へスクロール"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -450,6 +455,7 @@ useWebSiteJsonLd()
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
               class="hidden bg-white/50 hover:bg-white md:block"
+              aria-label="次へスクロール"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />
