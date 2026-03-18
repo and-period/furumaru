@@ -2,13 +2,14 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 
 import FmLoadingSpinner from './FmLoadingSpinner.vue';
 
-const meta = {
+const meta: Meta = {
   title: 'FmLoadingSpinner',
   component: FmLoadingSpinner,
   tags: ['autodocs'],
   argTypes: {
     size: { control: 'select', options: ['sm', 'md', 'lg'] },
   },
+  args: {},
 } satisfies Meta<typeof FmLoadingSpinner>;
 
 export default meta;

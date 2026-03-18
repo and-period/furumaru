@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 
 import FmEmptyState from './FmEmptyState.vue';
 
-const meta = {
+const meta: Meta = {
   title: 'FmEmptyState',
   component: FmEmptyState,
   tags: ['autodocs'],
+  argTypes: {},
+  args: {},
 } satisfies Meta<typeof FmEmptyState>;
 
 export default meta;

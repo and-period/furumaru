@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 
 import FmButton from './FmButton.vue';
 
-const meta = {
+const meta: Meta = {
   title: 'FmButton',
   component: FmButton,
   tags: ['autodocs'],
@@ -10,6 +10,7 @@ const meta = {
     variant: { control: 'select', options: ['primary', 'secondary', 'danger', 'ghost'] },
     size: { control: 'select', options: ['sm', 'md', 'lg'] },
   },
+  args: {},
 } satisfies Meta<typeof FmButton>;
 
 export default meta;
