@@ -10,4 +10,5 @@ useSeoHead({
 
 <template>
   <the-item />
+  <the-recently-viewed />
 </template>

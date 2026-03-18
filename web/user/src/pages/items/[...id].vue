@@ -9,6 +9,7 @@ import type { I18n } from '~/types/locales'
 import { useProductReviewStore } from '~/store/productReview'
 import { useCoordinatorStore } from '~/store/coordinator'
 import { useSeoHead, useProductJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
+import { useRecentlyViewed } from '~/hooks/useRecentlyViewed'
 
 const i18n = useI18n()
 
@@ -168,10 +169,18 @@ const handleClickMediaItem = (index: number) => {
   selectedMediaIndex.value = index
 }
 
+const { addItem: addRecentlyViewed } = useRecentlyViewed()
+
 const { status, error } = useAsyncData(`product-${id.value}`, async () => {
   await fetchProduct(id.value)
   return true
 })
+
+watch(status, (newStatus) => {
+  if (newStatus === 'success' && id.value) {
+    addRecentlyViewed(id.value)
+  }
+}, { immediate: true })
 
 useAsyncData(`reviews-${id.value}`, async () => {
   await fetchReviews(id.value)
