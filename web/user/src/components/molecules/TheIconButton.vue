@@ -26,7 +26,7 @@ const handleClick = () => {
 
 <template>
   <button
-    class="rounded-full p-2"
+    class="rounded-full p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
     :aria-label="ariaLabel || undefined"
     :aria-expanded="ariaExpanded"
     :aria-haspopup="ariaHaspopup || undefined"
