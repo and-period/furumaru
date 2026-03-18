@@ -1,0 +1,151 @@
+<script setup lang="ts">
+import { watch, ref, nextTick, onBeforeUnmount } from 'vue'
+
+interface Props {
+  open: boolean
+  title?: string
+  confirmText?: string
+  cancelText?: string
+  variant?: 'default' | 'danger'
+}
+
+interface Emits {
+  (e: 'update:open', value: boolean): void
+  (e: 'confirm'): void
+  (e: 'cancel'): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  confirmText: '確認',
+  cancelText: 'キャンセル',
+  variant: 'default',
+})
+
+const emits = defineEmits<Emits>()
+
+const dialogRef = ref<HTMLElement | null>(null)
+
+const handleConfirm = () => {
+  emits('confirm')
+  emits('update:open', false)
+}
+
+const handleCancel = () => {
+  emits('cancel')
+  emits('update:open', false)
+}
+
+const handleOverlayClick = (e: MouseEvent) => {
+  if (e.target === e.currentTarget) {
+    handleCancel()
+  }
+}
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    handleCancel()
+    return
+  }
+
+  // フォーカストラップ
+  if (e.key !== 'Tab' || !dialogRef.value) return
+
+  const focusable = dialogRef.value.querySelectorAll<HTMLElement>(
+    'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+  )
+  if (focusable.length === 0) return
+
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  }
+  else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+
+// 開閉時のフォーカス管理とスクロールロック
+let previousFocus: HTMLElement | null = null
+
+watch(() => props.open, (isOpen) => {
+  if (isOpen) {
+    previousFocus = document.activeElement as HTMLElement
+    document.body.style.overflow = 'hidden'
+    nextTick(() => {
+      const firstFocusable = dialogRef.value?.querySelector<HTMLElement>(
+        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      )
+      firstFocusable?.focus()
+    })
+  }
+  else {
+    document.body.style.overflow = ''
+    nextTick(() => {
+      previousFocus?.focus()
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = ''
+})
+
+const confirmVariantClass = props.variant === 'danger'
+  ? 'bg-error text-white hover:bg-error/90'
+  : 'bg-orange text-white hover:bg-orange/90'
+</script>
+
+<template>
+  <Teleport to="body">
+    <div
+      v-if="open"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title"
+      @click="handleOverlayClick"
+      @keydown="handleKeydown"
+    >
+      <div
+        ref="dialogRef"
+        class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
+      >
+        <h2
+          v-if="title"
+          class="mb-4 text-lg font-semibold text-main"
+        >
+          {{ title }}
+        </h2>
+
+        <div class="mb-6 text-sm text-typography">
+          <slot />
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <slot name="actions">
+            <button
+              class="px-4 py-2 text-sm font-medium text-typography hover:bg-gray-100 transition-colors"
+              @click="handleCancel"
+            >
+              {{ cancelText }}
+            </button>
+            <button
+              :class="[
+                'px-4 py-2 text-sm font-medium transition-colors',
+                confirmVariantClass,
+              ]"
+              @click="handleConfirm"
+            >
+              {{ confirmText }}
+            </button>
+          </slot>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
