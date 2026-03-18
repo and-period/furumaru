@@ -7,7 +7,7 @@ interface Props {
   icon?: string
   actionText?: string
   actionComponent?: string | Component
-  actionComponentProps?: object
+  actionComponentProps?: Record<string, unknown>
 }
 
 interface Emits {

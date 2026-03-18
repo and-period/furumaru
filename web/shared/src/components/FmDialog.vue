@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { computed, watch, ref, nextTick, onMounted, onBeforeUnmount, useId } from 'vue'
 
 interface Props {
   open: boolean
@@ -27,7 +27,12 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<Emits>()
 
 const dialogRef = ref<HTMLElement | null>(null)
-const titleId = `fm-dialog-title-${Math.random().toString(36).slice(2, 9)}`
+const titleId = `fm-dialog-title-${useId()}`
+
+// title か ariaLabel のどちらかが必須
+if (!props.title && !props.ariaLabel) {
+  console.warn('[FmDialog] title または ariaLabel のどちらかを指定してください。ダイアログにアクセシブルネームがありません。')
+}
 
 const confirmVariantClass = computed(() =>
   props.variant === 'danger'
