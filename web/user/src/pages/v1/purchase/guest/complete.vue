@@ -128,12 +128,18 @@ useSeoMeta({
               <p>{{ ct('thanksMessageFirst') }}</p>
               <p>{{ ct('thanksMessageSecond') }}</p>
             </div>
-            <img src="/img/purchase/complete.svg">
+            <img
+              src="/img/purchase/complete.svg"
+              alt="購入完了"
+            >
           </div>
         </div>
         <div class="mt-[40px] block md:hidden">
           <div class="flex justify-center">
-            <img src="/img/purchase/complete.svg">
+            <img
+              src="/img/purchase/complete.svg"
+              alt="購入完了"
+            >
           </div>
           <div class="text-[16px] font-bold tracking-[1.6px]">
             <p class="mt-[40px] flex justify-center">

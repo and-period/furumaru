@@ -93,7 +93,10 @@ const handleClick = () => {
               formattedStartAt
             }}</span>
           </div>
-          <button class="h-4 w-4 hover:scale-110">
+          <button
+            class="h-4 w-4 hover:scale-110"
+            aria-label="メニュー"
+          >
             <the-ellipsis-vertical-icon class="h-5 w-5" />
           </button>
         </div>
