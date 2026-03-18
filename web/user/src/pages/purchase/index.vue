@@ -70,6 +70,8 @@ useSeoMeta({
 
 <template>
   <div class="container mx-auto px-4 xl:px-0 my-10">
+    <the-checkout-progress :current-step="1" />
+
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       {{ ct("cartTitle") }}
     </div>

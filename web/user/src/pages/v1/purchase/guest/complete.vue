@@ -100,6 +100,8 @@ useSeoMeta({
 </script>
 
 <template>
+  <the-checkout-progress :current-step="4" />
+
   <template v-if="isLoading">
     <div
       class="flex justify-center"

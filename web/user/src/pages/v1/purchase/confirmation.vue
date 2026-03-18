@@ -193,6 +193,8 @@ useSeoMeta({
 
 <template>
   <div class="container mx-auto">
+    <the-checkout-progress :current-step="3" />
+
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       {{ ct("checkoutTitle") }}
     </div>

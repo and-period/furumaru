@@ -244,6 +244,8 @@ useSeoMeta({
 
 <template>
   <div class="container mx-auto">
+    <the-checkout-progress :current-step="2" />
+
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
