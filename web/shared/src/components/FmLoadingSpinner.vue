@@ -25,8 +25,8 @@ const sizeClasses: Record<string, string> = {
       'fixed inset-0 z-50 bg-black/30': overlay,
       'py-4': !overlay,
     }"
-    role="status"
-    :aria-label="label"
+    :role="label ? 'status' : 'presentation'"
+    :aria-label="label || undefined"
   >
     <div class="flex flex-col items-center gap-3">
       <div

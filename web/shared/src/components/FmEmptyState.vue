@@ -50,6 +50,7 @@ const handleClickAction = () => {
       <component
         :is="actionComponent || 'button'"
         v-if="actionText"
+        :type="!actionComponent ? 'button' : undefined"
         v-bind="actionComponentProps"
         class="bg-orange text-white px-6 py-2.5 font-medium transition-all duration-200 hover:bg-orange/90"
         @click="handleClickAction"

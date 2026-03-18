@@ -17,16 +17,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => ({
+  args: {
+    title: '注文を確定しますか？',
+    confirmText: '確定する',
+    cancelText: 'キャンセル',
+    variant: 'default',
+  },
+  render: (args: Record<string, unknown>) => ({
     components: { FmDialog },
     setup: () => {
       const isOpen = ref(true);
-      return { isOpen };
+      return { isOpen, args };
     },
     template: `
       <div>
         <button @click="isOpen = true" style="padding: 8px 16px; background: #d97a38; color: white;">ダイアログを開く</button>
-        <FmDialog v-model:open="isOpen" title="注文を確定しますか？" confirm-text="確定する" cancel-text="キャンセル">
+        <FmDialog v-bind="args" v-model:open="isOpen">
           <p>この操作を実行してもよろしいですか？</p>
         </FmDialog>
       </div>
@@ -35,16 +41,22 @@ export const Default: Story = {
 };
 
 export const Danger: Story = {
-  render: () => ({
+  args: {
+    title: '商品を削除しますか？',
+    confirmText: '削除する',
+    cancelText: 'キャンセル',
+    variant: 'danger',
+  },
+  render: (args: Record<string, unknown>) => ({
     components: { FmDialog },
     setup: () => {
       const isOpen = ref(true);
-      return { isOpen };
+      return { isOpen, args };
     },
     template: `
       <div>
         <button @click="isOpen = true" style="padding: 8px 16px; background: #f44336; color: white;">削除</button>
-        <FmDialog v-model:open="isOpen" title="商品を削除しますか？" confirm-text="削除する" cancel-text="キャンセル" variant="danger">
+        <FmDialog v-bind="args" v-model:open="isOpen">
           <p>この商品をカートから削除します。この操作は取り消せません。</p>
         </FmDialog>
       </div>

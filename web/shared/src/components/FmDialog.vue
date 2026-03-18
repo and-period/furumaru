@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { watch, ref, nextTick, onBeforeUnmount } from 'vue'
+import { computed, watch, ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 
 interface Props {
   open: boolean
   title?: string
+  ariaLabel?: string
   confirmText?: string
   cancelText?: string
   variant?: 'default' | 'danger'
@@ -17,6 +18,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
+  ariaLabel: '',
   confirmText: '確認',
   cancelText: 'キャンセル',
   variant: 'default',
@@ -25,6 +27,13 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<Emits>()
 
 const dialogRef = ref<HTMLElement | null>(null)
+const titleId = `fm-dialog-title-${Math.random().toString(36).slice(2, 9)}`
+
+const confirmVariantClass = computed(() =>
+  props.variant === 'danger'
+    ? 'bg-error text-white hover:bg-error/90'
+    : 'bg-orange text-white hover:bg-orange/90',
+)
 
 const handleConfirm = () => {
   emits('confirm')
@@ -72,7 +81,9 @@ const handleKeydown = (e: KeyboardEvent) => {
 // 開閉時のフォーカス管理とスクロールロック
 let previousFocus: HTMLElement | null = null
 
-watch(() => props.open, (isOpen) => {
+const applyOpenState = (isOpen: boolean) => {
+  if (typeof document === 'undefined') return
+
   if (isOpen) {
     previousFocus = document.activeElement as HTMLElement
     document.body.style.overflow = 'hidden'
@@ -89,15 +100,21 @@ watch(() => props.open, (isOpen) => {
       previousFocus?.focus()
     })
   }
+}
+
+watch(() => props.open, applyOpenState)
+
+onMounted(() => {
+  if (props.open) {
+    applyOpenState(true)
+  }
 })
 
 onBeforeUnmount(() => {
-  document.body.style.overflow = ''
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
 })
-
-const confirmVariantClass = props.variant === 'danger'
-  ? 'bg-error text-white hover:bg-error/90'
-  : 'bg-orange text-white hover:bg-orange/90'
 </script>
 
 <template>
@@ -105,18 +122,20 @@ const confirmVariantClass = props.variant === 'danger'
     <div
       v-if="open"
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
-      role="dialog"
-      aria-modal="true"
-      :aria-label="title"
       @click="handleOverlayClick"
       @keydown="handleKeydown"
     >
       <div
         ref="dialogRef"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="title ? titleId : undefined"
+        :aria-label="!title && ariaLabel ? ariaLabel : undefined"
         class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
       >
         <h2
           v-if="title"
+          :id="titleId"
           class="mb-4 text-lg font-semibold text-main"
         >
           {{ title }}
@@ -129,12 +148,14 @@ const confirmVariantClass = props.variant === 'danger'
         <div class="flex justify-end gap-3">
           <slot name="actions">
             <button
+              type="button"
               class="px-4 py-2 text-sm font-medium text-typography hover:bg-gray-100 transition-colors"
               @click="handleCancel"
             >
               {{ cancelText }}
             </button>
             <button
+              type="button"
               :class="[
                 'px-4 py-2 text-sm font-medium transition-colors',
                 confirmVariantClass,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Component } from 'vue'
+import { type Component, computed } from 'vue'
 
 interface Props {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
@@ -25,10 +25,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits<Emits>()
 
+const isDisabled = computed(() => props.disabled || props.loading)
+const isNativeButton = computed(() => props.as === 'button')
+
 const handleClick = (e: MouseEvent) => {
-  if (!props.disabled && !props.loading) {
-    emits('click', e)
+  if (isDisabled.value) {
+    e.preventDefault()
+    e.stopPropagation()
+    return
   }
+  emits('click', e)
 }
 
 const variantClasses: Record<string, string> = {
@@ -48,11 +54,13 @@ const sizeClasses: Record<string, string> = {
 <template>
   <component
     :is="as"
-    :type="as === 'button' ? type : undefined"
-    :disabled="disabled || loading"
+    :type="isNativeButton ? type : undefined"
+    :disabled="isNativeButton ? isDisabled : undefined"
+    :aria-disabled="!isNativeButton && isDisabled ? true : undefined"
+    :tabindex="!isNativeButton && isDisabled ? -1 : undefined"
     :class="[
       'inline-flex items-center justify-center font-medium transition-all duration-200 ease-in-out',
-      'disabled:cursor-not-allowed',
+      isDisabled ? 'cursor-not-allowed opacity-40' : '',
       variantClasses[variant],
       sizeClasses[size],
     ]"
