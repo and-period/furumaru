@@ -188,33 +188,36 @@ const handleClickAddCartButton = () => {
       </div>
 
       <div class="flex items-center gap-x-4">
-        <img
+        <nuxt-img
+          provider="cloudFront"
           :src="coordinator.thumbnailUrl"
           :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full object-cover"
+          loading="lazy"
         >
-        <div>
-          <div class="hidden md:block">
-            <button @click="handleClickCoordinator">
-              <p
-                class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
-              >
-                {{ coordinator.marcheName }}
+          <div>
+            <div class="hidden md:block">
+              <button @click="handleClickCoordinator">
+                <p
+                  class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+                >
+                  {{ coordinator.marcheName }}
+                </p>
+              </button>
+              <p class="text-[11px]">
+                {{ coordinator.prefecture }} {{ coordinator.city }}
               </p>
-            </button>
-            <p class="text-[11px]">
-              {{ coordinator.prefecture }} {{ coordinator.city }}
-            </p>
+            </div>
+            <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
+              <p class="whitespace-nowrap">
+                {{ lt("coordinatorLabel") }}:
+              </p>
+              <p class="text-[12px] md:text-[14px]">
+                {{ coordinator.username }}
+              </p>
+            </div>
           </div>
-          <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
-            <p class="whitespace-nowrap">
-              {{ lt("coordinatorLabel") }}:
-            </p>
-            <p class="text-[12px] md:text-[14px]">
-              {{ coordinator.username }}
-            </p>
-          </div>
-        </div>
+        </nuxt-img>
       </div>
     </div>
   </div>

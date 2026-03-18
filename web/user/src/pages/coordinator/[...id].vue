@@ -106,11 +106,13 @@ useBreadcrumbJsonLd(computed(() => [
         <!-- ヘッダー部分 -->
         <div class="relative h-[160px] w-full overflow-hidden rounded-lg shadow-lg md:h-[320px]">
           <template v-if="coordinatorInfo.headerUrl">
-            <img
+            <nuxt-img
+              provider="cloudFront"
               class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
               :src="coordinatorInfo.headerUrl"
               :alt="coordinatorInfo.marcheName + 'のヘッダー画像'"
-            >
+              loading="lazy"
+            />
           </template>
           <template v-else>
             <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
@@ -127,10 +129,12 @@ useBreadcrumbJsonLd(computed(() => [
         >
           <div class="col-span-2">
             <div class="flex justify-center relative bottom-[30px] md:bottom-[40px]">
-              <img
+              <nuxt-img
+                provider="cloudFront"
                 :src="coordinatorInfo.thumbnailUrl"
                 class="block aspect-square w-[120px] rounded-full border-4 border-white md:w-[168px] shadow-lg"
-              >
+                loading="lazy"
+              />
             </div>
             <p
               class="relative bottom-[20px] md:bottom-[25px] text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"

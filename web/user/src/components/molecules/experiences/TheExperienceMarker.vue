@@ -86,12 +86,14 @@ watch(isShowInfoWindow, (newValue) => {
             />
           </div>
           <div v-else>
-            <img
+            <nuxt-img
               v-if="thumbnailUrl"
+              provider="cloudFront"
               :src="thumbnailUrl"
               class="w-full max-h-[150px] mt-2"
               :title="`${title}の画像`"
-            >
+              loading="lazy"
+            />
           </div>
         </div>
 

@@ -8,12 +8,14 @@ useHead({
       src: `/new-relic/${config.public.ENVIRONMENT}.js`,
       defer: true,
       type: 'text/javascript',
+      tagPosition: 'bodyClose',
     },
     {
       key: 'clarity',
       src: `/clarity/${config.public.ENVIRONMENT}.js`,
       defer: true,
       type: 'text/javascript',
+      tagPosition: 'bodyClose',
     },
     // 本番環境にだけ Meta Pixel Code と Google Tag Manager を仕込む
     ...(config.public.ENVIRONMENT === 'prd'

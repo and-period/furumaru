@@ -76,41 +76,43 @@ useSeoHead({
             :to="`/volunteer/${content.id}`"
             class="flex flex-col md:gap-4 gap-2"
           >
-            <img
+            <nuxt-img
+              provider="cloudFront"
               :src="content.eyecatch.url"
               :alt="`${content.title}のサムネイル`"
               class="w-full aspect-video object-cover"
+              loading="lazy"
             >
-            <div class="flex flex-col md:gap-2 gap-1 md:mt-2">
-              <h2
-                class="md:text-[18px] font-semibold md:tracking-[2px] tracking-[1.4px] text-[14px]"
-              >
-                {{ content.title }}
-              </h2>
+              <div class="flex flex-col md:gap-2 gap-1 md:mt-2">
+                <h2
+                  class="md:text-[18px] font-semibold md:tracking-[2px] tracking-[1.4px] text-[14px]"
+                >
+                  {{ content.title }}
+                </h2>
 
-              <div
-                class="text-gray flex flex-col md:gap-2 gap-1 tracking-[10%] md:text-[16px] text-[12px]"
-              >
-                <div>{{ content.name }}</div>
-                <div class="inline-flex gap-2 items-center">
-                  <the-map-pin-icon class="h-4 w-4" />
-                  {{ content.location }}
+                <div
+                  class="text-gray flex flex-col md:gap-2 gap-1 tracking-[10%] md:text-[16px] text-[12px]"
+                >
+                  <div>{{ content.name }}</div>
+                  <div class="inline-flex gap-2 items-center">
+                    <the-map-pin-icon class="h-4 w-4" />
+                    {{ content.location }}
+                  </div>
+                </div>
+
+                <div
+                  class="inline-flex gap-x-4 md:text-[14px] flex-wrap gap-y-1 text-[10px]"
+                >
+                  <span
+                    v-for="category in content.category"
+                    :key="category.id"
+                    class="px-3 py-1 border border-main text-main rounded-full whitespace-nowrap"
+                  >
+                    {{ category.name }}
+                  </span>
                 </div>
               </div>
-
-              <div
-                class="inline-flex gap-x-4 md:text-[14px] flex-wrap gap-y-1 text-[10px]"
-              >
-                <span
-                  v-for="category in content.category"
-                  :key="category.id"
-                  class="px-3 py-1 border border-main text-main rounded-full whitespace-nowrap"
-                >
-                  {{ category.name }}
-                </span>
-              </div>
-            </div>
-          </nuxt-link>
+            </nuxt-img></nuxt-link>
         </div>
       </template>
       <the-pagination
