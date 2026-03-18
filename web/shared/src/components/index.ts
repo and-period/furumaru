@@ -3,3 +3,7 @@ export { default as FmProductItem } from './FmProductItem.vue';
 export { default as FmTextInput } from './FmTextInput.vue';
 export { default as FmOrderSummary } from './FmOrderSummary.vue';
 export { default as FmCreditCardForm } from './FmCreditCardForm.vue';
+export { default as FmButton } from './FmButton.vue';
+export { default as FmLoadingSpinner } from './FmLoadingSpinner.vue';
+export { default as FmEmptyState } from './FmEmptyState.vue';
+export { default as FmDialog } from './FmDialog.vue';
