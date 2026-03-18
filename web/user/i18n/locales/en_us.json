@@ -39,6 +39,9 @@
       "termsOfUse": "Terms Of Use",
       "lawLinkText": "Law Info",
       "inquiryLinkText": "Inquiry"
+    },
+    "a11y": {
+      "skipToMainContent": "Skip to main content"
     }
   },
   "auth": {

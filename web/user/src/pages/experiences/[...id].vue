@@ -146,6 +146,8 @@ useExperienceJsonLd({
   description: computed(() => data.value?.experience?.description || ''),
   images: computed(() => data.value?.experience?.media?.map((m: { url: string }) => m.url) || []),
   price: computed(() => data.value?.experience?.priceAdult || 0),
+  startAt: computed(() => data.value?.experience?.startAt || 0),
+  endAt: computed(() => data.value?.experience?.endAt || 0),
   address: computed(() => {
     const exp = data.value?.experience
     if (!exp) return ''

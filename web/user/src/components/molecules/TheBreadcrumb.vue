@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { useBreadcrumbJsonLd } from '~/hooks/seo'
-
-interface BreadcrumbItem {
-  name: string
-  path: string
-}
+import { useBreadcrumbJsonLd, type BreadcrumbItem } from '~/hooks/seo'
 
 const { items } = defineProps<{
   items: BreadcrumbItem[]

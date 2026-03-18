@@ -81,10 +81,10 @@ export default defineNuxtConfig({
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/account/', '/checkout/', '/cart', '/auth/', '/verify', '/signin', '/signup', '/purchase/', '/register', '/health'],
+        disallow: ['/account', '/account/', '/checkout/', '/cart', '/auth/', '/verify', '/signin', '/signup', '/purchase', '/purchase/', '/register', '/health'],
       },
     ],
-    sitemap: 'https://www.furumaru.and-period.co.jp/sitemap.xml',
+    sitemap: `${process.env.SITE_URL || 'https://www.furumaru.and-period.co.jp'}/sitemap.xml`,
   },
   sitemap: {
     exclude: [
@@ -157,6 +157,7 @@ export default defineNuxtConfig({
     MICRO_CMS_DOMAIN: process.env.MICRO_CMS_DOMAIN,
     MICRO_CMS_API_KEY: process.env.MICRO_CMS_API_KEY,
     public: {
+      SITE_URL: process.env.SITE_URL || 'https://www.furumaru.and-period.co.jp',
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',

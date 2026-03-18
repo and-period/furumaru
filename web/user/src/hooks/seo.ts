@@ -1,9 +1,17 @@
 import type { MaybeRefOrGetter } from 'vue'
 
 const SITE_NAME = '産地直送のお取り寄せ通販【ふるマル】'
-const SITE_URL = 'https://www.furumaru.and-period.co.jp'
-const DEFAULT_OG_IMAGE = `${SITE_URL}/ogp/ogp.jpg`
 const DEFAULT_DESCRIPTION = '産地直送のお取り寄せ通販のふるマルです。生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ'
+
+export interface BreadcrumbItem {
+  name: string
+  path: string
+}
+
+function useSiteUrl(): string {
+  const config = useRuntimeConfig()
+  return (config.public.SITE_URL as string) || 'https://www.furumaru.and-period.co.jp'
+}
 
 interface SeoPageOptions {
   title: MaybeRefOrGetter<string>
@@ -18,12 +26,14 @@ interface SeoPageOptions {
  */
 export function useSeoHead(options: SeoPageOptions) {
   const route = useRoute()
+  const siteUrl = useSiteUrl()
+  const defaultOgImage = `${siteUrl}/ogp/ogp.jpg`
 
   const resolvedTitle = computed(() => toValue(options.title))
   const resolvedDescription = computed(() => toValue(options.description) || DEFAULT_DESCRIPTION)
-  const resolvedOgImage = computed(() => toValue(options.ogImage) || DEFAULT_OG_IMAGE)
+  const resolvedOgImage = computed(() => toValue(options.ogImage) || defaultOgImage)
   const resolvedPath = computed(() => toValue(options.path) || route.path)
-  const canonicalUrl = computed(() => `${SITE_URL}${resolvedPath.value}`)
+  const canonicalUrl = computed(() => `${siteUrl}${resolvedPath.value}`)
 
   useSeoMeta({
     title: resolvedTitle,
@@ -63,6 +73,8 @@ interface ProductJsonLdOptions {
  * Product の JSON-LD 構造化データを出力する composable
  */
 export function useProductJsonLd(options: ProductJsonLdOptions) {
+  const siteUrl = useSiteUrl()
+
   const jsonLd = computed(() => {
     const data: Record<string, unknown> = {
       '@context': 'https://schema.org',
@@ -70,7 +82,7 @@ export function useProductJsonLd(options: ProductJsonLdOptions) {
       'name': toValue(options.name),
       'description': toValue(options.description),
       'image': toValue(options.images),
-      'url': `${SITE_URL}${toValue(options.url)}`,
+      'url': `${siteUrl}${toValue(options.url)}`,
       'offers': {
         '@type': 'Offer',
         'price': toValue(options.price),
@@ -117,6 +129,8 @@ interface ExperienceJsonLdOptions {
   description: MaybeRefOrGetter<string>
   images: MaybeRefOrGetter<string[]>
   price: MaybeRefOrGetter<number>
+  startAt?: MaybeRefOrGetter<number>
+  endAt?: MaybeRefOrGetter<number>
   locationName?: MaybeRefOrGetter<string>
   address: MaybeRefOrGetter<string>
   postalCode?: MaybeRefOrGetter<string>
@@ -129,6 +143,8 @@ interface ExperienceJsonLdOptions {
  * Experience (Event) の JSON-LD 構造化データを出力する composable
  */
 export function useExperienceJsonLd(options: ExperienceJsonLdOptions) {
+  const siteUrl = useSiteUrl()
+
   const jsonLd = computed(() => {
     const data: Record<string, unknown> = {
       '@context': 'https://schema.org',
@@ -136,7 +152,7 @@ export function useExperienceJsonLd(options: ExperienceJsonLdOptions) {
       'name': toValue(options.name),
       'description': toValue(options.description),
       'image': toValue(options.images),
-      'url': `${SITE_URL}${toValue(options.url)}`,
+      'url': `${siteUrl}${toValue(options.url)}`,
       'eventAttendanceMode': 'https://schema.org/OfflineEventAttendanceMode',
       'offers': {
         '@type': 'Offer',
@@ -156,9 +172,19 @@ export function useExperienceJsonLd(options: ExperienceJsonLdOptions) {
       },
     }
 
+    const startAt = toValue(options.startAt)
+    if (startAt) {
+      data.startDate = new Date(startAt * 1000).toISOString()
+    }
+
+    const endAt = toValue(options.endAt)
+    if (endAt) {
+      data.endDate = new Date(endAt * 1000).toISOString()
+    }
+
     const lat = toValue(options.latitude)
     const lng = toValue(options.longitude)
-    if (lat && lng) {
+    if (lat != null && lng != null) {
       (data.location as Record<string, unknown>).geo = {
         '@type': 'GeoCoordinates',
         'latitude': lat,
@@ -179,15 +205,12 @@ export function useExperienceJsonLd(options: ExperienceJsonLdOptions) {
   })
 }
 
-interface BreadcrumbItem {
-  name: string
-  path: string
-}
-
 /**
  * BreadcrumbList の JSON-LD 構造化データを出力する composable
  */
 export function useBreadcrumbJsonLd(items: MaybeRefOrGetter<BreadcrumbItem[]>) {
+  const siteUrl = useSiteUrl()
+
   const jsonLd = computed(() => ({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -195,7 +218,7 @@ export function useBreadcrumbJsonLd(items: MaybeRefOrGetter<BreadcrumbItem[]>) {
       '@type': 'ListItem',
       'position': index + 1,
       'name': item.name,
-      'item': `${SITE_URL}${item.path}`,
+      'item': `${siteUrl}${item.path}`,
     })),
   }))
 
@@ -213,6 +236,8 @@ export function useBreadcrumbJsonLd(items: MaybeRefOrGetter<BreadcrumbItem[]>) {
  * WebSite + Organization の JSON-LD を出力する composable（トップページ用）
  */
 export function useWebSiteJsonLd() {
+  const siteUrl = useSiteUrl()
+
   useHead({
     script: [
       {
@@ -221,7 +246,7 @@ export function useWebSiteJsonLd() {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           'name': SITE_NAME,
-          'url': SITE_URL,
+          'url': siteUrl,
         }),
       },
       {
@@ -230,8 +255,8 @@ export function useWebSiteJsonLd() {
           '@context': 'https://schema.org',
           '@type': 'Organization',
           'name': 'ふるマル',
-          'url': SITE_URL,
-          'logo': `${SITE_URL}/ogp/ogp.jpg`,
+          'url': siteUrl,
+          'logo': `${siteUrl}/ogp/ogp.jpg`,
           'sameAs': [
             'https://www.instagram.com/and_period',
             'https://twitter.com/and_period',
