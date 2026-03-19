@@ -3,7 +3,6 @@ import pkg from './package.json';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
-  compatibilityDate: 'latest',
   modules: [
     [
       '@pinia/nuxt',
@@ -46,6 +45,7 @@ export default defineNuxtConfig({
   },
   srcDir: 'src',
   buildDir: '.nuxt',
+  compatibilityDate: '2026-03-19',
   vite: {
     plugins: [tailwindcss()],
   },
