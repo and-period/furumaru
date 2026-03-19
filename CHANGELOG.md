@@ -1,5 +1,11 @@
 # Changelog
 
+## [v12.0.0](https://github.com/and-period/furumaru/compare/v11.0.0...v12.0.0) - 2026-03-19
+- chore: フロントエンド・インフラのツールチェーンを2026年ベストプラクティスに更新 by @taba2424 in https://github.com/and-period/furumaru/pull/3415
+- chore: pnpm-lock.yaml 生成 + yarn.lock 削除 + CI キャッシュ有効化 by @taba2424 in https://github.com/and-period/furumaru/pull/3418
+- feat(web): LIFF アプリを Nuxt 4 に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3419
+- fix(web): LIFF に Nitro aws-amplify preset を明示設定 by @taba2424 in https://github.com/and-period/furumaru/pull/3420
+
 ## [v10.3.4](https://github.com/and-period/furumaru/compare/v10.3.3...v10.3.4) - 2026-03-19
 - feat(gateway): admin + user を1プロセスに統合する server サブコマンド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3413
 
