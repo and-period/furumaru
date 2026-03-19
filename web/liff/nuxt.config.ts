@@ -45,10 +45,10 @@ export default defineNuxtConfig({
       KOMOJU_HOST: process.env.NUXT_PUBLIC_KOMOJU_HOST || 'https://komoju.com',
     },
   },
+  compatibilityDate: '2026-03-19',
   nitro: {
     preset: 'aws-amplify',
   },
-  compatibilityDate: '2026-03-19',
   vite: {
     plugins: [tailwindcss()],
   },
