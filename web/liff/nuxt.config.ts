@@ -3,6 +3,10 @@ import pkg from './package.json';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
+  ssr: true,
+  srcDir: 'src',
+  buildDir: '.nuxt',
+  plugins: ['~/plugins/api-client.ts', '~/plugins/liff.client.ts'],
   modules: [
     [
       '@pinia/nuxt',
@@ -14,8 +18,6 @@ export default defineNuxtConfig({
       },
     ],
   ],
-  plugins: ['~/plugins/api-client.ts', '~/plugins/liff.client.ts'],
-  ssr: true,
   app: {
     head: {
       title: 'ふるまる - LINE連携アプリ',
@@ -43,8 +45,6 @@ export default defineNuxtConfig({
       KOMOJU_HOST: process.env.NUXT_PUBLIC_KOMOJU_HOST || 'https://komoju.com',
     },
   },
-  srcDir: 'src',
-  buildDir: '.nuxt',
   nitro: {
     preset: 'aws-amplify',
   },
