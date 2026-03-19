@@ -54,7 +54,7 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: Prepare
-      run: nuxt prepare
+      run: pnpm nuxt prepare
 
     - name: Lint
       run: pnpm lint
