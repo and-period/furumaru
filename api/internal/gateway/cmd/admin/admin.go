@@ -15,11 +15,19 @@ import (
 	"github.com/and-period/furumaru/api/pkg/http"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/slack"
+	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 )
+
+// BuildResult holds the components built by Build() for external orchestration.
+type BuildResult struct {
+	Router   *gin.Engine
+	Handlers []gateway.Handler
+	WaitGroup *sync.WaitGroup
+}
 
 type app struct {
 	*cobra.Command
@@ -99,6 +107,36 @@ func NewApp() *app {
 		return app.run()
 	}
 	return app
+}
+
+// Build initializes the admin gateway and returns the router and handlers
+// without starting any servers or configuring logging.
+// The caller is responsible for server lifecycle management.
+func (a *app) Build(ctx context.Context) (*BuildResult, error) {
+	// 環境変数の読み込み
+	if err := envconfig.Process("", a); err != nil {
+		return nil, fmt.Errorf("admin: failed to load environment: %w", err)
+	}
+
+	// 依存関係の解決
+	if err := a.inject(ctx); err != nil {
+		return nil, fmt.Errorf("admin: failed to new registry: %w", err)
+	}
+
+	if err := a.v1.Setup(ctx); err != nil {
+		return nil, fmt.Errorf("admin: failed to setup http server: %w", err)
+	}
+
+	// ルーターの構築
+	rt := a.newRouter()
+
+	handlers := []gateway.Handler{a.v1}
+
+	return &BuildResult{
+		Router:    rt,
+		Handlers:  handlers,
+		WaitGroup: a.waitGroup,
+	}, nil
 }
 
 func (a *app) run() error {
