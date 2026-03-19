@@ -53,7 +53,7 @@ const goToTop = () => {
   <div>
     <div class="flex flex-col items-center justify-center bg-white">
       <img
-        src="/complete.svg"
+        :src="'/complete.svg'"
         alt="完了"
         class="w-40 h-40 mt-8"
       >
