@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/nuxt'
 
 export default defineNitroPlugin(() => {
   const runtimeConfig = useRuntimeConfig()

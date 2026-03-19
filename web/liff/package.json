@@ -7,9 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && yarn install && yarn build)) && nuxt prepare",
+    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && pnpm install && pnpm build)) && nuxt prepare",
     "lint": "eslint .",
-    "format": "yarn lint --fix",
+    "format": "pnpm lint --fix",
     "test": "vitest --run",
     "coverage": "vitest run --coverage",
     "typecheck": "nuxt typecheck"
@@ -30,7 +30,7 @@
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@furumaru/shared": "link:../shared",
     "@tailwindcss/vite": "^4.1.17",

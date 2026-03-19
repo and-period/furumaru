@@ -1,4 +1,4 @@
-FROM node:20.11.1-alpine@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a2d4def
+FROM node:22-alpine
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
@@ -8,5 +8,4 @@ RUN apk add --update \
   jq \
   make \
   python3 \
-  zip \
-  && ln -fs python3 /usr/bin/python
+  zip

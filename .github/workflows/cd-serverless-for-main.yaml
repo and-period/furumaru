@@ -44,7 +44,7 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: install sls
-      run: yarn add -D serverless
+      run: pnpm add -D serverless
 
     - name: serverless deploy
       uses: serverless/github-action@f5f0c17d6ef97718c03f2c0a87c5d9b0bacbb1d8 # v4.0.0

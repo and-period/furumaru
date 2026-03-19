@@ -11,7 +11,7 @@ services:
       - ./web/user:/var/web:cached
     ports:
       - 3000:3000
-    command: yarn dev -H 0.0.0.0 -p 3000
+    command: pnpm dev -H 0.0.0.0 -p 3000
 
   admin_web:
     container_name: admin_web
@@ -23,7 +23,7 @@ services:
       - ./web/admin:/var/web:cached
     ports:
       - 3010:3000
-    command: yarn dev -H 0.0.0.0 -p 3000
+    command: pnpm dev -H 0.0.0.0 -p 3000
 
   user_gateway:
     container_name: user_gateway
@@ -155,7 +155,7 @@ services:
       - ./docs/spec/swagger:/var/spec/swagger:cached
       - ./tmp/data/swagger:/tmp/data/swagger:cached
       - ./web:/web:cached
-    command: yarn watch
+    command: pnpm watch
 
   swagger_user:
     container_name: swagger_user
