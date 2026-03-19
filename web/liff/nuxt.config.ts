@@ -46,6 +46,9 @@ export default defineNuxtConfig({
   srcDir: 'src',
   buildDir: '.nuxt',
   compatibilityDate: '2026-03-19',
+  nitro: {
+    preset: 'aws-amplify',
+  },
   vite: {
     plugins: [tailwindcss()],
   },
