@@ -1,5 +1,8 @@
 # Changelog
 
+## [v10.3.4](https://github.com/and-period/furumaru/compare/v10.3.3...v10.3.4) - 2026-03-19
+- feat(gateway): admin + user を1プロセスに統合する server サブコマンド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3413
+
 ## [v10.3.3](https://github.com/and-period/furumaru/compare/v10.3.2...v10.3.3) - 2026-03-18
 - docs: Web UI/UX・SEO 総合改善の仕様書を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3395
 - feat(web): Phase 1 SEO 最適化を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/3397
