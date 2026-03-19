@@ -54,7 +54,7 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: Lint
-      run: yarn lint
+      run: pnpm lint
 
   build:
     name: build
@@ -79,10 +79,10 @@ jobs:
 
     - name: Postinstall
       shell: bash
-      run: yarn postinstall
+      run: pnpm postinstall
 
     - name: Build
-      run: yarn build
+      run: pnpm build
 
 #   test:
 #     name: test
@@ -107,7 +107,7 @@ jobs:
 #
 #     - name: Postinstall
 #       shell: bash
-#       run: yarn postinstall
+#       run: pnpm postinstall
 #
 #     - name: Test
 #       run: yarn test

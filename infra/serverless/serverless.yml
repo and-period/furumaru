@@ -4,7 +4,7 @@ frameworkVersion: "4"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs22.x
   account: ${self:custom.envMap.${self:provider.stage}.accountId}
   stage: ${opt:stage, self:custom.defaultStage}
   region: ap-northeast-1

@@ -14,9 +14,9 @@ setup: build install swagger ## 初回の環境構築用
 	fi
 
 install: migrate ## ライブラリインストール/アップデート用
-	docker compose run --rm swagger_generator yarn
-	docker compose run --rm user_web yarn
-	docker compose run --rm admin_web yarn
+	docker compose run --rm swagger_generator pnpm install
+	docker compose run --rm user_web pnpm install
+	docker compose run --rm admin_web pnpm install
 
 build: ## コンテナイメージのビルド用
 	docker compose build --parallel
@@ -64,9 +64,9 @@ start-swagger: ## API仕様書用システムの起動
 
 swagger: ## API仕様書の生成
 	docker-compose run --rm swagger_generator make build
-	cd ./web/admin && yarn format
-	cd ./web/user && yarn format
-	cd ./web/liff && yarn format
+	cd ./web/admin && pnpm format
+	cd ./web/user && pnpm format
+	cd ./web/liff && pnpm format
 
 migrate: ## データベースにDDLを適用
 	docker compose up -d mysql

@@ -37,7 +37,7 @@ jobs:
     - name: Build shared library
       run: |
         cd ../shared
-        yarn build
+        pnpm build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -69,7 +69,7 @@ jobs:
     - name: Build shared library
       run: |
         cd ../shared
-        yarn build
+        pnpm build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -77,7 +77,7 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: Lint
-      run: yarn lint
+      run: pnpm lint
 
   build:
     name: build
@@ -104,7 +104,7 @@ jobs:
     - name: Build shared library
       run: |
         cd ../shared
-        yarn build
+        pnpm build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -113,10 +113,10 @@ jobs:
 
     - name: Postinstall
       shell: bash
-      run: yarn postinstall
+      run: pnpm postinstall
 
     - name: Build
-      run: yarn build
+      run: pnpm build
 
   test:
     name: test
@@ -143,7 +143,7 @@ jobs:
     - name: Build shared library
       run: |
         cd ../shared
-        yarn build
+        pnpm build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -152,10 +152,10 @@ jobs:
 
     - name: Postinstall
       shell: bash
-      run: yarn postinstall
+      run: pnpm postinstall
 
     - name: Test
-      run: yarn coverage
+      run: pnpm coverage
 
     - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
       with:

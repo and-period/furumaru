@@ -1,5 +1,4 @@
-import * as Sentry from '@sentry/vue'
-import { browserProfilingIntegration, browserTracingIntegration, replayIntegration } from '@sentry/vue'
+import * as Sentry from '@sentry/nuxt'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
@@ -14,9 +13,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     dsn: runtimeConfig.public.SENTRY_DSN,
     environment: runtimeConfig.public.ENVIRONMENT,
     integrations: [
-      browserProfilingIntegration(),
-      browserTracingIntegration({ router }),
-      replayIntegration({ maskAllText: false, blockAllMedia: false }),
+      Sentry.browserProfilingIntegration(),
+      Sentry.browserTracingIntegration({ router }),
+      Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false }),
     ],
     tracesSampleRate: runtimeConfig.public.SENTRY_TRACES_SAMPLE_RATE,
     profilesSampleRate: runtimeConfig.public.SENTRY_PROFILES_SAMPLE_RATE,
