@@ -41,5 +41,5 @@ COPY ./api/config ./config
 COPY --from=builder /dist/app ./app
 COPY --from=builder /usr/share/zoneinfo/Asia/Tokyo /usr/share/zoneinfo/Asia/Tokyo
 
-EXPOSE 8080 9090
+EXPOSE 8080 8081 9090
 CMD ["./app"]
