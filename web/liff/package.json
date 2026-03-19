@@ -30,7 +30,7 @@
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "@furumaru/shared": "link:../shared",
     "@tailwindcss/vite": "^4.1.17",
