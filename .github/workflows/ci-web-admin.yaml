@@ -53,6 +53,9 @@ jobs:
         working-directory: ./web/admin
         service: ${{ env.SERVICE }}
 
+    - name: Prepare
+      run: nuxt prepare
+
     - name: Lint
       run: pnpm lint
 

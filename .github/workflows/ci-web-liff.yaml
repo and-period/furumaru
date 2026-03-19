@@ -79,6 +79,9 @@ jobs:
         working-directory: ./web/liff
         service: ${{ env.SERVICE }}
 
+    - name: Prepare
+      run: nuxt prepare
+
     - name: Lint
       run: pnpm lint
 
