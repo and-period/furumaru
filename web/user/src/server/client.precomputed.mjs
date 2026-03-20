@@ -1,12 +1,28 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const moduleDir = dirname(fileURLToPath(import.meta.url))
+const serverEntryDir = process.argv[1] ? dirname(process.argv[1]) : ''
 
 function createCandidates(paths) {
-  return Array.from(new Set(paths))
+  return Array.from(new Set(paths.filter(Boolean)))
+}
+
+function createRootDirs() {
+  const baseDirs = createCandidates([
+    process.cwd(),
+    process.env.PWD,
+    process.env.LAMBDA_TASK_ROOT,
+    serverEntryDir,
+  ])
+
+  return createCandidates(baseDirs.flatMap((baseDir) => [
+    baseDir,
+    join(baseDir, '..'),
+    join(baseDir, '../..'),
+    join(baseDir, '../../..'),
+    join(baseDir, '../../../..'),
+  ]))
 }
 
 function createResource(file, manifest) {
@@ -101,16 +117,7 @@ function normalizeDependencies(dependencies) {
 }
 
 async function loadManifest() {
-  const rootDirs = createCandidates([
-    process.cwd(),
-    join(process.cwd(), '..'),
-    join(process.cwd(), '../..'),
-    moduleDir,
-    join(moduleDir, '..'),
-    join(moduleDir, '../..'),
-    join(moduleDir, '../../..'),
-    join(moduleDir, '../../../..'),
-  ])
+  const rootDirs = createRootDirs()
   const manifestPaths = createCandidates(rootDirs.flatMap((rootDir) => [
     join(rootDir, 'public/_nuxt/manifest.json'),
     join(rootDir, '.output/public/_nuxt/manifest.json'),
@@ -118,6 +125,11 @@ async function loadManifest() {
     join(rootDir, '.nuxt/dist/client/manifest.json'),
     join(rootDir, 'static/_nuxt/manifest.json'),
     join(rootDir, '.amplify-hosting/static/_nuxt/manifest.json'),
+    join(rootDir, '../static/_nuxt/manifest.json'),
+    join(rootDir, '../../static/_nuxt/manifest.json'),
+    join(rootDir, '../../../static/_nuxt/manifest.json'),
+    join(rootDir, '../.amplify-hosting/static/_nuxt/manifest.json'),
+    join(rootDir, '../../.amplify-hosting/static/_nuxt/manifest.json'),
   ]))
 
   for (const manifestPath of manifestPaths) {
@@ -141,16 +153,7 @@ async function loadManifest() {
 }
 
 function loadCssFallbackPrecomputed() {
-  const rootDirs = createCandidates([
-    process.cwd(),
-    join(process.cwd(), '..'),
-    join(process.cwd(), '../..'),
-    moduleDir,
-    join(moduleDir, '..'),
-    join(moduleDir, '../..'),
-    join(moduleDir, '../../..'),
-    join(moduleDir, '../../../..'),
-  ])
+  const rootDirs = createRootDirs()
   const assetDirs = createCandidates(rootDirs.flatMap((rootDir) => [
     join(rootDir, 'public/_nuxt'),
     join(rootDir, '.output/public/_nuxt'),
@@ -158,6 +161,11 @@ function loadCssFallbackPrecomputed() {
     join(rootDir, 'node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt'),
     join(rootDir, 'static/_nuxt'),
     join(rootDir, '.amplify-hosting/static/_nuxt'),
+    join(rootDir, '../static/_nuxt'),
+    join(rootDir, '../../static/_nuxt'),
+    join(rootDir, '../../../static/_nuxt'),
+    join(rootDir, '../.amplify-hosting/static/_nuxt'),
+    join(rootDir, '../../.amplify-hosting/static/_nuxt'),
   ]))
 
   for (const assetDir of assetDirs) {
