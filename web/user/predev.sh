@@ -9,7 +9,3 @@ if [ ! -e "localhost.pem" ] && [ ! -e "localhost-key.pem" ]; then
     mkcert -install
     mkcert localhost
 fi
-
-if (type node > /dev/null 2>&1) && [ -e "scripts/patch-nuxt-dev-handler.mjs" ]; then
-    node ./scripts/patch-nuxt-dev-handler.mjs
-fi

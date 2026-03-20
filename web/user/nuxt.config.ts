@@ -1,5 +1,4 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
-import { resolve } from 'node:path'
 
 export default defineNuxtConfig({
   ssr: true,
@@ -184,12 +183,6 @@ export default defineNuxtConfig({
   build: {},
   nitro: {
     plugins: ['~/server/plugins/sentry'],
-    alias: {
-      '#build/dist/server/client.precomputed.mjs': resolve(
-        __dirname,
-        './src/server/client.precomputed.mjs',
-      ),
-    },
   },
   vite: {
     vue: {
