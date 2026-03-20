@@ -171,10 +171,16 @@ const handleClickMediaItem = (index: number) => {
 
 const { addItem: addRecentlyViewed } = useRecentlyViewed()
 
-const { status, error } = useAsyncData(`product-${id.value}`, async () => {
-  await fetchProduct(id.value)
-  return true
-})
+const { status, error } = useAsyncData(
+  () => `product-${id.value}`,
+  async () => {
+    await fetchProduct(id.value)
+    return true
+  },
+  {
+    watch: [id],
+  },
+)
 
 watch(status, (newStatus) => {
   if (newStatus === 'success' && id.value) {
@@ -182,9 +188,20 @@ watch(status, (newStatus) => {
   }
 }, { immediate: true })
 
-useAsyncData(`reviews-${id.value}`, async () => {
-  await fetchReviews(id.value)
-  return true
+useAsyncData(
+  () => `reviews-${id.value}`,
+  async () => {
+    await fetchReviews(id.value)
+    return true
+  },
+  {
+    watch: [id],
+  },
+)
+
+watch(id, () => {
+  selectedMediaIndex.value = -1
+  quantity.value = 1
 })
 
 useSeoHead({
