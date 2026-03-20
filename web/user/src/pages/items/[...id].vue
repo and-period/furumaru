@@ -4,6 +4,7 @@ import { useEventBus } from '@vueuse/core'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ProductStatus } from '~/types/api'
+import type { ProductResponse } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
 import { useProductReviewStore } from '~/store/productReview'
@@ -23,7 +24,6 @@ const { fetchCoordinator } = coordinatorStore
 const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
-const { product, productFetchState } = storeToRefs(productStore)
 const { coordinatorInfo, products } = storeToRefs(coordinatorStore)
 
 const coordinatorProducts = computed(() => {
@@ -62,14 +62,6 @@ const itemThumbnailAlt = computed<string>(() => {
   return i18n.t('items.list.itemThumbnailAlt', {
     itemName: product.value.name,
   })
-})
-
-watchEffect(() => {
-  if (product.value && product.value.coordinatorId) {
-    useAsyncData(`coordinator-${product.value.coordinatorId}`, () =>
-      fetchCoordinator(product.value.coordinatorId),
-    )
-  }
 })
 
 const expirationDateText = computed<string>(() => {
@@ -163,9 +155,14 @@ const title = computed<string>(() => product.value.name)
 const selectedMediaIndex = ref<number>(-1)
 
 const selectMediaSrcUrl = computed<string>(() => {
+  const media = product.value?.media ?? []
+  if (selectedMediaIndex.value !== -1 && media[selectedMediaIndex.value]) {
+    return media[selectedMediaIndex.value].url
+  }
+
   return selectedMediaIndex.value === -1
-    ? product.value.thumbnailUrl
-    : product.value.media[selectedMediaIndex.value].url
+    ? (product.value.thumbnail?.url || product.value.thumbnailUrl || media[0]?.url || '')
+    : ''
 })
 
 const handleClickMediaItem = (index: number) => {
@@ -174,33 +171,72 @@ const handleClickMediaItem = (index: number) => {
 
 const { addItem: addRecentlyViewed } = useRecentlyViewed()
 
-const { status, error } = useAsyncData(
-  `product-${id.value}`,
+const { data: productResponse, status, error } = await useAsyncData(
+  () => `product-${id.value}`,
   async () => {
-    await fetchProduct(id.value)
+    return await fetchProduct(id.value)
+  },
+  {
+    watch: [id],
+  },
+)
+
+const product = computed(() => {
+  const response = productResponse.value as ProductResponse | null | undefined
+  const baseProduct = response?.product
+  const thumbnail = baseProduct?.media?.find(m => m.isThumbnail)
+
+  return {
+    ...baseProduct,
+    hasStock: (baseProduct?.inventory ?? 0) > 0,
+    thumbnail,
+    producer: response?.producer,
+    coordinator: response?.coordinator,
+    productTags: baseProduct?.productTagIds?.map(id =>
+      response?.productTags?.find(productTag => productTag.id === id),
+    ) ?? [],
+    thumbnailIsVideo: thumbnail ? thumbnail.url.endsWith('.mp4') : false,
+  }
+})
+
+const coordinatorId = computed(() => product.value?.coordinatorId ?? '')
+
+await useAsyncData(
+  () => `coordinator-${coordinatorId.value || 'none'}`,
+  async () => {
+    if (!coordinatorId.value) {
+      return null
+    }
+
+    await fetchCoordinator(coordinatorId.value)
     return true
   },
-  { watch: [id] },
+  {
+    watch: [coordinatorId],
+  },
 )
 
-watch(
-  status,
-  (newStatus) => {
-    if (newStatus === 'success' && id.value) {
-      addRecentlyViewed(id.value)
-    }
-  },
-  { immediate: true },
-)
+watch(status, (newStatus) => {
+  if (newStatus === 'success' && id.value) {
+    addRecentlyViewed(id.value)
+  }
+}, { immediate: true })
 
 useAsyncData(
-  `reviews-${id.value}`,
+  () => `reviews-${id.value}`,
   async () => {
     await fetchReviews(id.value)
     return true
   },
-  { watch: [id] },
+  {
+    watch: [id],
+  },
 )
+
+watch(id, () => {
+  selectedMediaIndex.value = -1
+  quantity.value = 1
+})
 
 useSeoHead({
   title,
@@ -299,11 +335,7 @@ useBreadcrumbJsonLd(
   </template>
 
   <!-- 商品情報の表示 -->
-  <template
-    v-if="
-      status == 'success' && !productFetchState.isLoading && product.thumbnail
-    "
-  >
+  <template v-if="status === 'success' && product.id">
     <div class="bg-white w-full">
       <div
         class="gap-10 px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 lg:px-[112px] w-full max-w-[1440px] mx-auto"
