@@ -47,7 +47,7 @@ const {
   status,
   error,
 } = useAsyncData(
-  'target-product',
+  `target-product-${productId.value}`,
   () => {
     return fetchProduct(productId.value)
   },

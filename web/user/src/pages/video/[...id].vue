@@ -101,8 +101,12 @@ const handleCLickCoordinator = (id: string) => {
 }
 
 const fetchComments = async () => {
-  const res = await getComments(videoId.value)
-  comments.value = res.comments
+  try {
+    const res = await getComments(videoId.value)
+    comments.value = res.comments
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 await useAsyncData(
@@ -116,15 +120,17 @@ await useAsyncData(
   { watch: [videoId] },
 )
 
+let interval: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
   fetchComments()
-  const interval = setInterval(() => {
+  interval = setInterval(() => {
     fetchComments()
   }, 3000)
+})
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+onUnmounted(() => {
+  if (interval) clearInterval(interval)
 })
 
 useSeoHead({
