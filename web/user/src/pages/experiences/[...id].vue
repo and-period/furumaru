@@ -1,69 +1,76 @@
 <script setup lang="ts">
-import { priceFormatter } from '~/lib/price'
-import { useAuthStore } from '~/store/auth'
-import { useExperienceStore } from '~/store/experience'
-import { ExperienceStatus } from '~/types/api'
-import { useSeoHead, useExperienceJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
-import type { I18n } from '~/types/locales'
-import type { Snackbar } from '~/types/props'
+import { priceFormatter } from "~/lib/price";
+import { useAuthStore } from "~/store/auth";
+import { useExperienceStore } from "~/store/experience";
+import { ExperienceStatus } from "~/types/api";
+import {
+  useSeoHead,
+  useExperienceJsonLd,
+  useBreadcrumbJsonLd,
+} from "~/hooks/seo";
+import type { I18n } from "~/types/locales";
+import type { Snackbar } from "~/types/props";
 
-const i18n = useI18n()
+const i18n = useI18n();
 
-const dt = (str: keyof I18n['items']['experiences']) => {
-  return i18n.t(`items.experiences.${str}`)
-}
+const dt = (str: keyof I18n["items"]["experiences"]) => {
+  return i18n.t(`items.experiences.${str}`);
+};
 
-const route = useRoute()
+const route = useRoute();
 
-const router = useRouter()
+const router = useRouter();
 
 const experienceId = computed<string>(() => {
-  const ids = route.params.id
+  const ids = route.params.id;
   if (Array.isArray(ids)) {
-    return ids[0]
+    return ids[0];
+  } else {
+    return route.params.id as string;
   }
-  else {
-    return route.params.id as string
-  }
-})
+});
 
-const authStore = useAuthStore()
-const { isAuthenticated } = storeToRefs(authStore)
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
 
-const experienceStore = useExperienceStore()
-const { fetchExperience } = experienceStore
+const experienceStore = useExperienceStore();
+const { fetchExperience } = experienceStore;
 
-const { data, status, error } = await useAsyncData('experience', () => {
-  return fetchExperience(experienceId.value)
-})
+const { data, status, error } = await useAsyncData(
+  "experience",
+  () => {
+    return fetchExperience(experienceId.value);
+  },
+  { watch: [experienceId] },
+);
 
-const snackbarItems = ref<Snackbar[]>([])
+const snackbarItems = ref<Snackbar[]>([]);
 
-const selectedMediaIndex = ref<number>(0)
+const selectedMediaIndex = ref<number>(0);
 
 const selectMediaSrcUrl = computed<string>(() => {
   if (!data.value || !data.value.experience) {
-    return ''
+    return "";
   }
 
   return selectedMediaIndex.value === -1
     ? data.value.experience.promotionVideoUrl
-    : data.value.experience.media[selectedMediaIndex.value].url
-})
+    : data.value.experience.media[selectedMediaIndex.value].url;
+});
 
 const handleClickMediaItem = (index: number) => {
-  selectedMediaIndex.value = index
-}
+  selectedMediaIndex.value = index;
+};
 
 const itemThumbnailAlt = computed<string>(() => {
   if (!data.value || !data.value.experience) {
-    return ''
+    return "";
   }
 
-  return i18n.t('items.list.itemThumbnailAlt', {
+  return i18n.t("items.list.itemThumbnailAlt", {
     itemName: data.value.experience.title,
-  })
-})
+  });
+});
 
 const formData = ref({
   adultCount: 0,
@@ -71,108 +78,113 @@ const formData = ref({
   elementarySchoolCount: 0,
   preschoolCount: 0,
   seniorCount: 0,
-})
+});
 
 const canAddCart = computed<boolean>(() => {
   if (!data.value || !data.value.experience) {
-    return false
+    return false;
   }
 
   if (data.value.experience.status !== ExperienceStatus.ACCEPTING) {
-    return false
+    return false;
   }
 
   if (
-    formData.value.adultCount === 0
-    && formData.value.juniorHighSchoolCount === 0
-    && formData.value.elementarySchoolCount === 0
-    && formData.value.preschoolCount === 0
-    && formData.value.seniorCount === 0
+    formData.value.adultCount === 0 &&
+    formData.value.juniorHighSchoolCount === 0 &&
+    formData.value.elementarySchoolCount === 0 &&
+    formData.value.preschoolCount === 0 &&
+    formData.value.seniorCount === 0
   ) {
-    return false
+    return false;
   }
 
-  return true
-})
+  return true;
+});
 
 const priceString = (price: number) => {
   if (price) {
-    return priceFormatter(price)
+    return priceFormatter(price);
+  } else {
+    return "";
   }
-  else {
-    return ''
-  }
-}
+};
 
 const convertToTimeString = (time: string): string => {
   if (time.length === 4) {
-    const hour = time.slice(0, 2)
-    const minute = time.slice(2, 4)
-    return `${hour}:${minute}`
+    const hour = time.slice(0, 2);
+    const minute = time.slice(2, 4);
+    return `${hour}:${minute}`;
   }
-  throw new Error('Invalid input format. Expected a 4-digit string.')
-}
+  throw new Error("Invalid input format. Expected a 4-digit string.");
+};
 
 const handleClickApplyButton = () => {
   if (isAuthenticated.value) {
     router.push({
-      path: '/experiences/purchase',
+      path: "/experiences/purchase",
       query: {
         id: experienceId.value,
         ...formData.value,
       },
-    })
-  }
-  else {
+    });
+  } else {
     router.push({
-      path: '/experiences/purchase/guest',
+      path: "/experiences/purchase/guest",
       query: {
         id: experienceId.value,
         ...formData.value,
       },
-    })
+    });
   }
-}
+};
 
 useSeoHead({
-  title: computed(() => data.value?.experience?.title || ''),
-  description: computed(() => data.value?.experience?.description?.slice(0, 120) || ''),
-  ogImage: computed(() => data.value?.experience?.thumbnailUrl || ''),
+  title: computed(() => data.value?.experience?.title || ""),
+  description: computed(
+    () => data.value?.experience?.description?.slice(0, 120) || "",
+  ),
+  ogImage: computed(() => data.value?.experience?.thumbnailUrl || ""),
   path: computed(() => `/experiences/${experienceId.value}`),
-})
+});
 
 useExperienceJsonLd({
-  name: computed(() => data.value?.experience?.title || ''),
-  description: computed(() => data.value?.experience?.description || ''),
-  images: computed(() => data.value?.experience?.media?.map((m: { url: string }) => m.url) || []),
+  name: computed(() => data.value?.experience?.title || ""),
+  description: computed(() => data.value?.experience?.description || ""),
+  images: computed(
+    () =>
+      data.value?.experience?.media?.map((m: { url: string }) => m.url) || [],
+  ),
   price: computed(() => data.value?.experience?.priceAdult || 0),
   startAt: computed(() => data.value?.experience?.startAt || 0),
   endAt: computed(() => data.value?.experience?.endAt || 0),
   address: computed(() => {
-    const exp = data.value?.experience
-    if (!exp) return ''
-    return `${exp.hostPrefecture || ''}${exp.hostCity || ''}${exp.hostAddressLine1 || ''}${exp.hostAddressLine2 || ''}`
+    const exp = data.value?.experience;
+    if (!exp) return "";
+    return `${exp.hostPrefecture || ""}${exp.hostCity || ""}${exp.hostAddressLine1 || ""}${exp.hostAddressLine2 || ""}`;
   }),
-  postalCode: computed(() => data.value?.experience?.hostPostalCode || ''),
+  postalCode: computed(() => data.value?.experience?.hostPostalCode || ""),
   latitude: computed(() => data.value?.experience?.hostLatitude || 0),
   longitude: computed(() => data.value?.experience?.hostLongitude || 0),
   url: computed(() => `/experiences/${experienceId.value}`),
-})
+});
 
-useBreadcrumbJsonLd(computed(() => [
-  { name: 'トップ', path: '/' },
-  { name: '体験一覧', path: '/experiences' },
-  { name: data.value?.experience?.title || '', path: `/experiences/${experienceId.value}` },
-]))
+useBreadcrumbJsonLd(
+  computed(() => [
+    { name: "トップ", path: "/" },
+    { name: "体験一覧", path: "/experiences" },
+    {
+      name: data.value?.experience?.title || "",
+      path: `/experiences/${experienceId.value}`,
+    },
+  ]),
+);
 </script>
 
 <template>
   <div>
     <!-- Snackbar Items -->
-    <template
-      v-for="(snackbarItem, i) in snackbarItems"
-      :key="i"
-    >
+    <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
       <the-snackbar
         v-model:is-show="snackbarItem.isShow"
         :text="snackbarItem.text"
@@ -195,13 +207,8 @@ useBreadcrumbJsonLd(computed(() => [
 
     <!-- エラー表示 -->
     <template v-else-if="status === 'error'">
-      <div
-        class="my-6 px-4"
-      >
-        <the-alert
-          class="bg-white"
-          type="error"
-        >
+      <div class="my-6 px-4">
+        <the-alert class="bg-white" type="error">
           {{ error?.message }}
         </the-alert>
       </div>
@@ -239,7 +246,9 @@ useBreadcrumbJsonLd(computed(() => [
           <div class="mx-auto w-full max-w-[100%]">
             <div class="flex aspect-square h-full w-full justify-center">
               <template v-if="data.experience.promotionVideoUrl">
-                <the-item-video-player :src="data.experience.promotionVideoUrl" />
+                <the-item-video-player
+                  :src="data.experience.promotionVideoUrl"
+                />
               </template>
               <template v-else>
                 <nuxt-img
@@ -254,10 +263,7 @@ useBreadcrumbJsonLd(computed(() => [
             <div
               class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
             >
-              <template
-                v-for="(m, i) in data.experience.media"
-                :key="i"
-              >
+              <template v-for="(m, i) in data.experience.media" :key="i">
                 <nuxt-img
                   width="72px"
                   fill="contain"
@@ -286,10 +292,7 @@ useBreadcrumbJsonLd(computed(() => [
                 class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
               >
                 {{ dt("producerLabel") }}:
-                <a
-                  href="#"
-                  class="font-bold underline"
-                >
+                <a href="#" class="font-bold underline">
                   {{ data.producer.username }}
                 </a>
               </div>
@@ -335,9 +338,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("adult") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceAdult) }}
@@ -379,9 +380,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("juniorHighSchoolStudents") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceJuniorHighSchool) }}
@@ -423,9 +422,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("elementarySchoolStudents") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceElementarySchool) }}
@@ -467,9 +464,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("preschoolers") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.pricePreschool) }}
@@ -511,9 +506,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("senior") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceSenior) }}
@@ -587,7 +580,9 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ dt("businessHours") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ convertToTimeString(data.experience.businessOpenTime) }}~{{ convertToTimeString(data.experience.businessCloseTime) }}
+                {{ convertToTimeString(data.experience.businessOpenTime) }}~{{
+                  convertToTimeString(data.experience.businessCloseTime)
+                }}
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
@@ -603,7 +598,9 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ dt("locationAddress") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity
+                }}{{ data.experience.hostAddressLine1
+                }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
           </div>
@@ -645,7 +642,7 @@ useBreadcrumbJsonLd(computed(() => [
                     class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
                     src="/img/account.png"
                     alt="生産者"
-                  >
+                  />
                 </template>
                 <div
                   class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
@@ -691,16 +688,16 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ data.experience.hostPostalCode }}
               </p>
             </div>
-            <div
-              class="flex mt-4 text-[14px] md:text-[16px] items-center"
-            >
+            <div class="flex mt-4 text-[14px] md:text-[16px] items-center">
               <img
                 src="/img/experience/map.svg"
                 alt=""
                 class="w-[16px] h-[21px] md:w-[20px] md:h-[42px]"
-              >
+              />
               <p class="ml-3">
-                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity
+                }}{{ data.experience.hostAddressLine1
+                }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
             <div
@@ -732,8 +729,8 @@ useBreadcrumbJsonLd(computed(() => [
   counter-increment: li;
   position: absolute;
   left: 0;
-  background-color: theme('colors.main');
-  color: theme('colors.base');
+  background-color: theme("colors.main");
+  color: theme("colors.base");
   border-radius: 100%;
   width: 24px;
   height: 24px;
