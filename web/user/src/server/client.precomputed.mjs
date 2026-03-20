@@ -1,6 +1,13 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const moduleDir = dirname(fileURLToPath(import.meta.url))
+
+function createCandidates(paths) {
+  return Array.from(new Set(paths))
+}
 
 function createResource(file, manifest) {
   const entry = manifest[file] || { file }
@@ -94,12 +101,24 @@ function normalizeDependencies(dependencies) {
 }
 
 async function loadManifest() {
-  const manifestPaths = [
-    join(process.cwd(), 'public/_nuxt/manifest.json'),
-    join(process.cwd(), '.output/public/_nuxt/manifest.json'),
-    join(process.cwd(), 'node_modules/.cache/nuxt/.nuxt/dist/client/manifest.json'),
-    join(process.cwd(), '.nuxt/dist/client/manifest.json'),
-  ]
+  const rootDirs = createCandidates([
+    process.cwd(),
+    join(process.cwd(), '..'),
+    join(process.cwd(), '../..'),
+    moduleDir,
+    join(moduleDir, '..'),
+    join(moduleDir, '../..'),
+    join(moduleDir, '../../..'),
+    join(moduleDir, '../../../..'),
+  ])
+  const manifestPaths = createCandidates(rootDirs.flatMap((rootDir) => [
+    join(rootDir, 'public/_nuxt/manifest.json'),
+    join(rootDir, '.output/public/_nuxt/manifest.json'),
+    join(rootDir, 'node_modules/.cache/nuxt/.nuxt/dist/client/manifest.json'),
+    join(rootDir, '.nuxt/dist/client/manifest.json'),
+    join(rootDir, 'static/_nuxt/manifest.json'),
+    join(rootDir, '.amplify-hosting/static/_nuxt/manifest.json'),
+  ]))
 
   for (const manifestPath of manifestPaths) {
     try {
@@ -122,11 +141,24 @@ async function loadManifest() {
 }
 
 function loadCssFallbackPrecomputed() {
-  const assetDirs = [
-    join(process.cwd(), 'public/_nuxt'),
-    join(process.cwd(), '.output/public/_nuxt'),
-    join(process.cwd(), '.nuxt/dist/client/_nuxt'),
-  ]
+  const rootDirs = createCandidates([
+    process.cwd(),
+    join(process.cwd(), '..'),
+    join(process.cwd(), '../..'),
+    moduleDir,
+    join(moduleDir, '..'),
+    join(moduleDir, '../..'),
+    join(moduleDir, '../../..'),
+    join(moduleDir, '../../../..'),
+  ])
+  const assetDirs = createCandidates(rootDirs.flatMap((rootDir) => [
+    join(rootDir, 'public/_nuxt'),
+    join(rootDir, '.output/public/_nuxt'),
+    join(rootDir, '.nuxt/dist/client/_nuxt'),
+    join(rootDir, 'node_modules/.cache/nuxt/.nuxt/dist/client/_nuxt'),
+    join(rootDir, 'static/_nuxt'),
+    join(rootDir, '.amplify-hosting/static/_nuxt'),
+  ]))
 
   for (const assetDir of assetDirs) {
     if (!existsSync(assetDir)) {
