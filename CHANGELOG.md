@@ -1,5 +1,12 @@
 # Changelog
 
+## [v12.0.1](https://github.com/and-period/furumaru/compare/v12.0.0...v12.0.1) - 2026-03-20
+- chore(deps): lock file maintenance by @renovate[bot] in https://github.com/and-period/furumaru/pull/3376
+- chore(deps): update dependency storybook to v9.1.19 [security] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3359
+- fix(web): クライアントナビゲーション時にAPIレスポンスが表示されない問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3423
+- fix(web): SWR route rules を削除しクライアントナビゲーション時のデータ取得を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3424
+- Fix/web/user/nuxt4 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3422
+
 ## [v12.0.0](https://github.com/and-period/furumaru/compare/v11.0.0...v12.0.0) - 2026-03-19
 - chore: フロントエンド・インフラのツールチェーンを2026年ベストプラクティスに更新 by @taba2424 in https://github.com/and-period/furumaru/pull/3415
 - chore: pnpm-lock.yaml 生成 + yarn.lock 削除 + CI キャッシュ有効化 by @taba2424 in https://github.com/and-period/furumaru/pull/3418
