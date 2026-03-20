@@ -147,39 +147,57 @@ const handleCLickCoordinator = (id: string) => {
 }
 
 const fetchComments = async () => {
-  const res = await getComments(scheduleId.value)
-  comments.value = res.comments
+  try {
+    const res = await getComments(scheduleId.value)
+    comments.value = res.comments
+  }
+  catch (e) {
+    console.error(e)
+  }
 }
 
-await useAsyncData(`schedule-${scheduleId.value}`, async () => {
-  isLoading.value = true
-  const scheduleRes = await getSchedule(scheduleId.value)
-  schedule.value = scheduleRes
-  isLoading.value = false
-})
+await useAsyncData(
+  `schedule-${scheduleId.value}`,
+  async () => {
+    isLoading.value = true
+    const scheduleRes = await getSchedule(scheduleId.value)
+    schedule.value = scheduleRes
+    isLoading.value = false
+  },
+  { watch: [scheduleId] },
+)
+
+let interval: ReturnType<typeof setInterval> | null = null
 
 onMounted(() => {
   fetchComments()
-  const interval = setInterval(() => {
+  interval = setInterval(() => {
     fetchComments()
   }, 3000)
+})
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+onUnmounted(() => {
+  if (interval) clearInterval(interval)
 })
 
 useSeoHead({
   title: computed(() => schedule.value?.schedule.title || 'ライブ配信'),
-  description: computed(() => schedule.value?.schedule.description?.slice(0, 120) || ''),
+  description: computed(
+    () => schedule.value?.schedule.description?.slice(0, 120) || '',
+  ),
   ogImage: computed(() => schedule.value?.schedule.thumbnailUrl || ''),
   path: computed(() => `/live/${scheduleId.value}`),
 })
 
-useBreadcrumbJsonLd(computed(() => [
-  { name: 'トップ', path: '/' },
-  { name: schedule.value?.schedule.title || 'ライブ配信', path: `/live/${scheduleId.value}` },
-]))
+useBreadcrumbJsonLd(
+  computed(() => [
+    { name: 'トップ', path: '/' },
+    {
+      name: schedule.value?.schedule.title || 'ライブ配信',
+      path: `/live/${scheduleId.value}`,
+    },
+  ]),
+)
 </script>
 
 <template>

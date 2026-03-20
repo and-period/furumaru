@@ -3,7 +3,11 @@ import { priceFormatter } from '~/lib/price'
 import { useAuthStore } from '~/store/auth'
 import { useExperienceStore } from '~/store/experience'
 import { ExperienceStatus } from '~/types/api'
-import { useSeoHead, useExperienceJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
+import {
+  useSeoHead,
+  useExperienceJsonLd,
+  useBreadcrumbJsonLd,
+} from '~/hooks/seo'
 import type { I18n } from '~/types/locales'
 import type { Snackbar } from '~/types/props'
 
@@ -33,9 +37,13 @@ const { isAuthenticated } = storeToRefs(authStore)
 const experienceStore = useExperienceStore()
 const { fetchExperience } = experienceStore
 
-const { data, status, error } = await useAsyncData('experience', () => {
-  return fetchExperience(experienceId.value)
-})
+const { data, status, error } = await useAsyncData(
+  'experience',
+  () => {
+    return fetchExperience(experienceId.value)
+  },
+  { watch: [experienceId] },
+)
 
 const snackbarItems = ref<Snackbar[]>([])
 
@@ -136,7 +144,9 @@ const handleClickApplyButton = () => {
 
 useSeoHead({
   title: computed(() => data.value?.experience?.title || ''),
-  description: computed(() => data.value?.experience?.description?.slice(0, 120) || ''),
+  description: computed(
+    () => data.value?.experience?.description?.slice(0, 120) || '',
+  ),
   ogImage: computed(() => data.value?.experience?.thumbnailUrl || ''),
   path: computed(() => `/experiences/${experienceId.value}`),
 })
@@ -144,7 +154,10 @@ useSeoHead({
 useExperienceJsonLd({
   name: computed(() => data.value?.experience?.title || ''),
   description: computed(() => data.value?.experience?.description || ''),
-  images: computed(() => data.value?.experience?.media?.map((m: { url: string }) => m.url) || []),
+  images: computed(
+    () =>
+      data.value?.experience?.media?.map((m: { url: string }) => m.url) || [],
+  ),
   price: computed(() => data.value?.experience?.priceAdult || 0),
   startAt: computed(() => data.value?.experience?.startAt || 0),
   endAt: computed(() => data.value?.experience?.endAt || 0),
@@ -159,11 +172,16 @@ useExperienceJsonLd({
   url: computed(() => `/experiences/${experienceId.value}`),
 })
 
-useBreadcrumbJsonLd(computed(() => [
-  { name: 'トップ', path: '/' },
-  { name: '体験一覧', path: '/experiences' },
-  { name: data.value?.experience?.title || '', path: `/experiences/${experienceId.value}` },
-]))
+useBreadcrumbJsonLd(
+  computed(() => [
+    { name: 'トップ', path: '/' },
+    { name: '体験一覧', path: '/experiences' },
+    {
+      name: data.value?.experience?.title || '',
+      path: `/experiences/${experienceId.value}`,
+    },
+  ]),
+)
 </script>
 
 <template>
@@ -195,9 +213,7 @@ useBreadcrumbJsonLd(computed(() => [
 
     <!-- エラー表示 -->
     <template v-else-if="status === 'error'">
-      <div
-        class="my-6 px-4"
-      >
+      <div class="my-6 px-4">
         <the-alert
           class="bg-white"
           type="error"
@@ -239,7 +255,9 @@ useBreadcrumbJsonLd(computed(() => [
           <div class="mx-auto w-full max-w-[100%]">
             <div class="flex aspect-square h-full w-full justify-center">
               <template v-if="data.experience.promotionVideoUrl">
-                <the-item-video-player :src="data.experience.promotionVideoUrl" />
+                <the-item-video-player
+                  :src="data.experience.promotionVideoUrl"
+                />
               </template>
               <template v-else>
                 <nuxt-img
@@ -335,9 +353,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("adult") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceAdult) }}
@@ -379,9 +395,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("juniorHighSchoolStudents") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceJuniorHighSchool) }}
@@ -423,9 +437,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("elementarySchoolStudents") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceElementarySchool) }}
@@ -467,9 +479,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("preschoolers") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.pricePreschool) }}
@@ -511,9 +521,7 @@ useBreadcrumbJsonLd(computed(() => [
               <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("senior") }}
               </p>
-              <div
-                class="col-span-4"
-              >
+              <div class="col-span-4">
                 <div class="flex">
                   <p class="text-[16px] font-medium">
                     {{ priceString(data.experience.priceSenior) }}
@@ -587,7 +595,9 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ dt("businessHours") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ convertToTimeString(data.experience.businessOpenTime) }}~{{ convertToTimeString(data.experience.businessCloseTime) }}
+                {{ convertToTimeString(data.experience.businessOpenTime) }}~{{
+                  convertToTimeString(data.experience.businessCloseTime)
+                }}
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
@@ -603,7 +613,9 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ dt("locationAddress") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity
+                }}{{ data.experience.hostAddressLine1
+                }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
           </div>
@@ -691,16 +703,16 @@ useBreadcrumbJsonLd(computed(() => [
                 {{ data.experience.hostPostalCode }}
               </p>
             </div>
-            <div
-              class="flex mt-4 text-[14px] md:text-[16px] items-center"
-            >
+            <div class="flex mt-4 text-[14px] md:text-[16px] items-center">
               <img
                 src="/img/experience/map.svg"
                 alt=""
                 class="w-[16px] h-[21px] md:w-[20px] md:h-[42px]"
               >
               <p class="ml-3">
-                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity
+                }}{{ data.experience.hostAddressLine1
+                }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
             <div
@@ -732,8 +744,8 @@ useBreadcrumbJsonLd(computed(() => [
   counter-increment: li;
   position: absolute;
   left: 0;
-  background-color: theme('colors.main');
-  color: theme('colors.base');
+  background-color: theme("colors.main");
+  color: theme("colors.base");
   border-radius: 100%;
   width: 24px;
   height: 24px;

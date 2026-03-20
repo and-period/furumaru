@@ -2,10 +2,7 @@
 import { useAuthStore } from '~/store/auth'
 import { useVideoStore } from '~/store/video'
 import { useShoppingCartStore } from '~/store/shopping'
-import {
-  type VideoComment,
-  type VideoResponse,
-} from '~/types/api'
+import { type VideoComment, type VideoResponse } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
 import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
@@ -104,39 +101,57 @@ const handleCLickCoordinator = (id: string) => {
 }
 
 const fetchComments = async () => {
-  const res = await getComments(videoId.value)
-  comments.value = res.comments
+  try {
+    const res = await getComments(videoId.value)
+    comments.value = res.comments
+  }
+  catch (e) {
+    console.error(e)
+  }
 }
 
-await useAsyncData(`schedule-${videoId.value}`, async () => {
-  isLoading.value = true
-  const videoRes = await getVideo(videoId.value)
-  video.value = videoRes
-  isLoading.value = false
-})
+await useAsyncData(
+  `video-${videoId.value}`,
+  async () => {
+    isLoading.value = true
+    const videoRes = await getVideo(videoId.value)
+    video.value = videoRes
+    isLoading.value = false
+  },
+  { watch: [videoId] },
+)
+
+let interval: ReturnType<typeof setInterval> | null = null
 
 onMounted(() => {
   fetchComments()
-  const interval = setInterval(() => {
+  interval = setInterval(() => {
     fetchComments()
   }, 3000)
+})
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+onUnmounted(() => {
+  if (interval) clearInterval(interval)
 })
 
 useSeoHead({
   title: computed(() => video.value?.video.title || '動画'),
-  description: computed(() => video.value?.video.description?.slice(0, 120) || ''),
+  description: computed(
+    () => video.value?.video.description?.slice(0, 120) || '',
+  ),
   ogImage: computed(() => video.value?.video.thumbnailUrl || ''),
   path: computed(() => `/video/${videoId.value}`),
 })
 
-useBreadcrumbJsonLd(computed(() => [
-  { name: 'トップ', path: '/' },
-  { name: video.value?.video.title || '動画', path: `/video/${videoId.value}` },
-]))
+useBreadcrumbJsonLd(
+  computed(() => [
+    { name: 'トップ', path: '/' },
+    {
+      name: video.value?.video.title || '動画',
+      path: `/video/${videoId.value}`,
+    },
+  ]),
+)
 </script>
 
 <template>
@@ -200,7 +215,9 @@ useBreadcrumbJsonLd(computed(() => [
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
-              <div class="px-[15px] md:px-[36px] mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5 mb-4">
+              <div
+                class="px-[15px] md:px-[36px] mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5 mb-4"
+              >
                 <template v-if="video.products.length > 0">
                   <the-video-product-list-item
                     v-for="product in products"

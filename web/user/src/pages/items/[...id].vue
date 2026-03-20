@@ -27,7 +27,9 @@ const { product, productFetchState } = storeToRefs(productStore)
 const { coordinatorInfo, products } = storeToRefs(coordinatorStore)
 
 const coordinatorProducts = computed(() => {
-  const currentId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  const currentId = Array.isArray(route.params.id)
+    ? route.params.id[0]
+    : route.params.id
   return Array.isArray(products.value)
     ? products.value.filter(product => product.id !== currentId)
     : []
@@ -52,7 +54,9 @@ function autoLink(text: string): string {
   )
 }
 
-const productDescriptionHtml = computed(() => autoLink(product.value?.description ?? ''))
+const productDescriptionHtml = computed(() =>
+  autoLink(product.value?.description ?? ''),
+)
 
 const itemThumbnailAlt = computed<string>(() => {
   return i18n.t('items.list.itemThumbnailAlt', {
@@ -62,9 +66,8 @@ const itemThumbnailAlt = computed<string>(() => {
 
 watchEffect(() => {
   if (product.value && product.value.coordinatorId) {
-    useAsyncData(
-      `coordinator-${product.value.coordinatorId}`,
-      () => fetchCoordinator(product.value.coordinatorId),
+    useAsyncData(`coordinator-${product.value.coordinatorId}`, () =>
+      fetchCoordinator(product.value.coordinatorId),
     )
   }
 })
@@ -171,21 +174,33 @@ const handleClickMediaItem = (index: number) => {
 
 const { addItem: addRecentlyViewed } = useRecentlyViewed()
 
-const { status, error } = useAsyncData(`product-${id.value}`, async () => {
-  await fetchProduct(id.value)
-  return true
-})
+const { status, error } = useAsyncData(
+  `product-${id.value}`,
+  async () => {
+    await fetchProduct(id.value)
+    return true
+  },
+  { watch: [id] },
+)
 
-watch(status, (newStatus) => {
-  if (newStatus === 'success' && id.value) {
-    addRecentlyViewed(id.value)
-  }
-}, { immediate: true })
+watch(
+  status,
+  (newStatus) => {
+    if (newStatus === 'success' && id.value) {
+      addRecentlyViewed(id.value)
+    }
+  },
+  { immediate: true },
+)
 
-useAsyncData(`reviews-${id.value}`, async () => {
-  await fetchReviews(id.value)
-  return true
-})
+useAsyncData(
+  `reviews-${id.value}`,
+  async () => {
+    await fetchReviews(id.value)
+    return true
+  },
+  { watch: [id] },
+)
 
 useSeoHead({
   title,
@@ -198,7 +213,9 @@ useSeoHead({
 useProductJsonLd({
   name: computed(() => product.value.name || ''),
   description: computed(() => product.value.description || ''),
-  images: computed(() => product.value.media?.map((m: { url: string }) => m.url) || []),
+  images: computed(
+    () => product.value.media?.map((m: { url: string }) => m.url) || [],
+  ),
   price: computed(() => product.value.price || 0),
   inventory: computed(() => product.value.inventory || 0),
   ratingAverage: computed(() => product.value.rate?.average || 0),
@@ -207,11 +224,13 @@ useProductJsonLd({
   url: computed(() => `/items/${id.value}`),
 })
 
-useBreadcrumbJsonLd(computed(() => [
-  { name: 'トップ', path: '/' },
-  { name: 'すべての商品', path: '/items' },
-  { name: product.value.name || '', path: `/items/${id.value}` },
-]))
+useBreadcrumbJsonLd(
+  computed(() => [
+    { name: 'トップ', path: '/' },
+    { name: 'すべての商品', path: '/items' },
+    { name: product.value.name || '', path: `/items/${id.value}` },
+  ]),
+)
 </script>
 
 <template>
@@ -280,7 +299,11 @@ useBreadcrumbJsonLd(computed(() => [
   </template>
 
   <!-- 商品情報の表示 -->
-  <template v-if="status == 'success' && !productFetchState.isLoading && product.thumbnail">
+  <template
+    v-if="
+      status == 'success' && !productFetchState.isLoading && product.thumbnail
+    "
+  >
     <div class="bg-white w-full">
       <div
         class="gap-10 px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 lg:px-[112px] w-full max-w-[1440px] mx-auto"
@@ -389,9 +412,9 @@ useBreadcrumbJsonLd(computed(() => [
               </div>
               <a
                 href="#reviews"
-                class="text-sm font-medium text-main underline hover:no-underline "
+                class="text-sm font-medium text-main underline hover:no-underline"
               >
-                {{ product.rate.count }} {{ dt('reviewCountLabel') }}
+                {{ product.rate.count }} {{ dt("reviewCountLabel") }}
               </a>
             </div>
           </div>
@@ -625,7 +648,7 @@ useBreadcrumbJsonLd(computed(() => [
             {{ dt("noReviewText") }}
           </div>
           <div
-            v-for="review, i in reviews"
+            v-for="(review, i) in reviews"
             :key="review.id"
             class="flex flex-col gap-2 py-4"
           >
@@ -715,8 +738,8 @@ useBreadcrumbJsonLd(computed(() => [
   counter-increment: li;
   position: absolute;
   left: 0;
-  background-color: theme('colors.main');
-  color: theme('colors.base');
+  background-color: theme("colors.main");
+  color: theme("colors.base");
   border-radius: 100%;
   width: 24px;
   height: 24px;
