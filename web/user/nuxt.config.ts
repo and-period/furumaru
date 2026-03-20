@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   srcDir: 'src',
   serverDir: 'src/server',
   publicDir: 'public',
-  compatibilityDate: 'latest',
+  compatibilityDate: '2026-03-20',
   app: {
     head: {
       titleTemplate: '%s - 産地直送のお取り寄せ通販【ふるマル】',
