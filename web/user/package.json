@@ -10,6 +10,7 @@
     "generate": "nuxt generate",
     "preview": "./predev.sh && NITRO_SSL_CERT=\"$(cat localhost.pem)\" NITRO_SSL_KEY=\"$(cat localhost-key.pem)\" nuxt preview",
     "preview:amplify": "node .amplify-hosting/compute/default/server.js",
+    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && pnpm install && pnpm build)) && nuxt prepare",
     "start": "nuxt start",
     "lint": "eslint .",
     "format": "pnpm lint --fix",
