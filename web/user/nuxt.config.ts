@@ -1,5 +1,7 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
+const clientPrecomputedFallbackPath = new URL('./src/server/client.precomputed.mjs', import.meta.url).pathname
+
 export default defineNuxtConfig({
   ssr: true,
   srcDir: 'src',
@@ -182,6 +184,9 @@ export default defineNuxtConfig({
   },
   build: {},
   nitro: {
+    alias: {
+      '#build/dist/server/client.precomputed.mjs': clientPrecomputedFallbackPath,
+    },
     plugins: ['~/server/plugins/sentry'],
   },
   vite: {
