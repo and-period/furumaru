@@ -11,7 +11,6 @@
     "preview": "./predev.sh && NITRO_SSL_CERT=\"$(cat localhost.pem)\" NITRO_SSL_KEY=\"$(cat localhost-key.pem)\" nuxt preview",
     "preview:amplify": "node .amplify-hosting/compute/default/server.js",
     "start": "nuxt start",
-    "postinstall": "(test -f ../shared/dist/index.js || (cd ../shared && pnpm install && pnpm build)) && nuxt prepare && node ./scripts/patch-nuxt-dev-handler.mjs",
     "lint": "eslint .",
     "format": "pnpm lint --fix",
     "test": "vitest --run",
