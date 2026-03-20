@@ -104,7 +104,8 @@ const fetchComments = async () => {
   try {
     const res = await getComments(videoId.value)
     comments.value = res.comments
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
   }
 }
