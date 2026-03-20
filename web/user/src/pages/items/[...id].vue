@@ -1,214 +1,218 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useEventBus } from "@vueuse/core";
-import { useProductStore } from "~/store/product";
-import { useShoppingCartStore } from "~/store/shopping";
-import { ProductStatus } from "~/types/api";
-import type { Snackbar } from "~/types/props";
-import type { I18n } from "~/types/locales";
-import { useProductReviewStore } from "~/store/productReview";
-import { useCoordinatorStore } from "~/store/coordinator";
-import { useSeoHead, useProductJsonLd, useBreadcrumbJsonLd } from "~/hooks/seo";
-import { useRecentlyViewed } from "~/hooks/useRecentlyViewed";
+import { storeToRefs } from 'pinia'
+import { useEventBus } from '@vueuse/core'
+import { useProductStore } from '~/store/product'
+import { useShoppingCartStore } from '~/store/shopping'
+import { ProductStatus } from '~/types/api'
+import type { Snackbar } from '~/types/props'
+import type { I18n } from '~/types/locales'
+import { useProductReviewStore } from '~/store/productReview'
+import { useCoordinatorStore } from '~/store/coordinator'
+import { useSeoHead, useProductJsonLd, useBreadcrumbJsonLd } from '~/hooks/seo'
+import { useRecentlyViewed } from '~/hooks/useRecentlyViewed'
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const route = useRoute();
+const route = useRoute()
 
-const productStore = useProductStore();
-const shoppingCartStore = useShoppingCartStore();
-const coordinatorStore = useCoordinatorStore();
-const { fetchCoordinator } = coordinatorStore;
+const productStore = useProductStore()
+const shoppingCartStore = useShoppingCartStore()
+const coordinatorStore = useCoordinatorStore()
+const { fetchCoordinator } = coordinatorStore
 
-const { fetchProduct } = productStore;
-const { addCart } = shoppingCartStore;
+const { fetchProduct } = productStore
+const { addCart } = shoppingCartStore
 
-const { product, productFetchState } = storeToRefs(productStore);
-const { coordinatorInfo, products } = storeToRefs(coordinatorStore);
+const { product, productFetchState } = storeToRefs(productStore)
+const { coordinatorInfo, products } = storeToRefs(coordinatorStore)
 
 const coordinatorProducts = computed(() => {
   const currentId = Array.isArray(route.params.id)
     ? route.params.id[0]
-    : route.params.id;
+    : route.params.id
   return Array.isArray(products.value)
-    ? products.value.filter((product) => product.id !== currentId)
-    : [];
-});
+    ? products.value.filter(product => product.id !== currentId)
+    : []
+})
 
-const productReviewStore = useProductReviewStore();
-const { fetchReviews } = productReviewStore;
-const { reviews } = storeToRefs(productReviewStore);
+const productReviewStore = useProductReviewStore()
+const { fetchReviews } = productReviewStore
+const { reviews } = storeToRefs(productReviewStore)
 
-const { emit } = useEventBus("add-to-cart");
+const { emit } = useEventBus('add-to-cart')
 
-const dt = (str: keyof I18n["items"]["details"]) => {
-  return i18n.t(`items.details.${str}`);
-};
+const dt = (str: keyof I18n['items']['details']) => {
+  return i18n.t(`items.details.${str}`)
+}
 
 // 商品説明文をリンク化する関数
 function autoLink(text: string): string {
-  if (!text) return "";
+  if (!text) return ''
   return text.replace(
     /(https?:\/\/[^\s]+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline break-all">$1</a>',
-  );
+  )
 }
 
 const productDescriptionHtml = computed(() =>
-  autoLink(product.value?.description ?? ""),
-);
+  autoLink(product.value?.description ?? ''),
+)
 
 const itemThumbnailAlt = computed<string>(() => {
-  return i18n.t("items.list.itemThumbnailAlt", {
+  return i18n.t('items.list.itemThumbnailAlt', {
     itemName: product.value.name,
-  });
-});
+  })
+})
 
 watchEffect(() => {
   if (product.value && product.value.coordinatorId) {
     useAsyncData(`coordinator-${product.value.coordinatorId}`, () =>
       fetchCoordinator(product.value.coordinatorId),
-    );
+    )
   }
-});
+})
 
 const expirationDateText = computed<string>(() => {
-  return i18n.t("items.details.expirationDateText", {
+  return i18n.t('items.details.expirationDateText', {
     expirationDate: product.value.expirationDate,
-  });
-});
+  })
+})
 
 const id = computed<string>(() => {
-  const ids = route.params.id;
+  const ids = route.params.id
   if (Array.isArray(ids)) {
-    return ids[0];
-  } else {
-    return ids;
+    return ids[0]
   }
-});
+  else {
+    return ids
+  }
+})
 
-const snackbarItems = ref<Snackbar[]>([]);
+const snackbarItems = ref<Snackbar[]>([])
 
-const quantity = ref<number>(1);
+const quantity = ref<number>(1)
 
 const priceString = computed<string>(() => {
   if (product.value) {
-    return new Intl.NumberFormat("ja-JP", {
-      style: "currency",
-      currency: "JPY",
-    }).format(product.value.price);
-  } else {
-    return "";
+    return new Intl.NumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY',
+    }).format(product.value.price)
   }
-});
+  else {
+    return ''
+  }
+})
 
 const canAddCart = computed<boolean>(() => {
   // データ取得に失敗していたらfalseを返す
-  if (status.value === "success") {
+  if (status.value === 'success') {
     if (product.value) {
       return (
-        product.value.status === ProductStatus.FOR_SALE &&
-        product.value.inventory > 0
-      );
-    } else {
-      return false;
+        product.value.status === ProductStatus.FOR_SALE
+        && product.value.inventory > 0
+      )
     }
-  } else {
-    return false;
+    else {
+      return false
+    }
   }
-});
+  else {
+    return false
+  }
+})
 
 const handleClickAddCartButton = () => {
   addCart({
     productId: id.value,
     quantity: quantity.value,
-  });
-  emit("add-to-cart");
-};
+  })
+  emit('add-to-cart')
+}
 
 const getDeliveryType = (type: number) => {
   switch (type) {
     case 1:
-      return dt("deliveryTypeStandard");
+      return dt('deliveryTypeStandard')
     case 2:
-      return dt("deliveryTypeRefrigerated");
+      return dt('deliveryTypeRefrigerated')
     case 3:
-      return dt("deliveryTypeFrozen");
+      return dt('deliveryTypeFrozen')
     default:
-      return "";
+      return ''
   }
-};
+}
 
 const getStorageMethodType = (type: number) => {
   switch (type) {
     case 0:
-      return dt("storageTypeUnknown");
+      return dt('storageTypeUnknown')
     case 1:
-      return dt("storageTypeRoomTemperature");
+      return dt('storageTypeRoomTemperature')
     case 2:
-      return dt("storageTypeCoolAndDark");
+      return dt('storageTypeCoolAndDark')
     case 3:
-      return dt("storageTypeRefrigerated");
+      return dt('storageTypeRefrigerated')
     case 4:
-      return dt("storageTypeFrozen");
+      return dt('storageTypeFrozen')
   }
-};
+}
 
-const title = computed<string>(() => product.value.name);
+const title = computed<string>(() => product.value.name)
 
-const selectedMediaIndex = ref<number>(-1);
+const selectedMediaIndex = ref<number>(-1)
 
 const selectMediaSrcUrl = computed<string>(() => {
   return selectedMediaIndex.value === -1
     ? product.value.thumbnailUrl
-    : product.value.media[selectedMediaIndex.value].url;
-});
+    : product.value.media[selectedMediaIndex.value].url
+})
 
 const handleClickMediaItem = (index: number) => {
-  selectedMediaIndex.value = index;
-};
+  selectedMediaIndex.value = index
+}
 
-const { addItem: addRecentlyViewed } = useRecentlyViewed();
+const { addItem: addRecentlyViewed } = useRecentlyViewed()
 
 const { status, error } = useAsyncData(
   `product-${id.value}`,
   async () => {
-    await fetchProduct(id.value);
-    return true;
+    await fetchProduct(id.value)
+    return true
   },
   { watch: [id] },
-);
+)
 
 watch(
   status,
   (newStatus) => {
-    if (newStatus === "success" && id.value) {
-      addRecentlyViewed(id.value);
+    if (newStatus === 'success' && id.value) {
+      addRecentlyViewed(id.value)
     }
   },
   { immediate: true },
-);
+)
 
 useAsyncData(
   `reviews-${id.value}`,
   async () => {
-    await fetchReviews(id.value);
-    return true;
+    await fetchReviews(id.value)
+    return true
   },
   { watch: [id] },
-);
+)
 
 useSeoHead({
   title,
-  description: computed(() => product.value.description?.slice(0, 120) || ""),
-  ogImage: computed(() => product.value.thumbnailUrl || ""),
-  ogType: "product",
+  description: computed(() => product.value.description?.slice(0, 120) || ''),
+  ogImage: computed(() => product.value.thumbnailUrl || ''),
+  ogType: 'product',
   path: computed(() => `/items/${id.value}`),
-});
+})
 
 useProductJsonLd({
-  name: computed(() => product.value.name || ""),
-  description: computed(() => product.value.description || ""),
+  name: computed(() => product.value.name || ''),
+  description: computed(() => product.value.description || ''),
   images: computed(
     () => product.value.media?.map((m: { url: string }) => m.url) || [],
   ),
@@ -216,21 +220,24 @@ useProductJsonLd({
   inventory: computed(() => product.value.inventory || 0),
   ratingAverage: computed(() => product.value.rate?.average || 0),
   ratingCount: computed(() => product.value.rate?.count || 0),
-  producerName: computed(() => product.value.producer?.username || ""),
+  producerName: computed(() => product.value.producer?.username || ''),
   url: computed(() => `/items/${id.value}`),
-});
+})
 
 useBreadcrumbJsonLd(
   computed(() => [
-    { name: "トップ", path: "/" },
-    { name: "すべての商品", path: "/items" },
-    { name: product.value.name || "", path: `/items/${id.value}` },
+    { name: 'トップ', path: '/' },
+    { name: 'すべての商品', path: '/items' },
+    { name: product.value.name || '', path: `/items/${id.value}` },
   ]),
-);
+)
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -319,7 +326,10 @@ useBreadcrumbJsonLd(
           <div
             class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
           >
-            <template v-for="(m, i) in product.media" :key="i">
+            <template
+              v-for="(m, i) in product.media"
+              :key="i"
+            >
               <template v-if="m.url.endsWith('.mp4')">
                 <div
                   class="aspect-square w-[72px] h-[72px] cursor-pointer border relative"
@@ -379,7 +389,10 @@ useBreadcrumbJsonLd(
               class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
             >
               {{ dt("producerLabel") }}:
-              <a href="#" class="font-bold underline">
+              <a
+                href="#"
+                class="font-bold underline"
+              >
                 {{ product.producer.username }}
               </a>
             </div>
@@ -451,7 +464,10 @@ useBreadcrumbJsonLd(
               </p>
             </div>
 
-            <div v-if="product" class="mt-4 inline-flex items-center md:mt-8">
+            <div
+              v-if="product"
+              class="mt-4 inline-flex items-center md:mt-8"
+            >
               <label class="mr-2 block text-[14px] md:text-[16px]">{{
                 dt("quantityLabel")
               }}</label>
@@ -514,7 +530,9 @@ useBreadcrumbJsonLd(
             <p class="col-span-2 md:col-span-1">
               {{ dt("weightLabel") }}
             </p>
-            <p class="col-span-3 md:col-span-4">{{ product.weight }}kg</p>
+            <p class="col-span-3 md:col-span-4">
+              {{ product.weight }}kg
+            </p>
           </div>
           <div class="grid grid-cols-5 py-4">
             <p class="col-span-2 md:col-span-1">
@@ -570,7 +588,7 @@ useBreadcrumbJsonLd(
                   class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
                   src="/img/account.png"
                   alt="生産者"
-                />
+                >
               </template>
               <div
                 class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
@@ -602,12 +620,16 @@ useBreadcrumbJsonLd(
             <the-right-arrow-icon class="ml-2 h-[12px] w-[12px]" />
           </button>
         </div>
-        --></div>
+        -->
+        </div>
       </div>
     </div>
   </template>
 
-  <div id="reviews" class="w-full">
+  <div
+    id="reviews"
+    class="w-full"
+  >
     <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
       <div
         class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
@@ -619,7 +641,10 @@ useBreadcrumbJsonLd(
         </p>
 
         <div class="mt-[32px] flex flex-col divide-y">
-          <div v-if="reviews.length === 0" class="text-center py-4">
+          <div
+            v-if="reviews.length === 0"
+            class="text-center py-4"
+          >
             {{ dt("noReviewText") }}
           </div>
           <div
@@ -645,7 +670,10 @@ useBreadcrumbJsonLd(
             </div>
             <div>
               <div class="flex gap-2 items-center mb-2">
-                <the-rating-star :id="`review-${i}`" :rate="review.rate" />
+                <the-rating-star
+                  :id="`review-${i}`"
+                  :rate="review.rate"
+                />
                 <div class="font-semibold">
                   {{ review.title }}
                 </div>

@@ -1,152 +1,157 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/auth";
-import { useVideoStore } from "~/store/video";
-import { useShoppingCartStore } from "~/store/shopping";
-import { type VideoComment, type VideoResponse } from "~/types/api";
-import type { Snackbar } from "~/types/props";
-import type { I18n } from "~/types/locales";
-import { useSeoHead, useBreadcrumbJsonLd } from "~/hooks/seo";
+import { useAuthStore } from '~/store/auth'
+import { useVideoStore } from '~/store/video'
+import { useShoppingCartStore } from '~/store/shopping'
+import { type VideoComment, type VideoResponse } from '~/types/api'
+import type { Snackbar } from '~/types/props'
+import type { I18n } from '~/types/locales'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
-const authStore = useAuthStore();
-const { isAuthenticated } = storeToRefs(authStore);
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
-const videoStore = useVideoStore();
-const { getVideo, postComment, getComments } = videoStore;
-const { products, experiences } = storeToRefs(videoStore);
+const videoStore = useVideoStore()
+const { getVideo, postComment, getComments } = videoStore
+const { products, experiences } = storeToRefs(videoStore)
 
-const shoppingCartStore = useShoppingCartStore();
-const { addCart } = shoppingCartStore;
+const shoppingCartStore = useShoppingCartStore()
+const { addCart } = shoppingCartStore
 
-const snackbarItems = ref<Snackbar[]>([]);
+const snackbarItems = ref<Snackbar[]>([])
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const dt = (str: keyof I18n["videos"]["details"]) => {
-  return i18n.t(`videos.details.${str}`);
-};
+const dt = (str: keyof I18n['videos']['details']) => {
+  return i18n.t(`videos.details.${str}`)
+}
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
-const isLoading = ref<boolean>(false);
-const video = ref<VideoResponse | undefined>(undefined);
+const isLoading = ref<boolean>(false)
+const video = ref<VideoResponse | undefined>(undefined)
 
-const comments = ref<VideoComment[]>([]);
-const commentFormData = ref<string>("");
-const commentIsSending = ref<boolean>(false);
+const comments = ref<VideoComment[]>([])
+const commentFormData = ref<string>('')
+const commentIsSending = ref<boolean>(false)
 
 const videoId = computed<string>(() => {
-  return route.params.id as string;
-});
+  return route.params.id as string
+})
 
 const handleSubmitComment = async () => {
   try {
-    commentIsSending.value = true;
-    await postComment(videoId.value, commentFormData.value);
-    commentFormData.value = "";
-    const res = await getComments(videoId.value);
-    comments.value = res.comments;
-  } catch (e) {
-    snackbarItems.value.push({
-      text: "コメントの送信に失敗しました。",
-      isShow: true,
-    });
-    console.log(e);
-  } finally {
-    commentIsSending.value = false;
+    commentIsSending.value = true
+    await postComment(videoId.value, commentFormData.value)
+    commentFormData.value = ''
+    const res = await getComments(videoId.value)
+    comments.value = res.comments
   }
-};
+  catch (e) {
+    snackbarItems.value.push({
+      text: 'コメントの送信に失敗しました。',
+      isShow: true,
+    })
+    console.log(e)
+  }
+  finally {
+    commentIsSending.value = false
+  }
+}
 
-const videoRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null });
+const videoRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null })
 
 const videoPlayerHeight = computed(() => {
   if (videoRef.value.videoRef) {
     if (videoRef.value.videoRef.offsetWidth >= 768) {
-      return 0;
+      return 0
     }
-    return videoRef.value.videoRef.offsetHeight;
+    return videoRef.value.videoRef.offsetHeight
   }
-  return 0;
-});
+  return 0
+})
 
-const selectedTab = ref<"product" | "comment">("product");
+const selectedTab = ref<'product' | 'comment'>('product')
 
-const clickTab = (tab: "product" | "comment") => {
-  selectedTab.value = tab;
-};
+const clickTab = (tab: 'product' | 'comment') => {
+  selectedTab.value = tab
+}
 
 const handleClickItem = (productId: string) => {
-  router.push(`/items/${productId}`);
-};
+  router.push(`/items/${productId}`)
+}
 
 const handleClickExperienceItem = (experienceId: string) => {
-  router.push(`/experiences/${experienceId}`);
-};
+  router.push(`/experiences/${experienceId}`)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
-  const message = i18n.t("items.details.addCartSnackbarMessage", {
+  const message = i18n.t('items.details.addCartSnackbarMessage', {
     itemName: name,
-  });
-  addCart({ productId: id, quantity });
+  })
+  addCart({ productId: id, quantity })
   snackbarItems.value.push({
     text: message,
     isShow: true,
-  });
-};
+  })
+}
 
 const handleCLickCoordinator = (id: string) => {
-  router.push(`/coordinator/${id}`);
-};
+  router.push(`/coordinator/${id}`)
+}
 
 const fetchComments = async () => {
-  const res = await getComments(videoId.value);
-  comments.value = res.comments;
-};
+  const res = await getComments(videoId.value)
+  comments.value = res.comments
+}
 
 await useAsyncData(
   `video-${videoId.value}`,
   async () => {
-    isLoading.value = true;
-    const videoRes = await getVideo(videoId.value);
-    video.value = videoRes;
-    isLoading.value = false;
+    isLoading.value = true
+    const videoRes = await getVideo(videoId.value)
+    video.value = videoRes
+    isLoading.value = false
   },
   { watch: [videoId] },
-);
+)
 
 onMounted(() => {
-  fetchComments();
+  fetchComments()
   const interval = setInterval(() => {
-    fetchComments();
-  }, 3000);
+    fetchComments()
+  }, 3000)
 
   onUnmounted(() => {
-    clearInterval(interval);
-  });
-});
+    clearInterval(interval)
+  })
+})
 
 useSeoHead({
-  title: computed(() => video.value?.video.title || "動画"),
+  title: computed(() => video.value?.video.title || '動画'),
   description: computed(
-    () => video.value?.video.description?.slice(0, 120) || "",
+    () => video.value?.video.description?.slice(0, 120) || '',
   ),
-  ogImage: computed(() => video.value?.video.thumbnailUrl || ""),
+  ogImage: computed(() => video.value?.video.thumbnailUrl || ''),
   path: computed(() => `/video/${videoId.value}`),
-});
+})
 
 useBreadcrumbJsonLd(
   computed(() => [
-    { name: "トップ", path: "/" },
+    { name: 'トップ', path: '/' },
     {
-      name: video.value?.video.title || "動画",
+      name: video.value?.video.title || '動画',
       path: `/video/${videoId.value}`,
     },
   ]),
-);
+)
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -247,7 +252,10 @@ useBreadcrumbJsonLd(
                   @submit="handleSubmitComment"
                 />
                 <div class="flex flex-col gap-4 py-8">
-                  <div v-if="comments.length === 0" class="text-typography">
+                  <div
+                    v-if="comments.length === 0"
+                    class="text-typography"
+                  >
                     {{ dt("noCommentsText") }}
                   </div>
                   <div

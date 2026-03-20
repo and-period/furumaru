@@ -1,65 +1,67 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/auth";
-import { useScheduleStore } from "~/store/schedule";
-import { useShoppingCartStore } from "~/store/shopping";
+import { useAuthStore } from '~/store/auth'
+import { useScheduleStore } from '~/store/schedule'
+import { useShoppingCartStore } from '~/store/shopping'
 import {
   ScheduleStatus,
   type ScheduleResponse,
   type LiveComment,
-} from "~/types/api";
-import type { Snackbar } from "~/types/props";
-import type { LiveTimeLineItem } from "~/types/props/schedule";
-import type { I18n } from "~/types/locales";
-import { useSeoHead, useBreadcrumbJsonLd } from "~/hooks/seo";
+} from '~/types/api'
+import type { Snackbar } from '~/types/props'
+import type { LiveTimeLineItem } from '~/types/props/schedule'
+import type { I18n } from '~/types/locales'
+import { useSeoHead, useBreadcrumbJsonLd } from '~/hooks/seo'
 
-const authStore = useAuthStore();
-const { isAuthenticated } = storeToRefs(authStore);
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
-const scheduleStore = useScheduleStore();
-const { getSchedule, postComment, getComments } = scheduleStore;
+const scheduleStore = useScheduleStore()
+const { getSchedule, postComment, getComments } = scheduleStore
 
-const shoppingCartStore = useShoppingCartStore();
-const { addCart } = shoppingCartStore;
+const shoppingCartStore = useShoppingCartStore()
+const { addCart } = shoppingCartStore
 
-const snackbarItems = ref<Snackbar[]>([]);
+const snackbarItems = ref<Snackbar[]>([])
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const dt = (str: keyof I18n["lives"]["details"]) => {
-  return i18n.t(`lives.details.${str}`);
-};
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
-const isLoading = ref<boolean>(false);
-const schedule = ref<ScheduleResponse | undefined>(undefined);
+const isLoading = ref<boolean>(false)
+const schedule = ref<ScheduleResponse | undefined>(undefined)
 
-const comments = ref<LiveComment[]>([]);
-const commentFormData = ref<string>("");
-const commentIsSending = ref<boolean>(false);
+const comments = ref<LiveComment[]>([])
+const commentFormData = ref<string>('')
+const commentIsSending = ref<boolean>(false)
 
 const scheduleId = computed<string>(() => {
-  return route.params.id as string;
-});
+  return route.params.id as string
+})
 
 const handleSubmitComment = async () => {
   try {
-    commentIsSending.value = true;
-    await postComment(scheduleId.value, commentFormData.value);
-    commentFormData.value = "";
-    const res = await getComments(scheduleId.value);
-    comments.value = res.comments;
-  } catch (e) {
-    snackbarItems.value.push({
-      text: "コメントの送信に失敗しました。",
-      isShow: true,
-    });
-    console.log(e);
-  } finally {
-    commentIsSending.value = false;
+    commentIsSending.value = true
+    await postComment(scheduleId.value, commentFormData.value)
+    commentFormData.value = ''
+    const res = await getComments(scheduleId.value)
+    comments.value = res.comments
   }
-};
+  catch (e) {
+    snackbarItems.value.push({
+      text: 'コメントの送信に失敗しました。',
+      isShow: true,
+    })
+    console.log(e)
+  }
+  finally {
+    commentIsSending.value = false
+  }
+}
 
 const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
   if (schedule.value) {
@@ -67,129 +69,135 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
       schedule.value.lives.map((live) => {
         // 生産者情報のマッピング
         const producer = schedule.value?.producers.find(
-          (p) => p.id === live.producerId,
-        );
+          p => p.id === live.producerId,
+        )
         // 商品のマッピング
         const products = live.productIds
           .map((id) => {
-            return schedule.value?.products.find((p) => p.id === id);
+            return schedule.value?.products.find(p => p.id === id)
           })
-          .filter((p) => p !== undefined);
+          .filter(p => p !== undefined)
         // コーディネーターのマッピング
         return {
           ...live,
           producer,
           products,
-        };
+        }
       }) ?? []
-    );
-  } else {
-    return [];
+    )
   }
-});
+  else {
+    return []
+  }
+})
 
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
-    return schedule.value.schedule.status === ScheduleStatus.LIVE;
-  } else {
-    return false;
+    return schedule.value.schedule.status === ScheduleStatus.LIVE
   }
-});
+  else {
+    return false
+  }
+})
 
 const isArchive = computed<boolean>(() => {
   if (schedule.value) {
-    return schedule.value.schedule.status === ScheduleStatus.ARCHIVED;
-  } else {
-    return false;
+    return schedule.value.schedule.status === ScheduleStatus.ARCHIVED
   }
-});
+  else {
+    return false
+  }
+})
 
-const liveRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null });
+const liveRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null })
 
 const livePlayerHeight = computed(() => {
   if (liveRef.value.videoRef) {
     if (liveRef.value.videoRef.offsetWidth >= 768) {
-      return 0;
+      return 0
     }
-    return liveRef.value.videoRef.offsetHeight;
+    return liveRef.value.videoRef.offsetHeight
   }
-  return 0;
-});
+  return 0
+})
 
-const selectedTab = ref<"product" | "comment">("product");
+const selectedTab = ref<'product' | 'comment'>('product')
 
-const clickTab = (tab: "product" | "comment") => {
-  selectedTab.value = tab;
-};
+const clickTab = (tab: 'product' | 'comment') => {
+  selectedTab.value = tab
+}
 
 const handleClickItem = (productId: string) => {
-  router.push(`/items/${productId}`);
-};
+  router.push(`/items/${productId}`)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
-  const message = i18n.t("items.details.addCartSnackbarMessage", {
+  const message = i18n.t('items.details.addCartSnackbarMessage', {
     itemName: name,
-  });
-  addCart({ productId: id, quantity });
+  })
+  addCart({ productId: id, quantity })
   snackbarItems.value.push({
     text: message,
     isShow: true,
-  });
-};
+  })
+}
 
 const handleCLickCoordinator = (id: string) => {
-  router.push(`/coordinator/${id}`);
-};
+  router.push(`/coordinator/${id}`)
+}
 
 const fetchComments = async () => {
-  const res = await getComments(scheduleId.value);
-  comments.value = res.comments;
-};
+  const res = await getComments(scheduleId.value)
+  comments.value = res.comments
+}
 
 await useAsyncData(
   `schedule-${scheduleId.value}`,
   async () => {
-    isLoading.value = true;
-    const scheduleRes = await getSchedule(scheduleId.value);
-    schedule.value = scheduleRes;
-    isLoading.value = false;
+    isLoading.value = true
+    const scheduleRes = await getSchedule(scheduleId.value)
+    schedule.value = scheduleRes
+    isLoading.value = false
   },
   { watch: [scheduleId] },
-);
+)
 
 onMounted(() => {
-  fetchComments();
+  fetchComments()
   const interval = setInterval(() => {
-    fetchComments();
-  }, 3000);
+    fetchComments()
+  }, 3000)
 
   onUnmounted(() => {
-    clearInterval(interval);
-  });
-});
+    clearInterval(interval)
+  })
+})
 
 useSeoHead({
-  title: computed(() => schedule.value?.schedule.title || "ライブ配信"),
+  title: computed(() => schedule.value?.schedule.title || 'ライブ配信'),
   description: computed(
-    () => schedule.value?.schedule.description?.slice(0, 120) || "",
+    () => schedule.value?.schedule.description?.slice(0, 120) || '',
   ),
-  ogImage: computed(() => schedule.value?.schedule.thumbnailUrl || ""),
+  ogImage: computed(() => schedule.value?.schedule.thumbnailUrl || ''),
   path: computed(() => `/live/${scheduleId.value}`),
-});
+})
 
 useBreadcrumbJsonLd(
   computed(() => [
-    { name: "トップ", path: "/" },
+    { name: 'トップ', path: '/' },
     {
-      name: schedule.value?.schedule.title || "ライブ配信",
+      name: schedule.value?.schedule.title || 'ライブ配信',
       path: `/live/${scheduleId.value}`,
     },
   ]),
-);
+)
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -265,7 +273,10 @@ useBreadcrumbJsonLd(
                   @submit="handleSubmitComment"
                 />
                 <div class="flex flex-col gap-4 py-8">
-                  <div v-if="comments.length === 0" class="text-typography">
+                  <div
+                    v-if="comments.length === 0"
+                    class="text-typography"
+                  >
                     {{ dt("noCommentsText") }}
                   </div>
                   <div

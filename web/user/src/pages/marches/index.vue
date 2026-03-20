@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useLiveStore } from "~/store/live";
-import { useSeoHead } from "~/hooks/seo";
-import type { I18n } from "~/types/locales";
+import { storeToRefs } from 'pinia'
+import { useLiveStore } from '~/store/live'
+import { useSeoHead } from '~/hooks/seo'
+import type { I18n } from '~/types/locales'
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const lt = (str: keyof I18n["lives"]["list"]) => {
-  return i18n.t(`lives.list.${str}`);
-};
+const lt = (str: keyof I18n['lives']['list']) => {
+  return i18n.t(`lives.list.${str}`)
+}
 
-const liveStore = useLiveStore();
+const liveStore = useLiveStore()
 
-const { fetchArchives } = useLiveStore();
-const { archivesFetchState, archiveResponse, totalArchivesCount } =
-  storeToRefs(liveStore);
+const { fetchArchives } = useLiveStore()
+const { archivesFetchState, archiveResponse, totalArchivesCount }
+  = storeToRefs(liveStore)
 
 // 1ページ当たりに表示するマルシェ数
-const pagePerItems = ref<number>(20);
+const pagePerItems = ref<number>(20)
 
 // 現在のページ番号
 const currentPage = computed<number>(() => {
-  return route.query.page ? Number(route.query.page) : 1;
-});
+  return route.query.page ? Number(route.query.page) : 1
+})
 
 // ページネーション情報
 const pagination = computed<{
-  limit: number;
-  offset: number;
-  pageArray: number[];
+  limit: number
+  offset: number
+  pageArray: number[]
 }>(() => {
-  const totalPage = Math.ceil(totalArchivesCount.value / pagePerItems.value);
-  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1);
+  const totalPage = Math.ceil(totalArchivesCount.value / pagePerItems.value)
+  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
 
   return {
     limit: pagePerItems.value,
     offset: pagePerItems.value * (currentPage.value - 1),
     pageArray,
-  };
-});
+  }
+})
 
 const handleClickPage = (page: number) => {
   router.push({
@@ -49,27 +49,27 @@ const handleClickPage = (page: number) => {
       ...route.query,
       page,
     },
-  });
-};
+  })
+}
 
 const handleClickLiveItem = (id: string) => {
-  router.push(`/live/${id}`);
-};
+  router.push(`/live/${id}`)
+}
 
 watch(currentPage, () => {
-  fetchArchives(pagePerItems.value, pagination.value.offset);
-});
+  fetchArchives(pagePerItems.value, pagination.value.offset)
+})
 
-useAsyncData("marches", () => {
-  return fetchArchives(pagePerItems.value, pagination.value.offset);
-});
+useAsyncData('marches', () => {
+  return fetchArchives(pagePerItems.value, pagination.value.offset)
+})
 
 useSeoHead({
-  title: "すべてのマルシェ",
+  title: 'すべてのマルシェ',
   description:
-    "産地直送のお取り寄せ通販ふるマルのマルシェ一覧ページです。過去のライブ配信アーカイブをご覧いただけます。",
-  path: "/marches",
-});
+    '産地直送のお取り寄せ通販ふるマルのマルシェ一覧ページです。過去のライブ配信アーカイブをご覧いただけます。',
+  path: '/marches',
+})
 </script>
 
 <template>
@@ -83,12 +83,16 @@ useSeoHead({
         {{ lt("allMarcheTitle") }}
       </p>
     </div>
-    <hr class="mt-[40px]" />
+    <hr class="mt-[40px]">
     <div
       class="mx-auto mt-[24px] grid max-w-[1440px] gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-3 xl:grid-cols-4"
     >
       <template v-if="archivesFetchState.isLoading">
-        <div v-for="i in [1, 2, 3, 4, 5]" :key="i" class="w-full animate-pulse">
+        <div
+          v-for="i in [1, 2, 3, 4, 5]"
+          :key="i"
+          class="w-full animate-pulse"
+        >
           <div class="aspect-square w-full bg-slate-200" />
           <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200" />
           <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200" />

@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/auth";
-import { useProductStore } from "~/store/product";
-import { useProductReviewStore } from "~/store/productReview";
-import type { CreateProductReviewRequest } from "~/types/api";
-import { ApiBaseError } from "~/types/exception";
-import type { I18n } from "~/types/locales";
+import { useAuthStore } from '~/store/auth'
+import { useProductStore } from '~/store/product'
+import { useProductReviewStore } from '~/store/productReview'
+import type { CreateProductReviewRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
+import type { I18n } from '~/types/locales'
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const authStore = useAuthStore();
-const { isAuthenticated } = storeToRefs(authStore);
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
-const productStore = useProductStore();
-const { fetchProduct } = productStore;
+const productStore = useProductStore()
+const { fetchProduct } = productStore
 
-const productReviewStore = useProductReviewStore();
-const { postReview } = productReviewStore;
+const productReviewStore = useProductReviewStore()
+const { postReview } = productReviewStore
 
-const lt = (str: keyof I18n["reviews"]) => {
-  return i18n.t(`reviews.${str}`);
-};
+const lt = (str: keyof I18n['reviews']) => {
+  return i18n.t(`reviews.${str}`)
+}
 
-const route = useRoute();
-const router = useRouter();
-const localePath = useLocalePath();
+const route = useRoute()
+const router = useRouter()
+const localePath = useLocalePath()
 
 const productId = computed<string>(() => {
-  const id = route.params.id;
+  const id = route.params.id
   if (id instanceof Array) {
-    return id[0];
+    return id[0]
   }
-  return route.params.id as string;
-});
+  return route.params.id as string
+})
 
 const formData = ref<CreateProductReviewRequest>({
   rate: 0,
-  title: "",
-  comment: "",
-});
+  title: '',
+  comment: '',
+})
 
 /**
  * レビュー対象の商品情報取得
@@ -47,36 +47,39 @@ const {
   status,
   error,
 } = useAsyncData(
-  "target-product",
+  'target-product',
   () => {
-    return fetchProduct(productId.value);
+    return fetchProduct(productId.value)
   },
   { watch: [productId] },
-);
+)
 
-const submitting = ref<boolean>(false);
-const submitErrorMessage = ref<string>("");
+const submitting = ref<boolean>(false)
+const submitErrorMessage = ref<string>('')
 
 const handleSubmit = async () => {
-  submitting.value = true;
-  submitErrorMessage.value = "";
+  submitting.value = true
+  submitErrorMessage.value = ''
   try {
-    await postReview(productId.value, formData.value);
-    router.push(localePath("/reviews/complete"));
-  } catch (error) {
-    if (error instanceof ApiBaseError) {
-      submitErrorMessage.value = error.message;
-    } else {
-      submitErrorMessage.value = "";
-    }
-  } finally {
-    submitting.value = false;
+    await postReview(productId.value, formData.value)
+    router.push(localePath('/reviews/complete'))
   }
-};
+  catch (error) {
+    if (error instanceof ApiBaseError) {
+      submitErrorMessage.value = error.message
+    }
+    else {
+      submitErrorMessage.value = ''
+    }
+  }
+  finally {
+    submitting.value = false
+  }
+}
 
 useSeoMeta({
-  title: lt("postReviewTitle"),
-});
+  title: lt('postReviewTitle'),
+})
 </script>
 
 <template>
@@ -89,7 +92,7 @@ useSeoMeta({
       >
         {{ lt("postReviewTitle") }}
       </p>
-      <hr class="my-[40px]" />
+      <hr class="my-[40px]">
 
       <template v-if="!isAuthenticated">
         <div class="flex flex-col md:gap-8 gap-4">
