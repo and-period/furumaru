@@ -106,8 +106,6 @@ export default defineNuxtConfig({
     ],
   },
   routeRules: {
-    '/items/**': { swr: 3600 },
-    '/experiences/**': { swr: 3600 },
     '/account/**': { ssr: false },
   },
   eslint: {
