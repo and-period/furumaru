@@ -42,9 +42,17 @@ const formData = ref<CreateProductReviewRequest>({
 /**
  * レビュー対象の商品情報取得
  */
-const { data: product, status, error } = useAsyncData('target-product', () => {
-  return fetchProduct(productId.value)
-})
+const {
+  data: product,
+  status,
+  error,
+} = useAsyncData(
+  `target-product-${productId.value}`,
+  () => {
+    return fetchProduct(productId.value)
+  },
+  { watch: [productId] },
+)
 
 const submitting = ref<boolean>(false)
 const submitErrorMessage = ref<string>('')
@@ -82,22 +90,22 @@ useSeoMeta({
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        {{ lt('postReviewTitle') }}
+        {{ lt("postReviewTitle") }}
       </p>
       <hr class="my-[40px]">
 
       <template v-if="!isAuthenticated">
         <div class="flex flex-col md:gap-8 gap-4">
           <the-alert>
-            {{ lt('requiredAuthMessage') }}
+            {{ lt("requiredAuthMessage") }}
           </the-alert>
 
           <div class="text-center">
             <nuxt-link
               :to="`/signin?review_target_id=${productId}`"
-              class=" bg-main text-white py-2 md:w-[400px] inline-block w-full"
+              class="bg-main text-white py-2 md:w-[400px] inline-block w-full"
             >
-              {{ lt('loginButtonText') }}
+              {{ lt("loginButtonText") }}
             </nuxt-link>
           </div>
         </div>
@@ -113,8 +121,8 @@ useSeoMeta({
 
         <template v-if="submitErrorMessage">
           <the-alert class="mb-4">
-            <div class=" font-semibold">
-              {{ lt('reviewSubmitErrorMessage') }}
+            <div class="font-semibold">
+              {{ lt("reviewSubmitErrorMessage") }}
             </div>
             {{ submitErrorMessage }}
           </the-alert>
@@ -123,9 +131,7 @@ useSeoMeta({
         <template v-if="status === 'success'">
           <div class="flex flex-col gap-4">
             <template v-if="product">
-              <the-review-target-product
-                :product="product?.product"
-              />
+              <the-review-target-product :product="product?.product" />
             </template>
             <the-review-form
               v-model="formData"

@@ -60,13 +60,14 @@ watch(currentPage, () => {
   fetchArchives(pagePerItems.value, pagination.value.offset)
 })
 
-useAsyncData('products', () => {
+useAsyncData('marches', () => {
   return fetchArchives(pagePerItems.value, pagination.value.offset)
 })
 
 useSeoHead({
   title: 'すべてのマルシェ',
-  description: '産地直送のお取り寄せ通販ふるマルのマルシェ一覧ページです。過去のライブ配信アーカイブをご覧いただけます。',
+  description:
+    '産地直送のお取り寄せ通販ふるマルのマルシェ一覧ページです。過去のライブ配信アーカイブをご覧いただけます。',
   path: '/marches',
 })
 </script>
@@ -79,7 +80,7 @@ useSeoHead({
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        {{ lt('allMarcheTitle') }}
+        {{ lt("allMarcheTitle") }}
       </p>
     </div>
     <hr class="mt-[40px]">

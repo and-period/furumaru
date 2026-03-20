@@ -37,9 +37,13 @@ const getClassNameFromOrderStatus = (status: OrderStatus) => {
   }
 }
 
-const { error } = useAsyncData(`orders-${orderId.value}`, () => {
-  return fetchOrderHistory(orderId.value)
-})
+const { error } = useAsyncData(
+  `orders-${orderId.value}`,
+  () => {
+    return fetchOrderHistory(orderId.value)
+  },
+  { watch: [orderId] },
+)
 
 useSeoMeta({
   title: '注文履歴',
@@ -82,7 +86,7 @@ useSeoMeta({
                 {{
                   dayjs
                     .unix(orderHistory.payment.orderedAt)
-                    .format('YYYY/MM/DD HH:mm')
+                    .format("YYYY/MM/DD HH:mm")
                 }}
               </dd>
             </div>
