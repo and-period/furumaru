@@ -33,7 +33,6 @@ export const useTopStore = defineStore('top', () => {
         limit: 5,
         offset: 0,
         statuses: [
-          OrderStatus.OrderStatusUnpaid,
           OrderStatus.OrderStatusWaiting,
           OrderStatus.OrderStatusPreparing,
           OrderStatus.OrderStatusShipped,
