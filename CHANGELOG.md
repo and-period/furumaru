@@ -1,5 +1,9 @@
 # Changelog
 
+## [v12.0.2](https://github.com/and-period/furumaru/compare/v12.0.1...v12.0.2) - 2026-03-22
+- fix(web): Nuxt dev 起動時の client.precomputed.mjs ENOENT エラーを自動修復 by @taba2424 in https://github.com/and-period/furumaru/pull/3425
+- fix(web): 管理画面の対応が必要な注文から支払い待ちを除外 by @taba2424 in https://github.com/and-period/furumaru/pull/3427
+
 ## [v12.0.1](https://github.com/and-period/furumaru/compare/v12.0.0...v12.0.1) - 2026-03-20
 - chore(deps): lock file maintenance by @renovate[bot] in https://github.com/and-period/furumaru/pull/3376
 - chore(deps): update dependency storybook to v9.1.19 [security] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3359
