@@ -165,7 +165,31 @@ services:
 
 ## 開発環境固有の問題
 
-### 1. ホットリロードが効かない
+### 1. Nuxt dev 起動時に `client.precomputed.mjs` の ENOENT エラー
+
+#### 症状
+```bash
+[nitro] ERROR  Error: Could not load .../node_modules/.cache/nuxt/.nuxt/dist/server/client.precomputed.mjs: ENOENT: no such file or directory
+```
+
+#### 原因と対処法
+**原因**: Nuxt 4 アップグレード後にビルドキャッシュが古い状態で残っている、または `nuxt build` が途中で失敗した状態
+
+**対処法**:
+```bash
+cd web/user
+
+# ビルドキャッシュをクリア
+rm -rf node_modules/.cache/nuxt .nuxt .output
+
+# 依存関係を再インストール（nuxt prepare が実行される）
+pnpm install
+
+# 開発サーバーを起動
+pnpm dev
+```
+
+### 2. ホットリロードが効かない
 
 #### 原因と対処法
 **原因**: ファイルシステムの監視が機能していない
