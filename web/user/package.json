@@ -34,7 +34,7 @@
     "hls.js": "^1.6.15",
     "markdown-it": "^14.1.1",
     "microcms-js-sdk": "^3.3.0",
-    "nuxt": "4.4.2",
+    "nuxt": "4.5.1",
     "pinia": "^3.0.4",
     "postcss-custom-properties": "^13.3.12",
     "sass": "^1.98.0",
