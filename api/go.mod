@@ -1,73 +1,73 @@
 module github.com/and-period/furumaru/api
 
-go 1.26
+go 1.27.1
 
 require (
-	firebase.google.com/go/v4 v4.19.0
-	github.com/aws/aws-lambda-go v1.50.0
-	github.com/aws/aws-sdk-go-v2 v1.41.1
-	github.com/aws/aws-sdk-go-v2/config v1.32.9
-	github.com/aws/aws-sdk-go-v2/credentials v1.19.9
-	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.20.32
-	github.com/aws/aws-sdk-go-v2/service/batch v1.60.0
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.58.0
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.55.0
-	github.com/aws/aws-sdk-go-v2/service/ivs v1.48.10
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.87.0
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.92.0
+	firebase.google.com/go/v4 v4.21.0
+	github.com/aws/aws-lambda-go v1.55.0
+	github.com/aws/aws-sdk-go-v2 v1.46.0
+	github.com/aws/aws-sdk-go-v2/config v1.33.3
+	github.com/aws/aws-sdk-go-v2/credentials v1.20.3
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.21.3
+	github.com/aws/aws-sdk-go-v2/service/batch v1.74.0
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.73.0
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.67.0
+	github.com/aws/aws-sdk-go-v2/service/ivs v1.60.0
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.102.0
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.109.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.96.0
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.41.1
-	github.com/aws/aws-sdk-go-v2/service/sfn v1.40.6
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.21
-	github.com/aws/aws-sdk-go-v2/service/transcribe v1.54.0
-	github.com/aws/aws-sdk-go-v2/service/translate v1.33.17
-	github.com/casbin/casbin/v2 v2.134.0
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.48.0
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.49.0
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.51.0
+	github.com/aws/aws-sdk-go-v2/service/transcribe v1.64.0
+	github.com/aws/aws-sdk-go-v2/service/translate v1.41.0
+	github.com/casbin/casbin/v2 v2.135.0
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/coreos/go-oidc/v3 v3.16.0
-	github.com/dlclark/regexp2 v1.11.5
-	github.com/getsentry/sentry-go v0.42.0
-	github.com/getsentry/sentry-go/slog v0.42.0
-	github.com/gin-contrib/gzip v1.2.5
-	github.com/gin-contrib/pprof v1.5.3
-	github.com/gin-gonic/gin v1.11.0
-	github.com/go-playground/validator/v10 v10.28.0
-	github.com/go-sql-driver/mysql v1.9.3
-	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/coreos/go-oidc/v3 v3.21.0
+	github.com/dlclark/regexp2 v1.12.0
+	github.com/getsentry/sentry-go v0.49.0
+	github.com/getsentry/sentry-go/slog v0.49.0
+	github.com/gin-contrib/gzip v1.2.7
+	github.com/gin-contrib/pprof v1.5.5
+	github.com/gin-gonic/gin v1.12.0
+	github.com/go-playground/validator/v10 v10.30.4
+	github.com/go-sql-driver/mysql v1.10.1
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.4
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/jinzhu/copier v0.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/line/line-bot-sdk-go/v8 v8.19.0
-	github.com/newrelic/go-agent/v3 v3.41.0
+	github.com/line/line-bot-sdk-go/v8 v8.22.0
+	github.com/newrelic/go-agent/v3 v3.44.2
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.4.2
-	github.com/prometheus/client_golang v1.23.2
+	github.com/prometheus/client_golang v1.24.1
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.11.1
 	github.com/rs/cors/wrapper/gin v0.0.0-20240830163046-1084d89a1692
-	github.com/samber/slog-multi v1.5.0
+	github.com/samber/slog-multi v1.8.0
 	github.com/sendgrid/sendgrid-go v3.16.1+incompatible
 	github.com/shopspring/decimal v1.4.0
 	github.com/slack-go/slack v0.17.3
-	github.com/spf13/cobra v1.10.1
-	github.com/stretchr/testify v1.11.1
+	github.com/spf13/cobra v1.10.2
+	github.com/stretchr/testify v1.12.1
 	github.com/stripe/stripe-go/v82 v82.5.1
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.46.0
-	golang.org/x/oauth2 v0.34.0
-	golang.org/x/sync v0.19.0
+	golang.org/x/oauth2 v0.36.0
+	golang.org/x/sync v0.22.0
 	golang.org/x/text v0.32.0
-	google.golang.org/api v0.257.0
+	google.golang.org/api v0.297.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217
 	google.golang.org/grpc v1.79.1
-	google.golang.org/protobuf v1.36.10
+	google.golang.org/protobuf v1.36.12
 	googlemaps.github.io/maps v1.7.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/datatypes v1.2.7
 	gorm.io/driver/mysql v1.6.0
-	gorm.io/gorm v1.31.1
+	gorm.io/gorm v1.31.2
 )
 
 require (
@@ -107,7 +107,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/MirrexOne/unqueryvet v1.2.1 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.1 // indirect
-	github.com/air-verse/air v1.63.0 // indirect
+	github.com/air-verse/air v1.67.4 // indirect
 	github.com/alecthomas/chroma/v2 v2.20.0 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect
 	github.com/alexkohler/nakedret/v2 v2.0.6 // indirect
@@ -235,7 +235,7 @@ require (
 	github.com/golangci/dupl v0.0.0-20250308024227-f665c8d69b32 // indirect
 	github.com/golangci/go-printf-func-name v0.1.1 // indirect
 	github.com/golangci/gofmt v0.0.0-20250106114630-d62b90e6713d // indirect
-	github.com/golangci/golangci-lint/v2 v2.5.0 // indirect
+	github.com/golangci/golangci-lint/v2 v2.13.2 // indirect
 	github.com/golangci/golines v0.0.0-20250217134842-442fd0091d95 // indirect
 	github.com/golangci/misspell v0.7.0 // indirect
 	github.com/golangci/nilerr v0.0.0-20250918000102-015671e622fe // indirect
@@ -361,7 +361,7 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/sv-tools/openapi v0.2.1 // indirect
-	github.com/swaggo/swag/v2 v2.0.0-rc4 // indirect
+	github.com/swaggo/swag/v2 v2.0.0-rc5 // indirect
 	github.com/tdewolff/parse/v2 v2.8.3 // indirect
 	github.com/testcontainers/testcontainers-go v0.40.0 // indirect
 	github.com/testcontainers/testcontainers-go/modules/mysql v0.40.0 // indirect
@@ -424,7 +424,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	gotest.tools/gotestsum v1.13.0 // indirect
 	honnef.co/go/tools v0.6.1 // indirect
-	mvdan.cc/gofumpt v0.9.1 // indirect
+	mvdan.cc/gofumpt v0.11.0 // indirect
 	mvdan.cc/unparam v0.0.0-20250301125049-0df0534333a4 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
