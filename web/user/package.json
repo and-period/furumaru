@@ -59,7 +59,7 @@
     "happy-dom": "18.0.1",
     "nuxt-gtag": "2.1.0",
     "typescript": "5.9.3",
-    "vitest": "3.2.4",
+    "vitest": "3.2.6",
     "vue-tsc": "2.2.12"
   },
   "packageManager": "pnpm@10.12.1"
