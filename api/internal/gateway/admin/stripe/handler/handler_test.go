@@ -10,7 +10,7 @@ import (
 	mock_stripe "github.com/and-period/furumaru/api/mock/pkg/stripe"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	lib "github.com/stripe/stripe-go/v82"
+	lib "github.com/stripe/stripe-go/v87"
 	"go.uber.org/mock/gomock"
 )
 

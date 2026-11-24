@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/internal/store/payment"
-	lib "github.com/stripe/stripe-go/v82"
+	lib "github.com/stripe/stripe-go/v87"
 )
 
 func (p *provider) ShowPayment(ctx context.Context, paymentID string) (*payment.PaymentResult, error) {

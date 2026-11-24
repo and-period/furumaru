@@ -5,13 +5,13 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
-	"github.com/stripe/stripe-go/v82"
-	checkoutsession "github.com/stripe/stripe-go/v82/checkout/session"
-	"github.com/stripe/stripe-go/v82/customer"
-	"github.com/stripe/stripe-go/v82/paymentintent"
-	"github.com/stripe/stripe-go/v82/paymentmethod"
-	"github.com/stripe/stripe-go/v82/refund"
-	"github.com/stripe/stripe-go/v82/setupintent"
+	"github.com/stripe/stripe-go/v87"
+	checkoutsession "github.com/stripe/stripe-go/v87/checkout/session"
+	"github.com/stripe/stripe-go/v87/customer"
+	"github.com/stripe/stripe-go/v87/paymentintent"
+	"github.com/stripe/stripe-go/v87/paymentmethod"
+	"github.com/stripe/stripe-go/v87/refund"
+	"github.com/stripe/stripe-go/v87/setupintent"
 )
 
 type Client interface {

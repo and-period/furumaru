@@ -1,8 +1,8 @@
 package stripe
 
 import (
-	"github.com/stripe/stripe-go/v82"
-	"github.com/stripe/stripe-go/v82/webhook"
+	"github.com/stripe/stripe-go/v87"
+	"github.com/stripe/stripe-go/v87/webhook"
 )
 
 // reference: https://stripe.com/docs/webhooks

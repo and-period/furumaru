@@ -11,7 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/gin-gonic/gin"
-	lib "github.com/stripe/stripe-go/v82"
+	lib "github.com/stripe/stripe-go/v87"
 )
 
 func (h *handler) paymentIntentAuthorized(ctx *gin.Context, event *lib.Event) {

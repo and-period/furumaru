@@ -9,8 +9,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	mock "github.com/and-period/furumaru/api/mock/pkg/stripe"
 	pkgstripe "github.com/and-period/furumaru/api/pkg/stripe"
-	lib "github.com/stripe/stripe-go/v82"
 	"github.com/stretchr/testify/assert"
+	lib "github.com/stripe/stripe-go/v87"
 	"go.uber.org/mock/gomock"
 )
 
@@ -58,7 +58,9 @@ func TestCreateSession(t *testing.T) {
 		{
 			name: "error",
 			setup: func(ctx context.Context, m *mock.MockClient) {
-				m.EXPECT().CreateCheckoutSession(ctx, gomock.Any()).Return(nil, errors.New("stripe error"))
+				m.EXPECT().
+					CreateCheckoutSession(ctx, gomock.Any()).
+					Return(nil, errors.New("stripe error"))
 			},
 			params: &payment.CreateSessionParams{
 				OrderID:     "order-id",

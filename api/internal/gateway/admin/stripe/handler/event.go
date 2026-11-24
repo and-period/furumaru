@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	lib "github.com/stripe/stripe-go/v82"
-
 	"github.com/gin-gonic/gin"
+	lib "github.com/stripe/stripe-go/v87"
 )
 
 const (

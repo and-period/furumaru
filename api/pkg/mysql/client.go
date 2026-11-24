@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cenkalti/backoff/v4"
+	"github.com/cenkalti/backoff/v5"
 	dmysql "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -222,8 +222,11 @@ func (c *Client) Transaction(ctx context.Context, f func(tx *gorm.DB) error) (er
 		}()
 		return f(tx)
 	}
-	retry := backoff.WithMaxRetries(backoff.NewExponentialBackOff(), c.maxRetries)
-	return backoff.Retry(txFn, backoff.WithContext(retry, ctx))
+	_, err = backoff.Retry(ctx, func() (struct{}, error) {
+		return struct{}{}, txFn()
+	}, backoff.WithBackOff(backoff.NewExponentialBackOff()), backoff.WithMaxTries(uint(c.maxRetries)+1))
+
+	return err //nolint:wrapcheck // トランザクション内のエラーをそのまま返す
 }
 
 // Statement - セレクトクエリの生成

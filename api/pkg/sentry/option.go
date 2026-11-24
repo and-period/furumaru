@@ -128,7 +128,7 @@ func WithTags(tags map[string]string) ReportOption {
 
 func WithExtras(extras map[string]interface{}) ReportOption {
 	return func(scope *sentry.Scope) {
-		scope.SetExtras(extras)
+		scope.SetContext("extra", extras)
 	}
 }
 
