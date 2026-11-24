@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	lib "github.com/stripe/stripe-go/v82"
 	"github.com/stretchr/testify/assert"
+	lib "github.com/stripe/stripe-go/v87"
 )
 
 func TestConvertPaymentIntentStatus(t *testing.T) {

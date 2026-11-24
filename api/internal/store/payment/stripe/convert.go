@@ -2,7 +2,7 @@ package stripe
 
 import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	lib "github.com/stripe/stripe-go/v82"
+	lib "github.com/stripe/stripe-go/v87"
 )
 
 func convertPaymentIntentStatus(status lib.PaymentIntentStatus) entity.PaymentStatus {

@@ -32,7 +32,6 @@ func (a *app) injectExternal(p *params) error {
 			newrelic.ConfigLicense(p.newRelicLicense),
 			newrelic.ConfigAppLogMetricsEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
-			newrelic.ConfigCustomInsightsEventsEnabled(true),
 			newrelic.ConfigAppLogEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
 			func(cfg *newrelic.Config) {

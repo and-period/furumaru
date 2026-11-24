@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v87"
 )
 
 type OrderParams struct {
@@ -80,14 +80,14 @@ func (c *client) Order(ctx context.Context, in *OrderParams) (*stripe.PaymentInt
 			Context:  ctx,
 			Metadata: in.Metadata,
 		},
-		Customer:           stripe.String(in.CustomerID),
-		Description:        nullString(in.Description),
-		Amount:             stripe.Int64(in.Amount),
-		Currency:           stripe.String(string(stripe.CurrencyJPY)),
-		PaymentMethod:      stripe.String(in.PaymentMethodID),
-		PaymentMethodTypes: stripe.StringSlice([]string{string(in.PaymentMethodType)}),
-		CaptureMethod:      stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
-		UseStripeSDK:       stripe.Bool(true),
+		Customer:                  stripe.String(in.CustomerID),
+		Description:               nullString(in.Description),
+		Amount:                    stripe.Int64(in.Amount),
+		Currency:                  stripe.String(string(stripe.CurrencyJPY)),
+		PaymentMethod:             stripe.String(in.PaymentMethodID),
+		AllowedPaymentMethodTypes: stripe.StringSlice([]string{string(in.PaymentMethodType)}),
+		CaptureMethod:             stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+		UseStripeSDK:              stripe.Bool(true),
 	}
 	var pi *stripe.PaymentIntent
 	orderFn := func() (err error) {
@@ -112,13 +112,13 @@ func (c *client) GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.
 			Context:  ctx,
 			Metadata: in.Metadata,
 		},
-		ReceiptEmail:       stripe.String(in.Email),
-		Description:        nullString(in.Description),
-		Amount:             stripe.Int64(in.Amount),
-		Currency:           stripe.String(string(stripe.CurrencyJPY)),
-		PaymentMethodTypes: stripe.StringSlice([]string{string(in.PaymentMethodType)}),
-		CaptureMethod:      stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
-		UseStripeSDK:       stripe.Bool(true),
+		ReceiptEmail:              stripe.String(in.Email),
+		Description:               nullString(in.Description),
+		Amount:                    stripe.Int64(in.Amount),
+		Currency:                  stripe.String(string(stripe.CurrencyJPY)),
+		AllowedPaymentMethodTypes: stripe.StringSlice([]string{string(in.PaymentMethodType)}),
+		CaptureMethod:             stripe.String(string(stripe.PaymentIntentCaptureMethodManual)),
+		UseStripeSDK:              stripe.Bool(true),
 	}
 	var pi *stripe.PaymentIntent
 	orderFn := func() (err error) {
@@ -186,11 +186,11 @@ func (c *client) CreateCheckoutSession(ctx context.Context, in *CreateCheckoutSe
 			Context:  ctx,
 			Metadata: in.Metadata,
 		},
-		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:        stripe.String(in.SuccessURL),
-		CancelURL:         stripe.String(in.CancelURL),
-		CustomerEmail:     nullString(in.Email),
-		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
+		Mode:                      stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:                stripe.String(in.SuccessURL),
+		CancelURL:                 stripe.String(in.CancelURL),
+		CustomerEmail:             nullString(in.Email),
+		AllowedPaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{

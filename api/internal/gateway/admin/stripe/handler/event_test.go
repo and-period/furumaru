@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	lib "github.com/stripe/stripe-go/v82"
+	lib "github.com/stripe/stripe-go/v87"
 	"go.uber.org/mock/gomock"
 )
 

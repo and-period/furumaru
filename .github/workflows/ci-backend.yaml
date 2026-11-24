@@ -128,6 +128,13 @@ jobs:
     - name: Test
       run: make test
 
+    - name: Dump TiDB logs on failure
+      if: failure()
+      run: |
+        tail -n 200 /tmp/tidb-playground.log || true
+        ps aux | grep -E 'tidb|tikv|pd-server|playground' | grep -v grep || true
+        find ~/.tiup/data -name '*.log' -exec sh -c 'echo "== $1"; tail -n 50 "$1"' _ {} \; 2>/dev/null || true
+
     - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

@@ -8,8 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/payment"
 	mock "github.com/and-period/furumaru/api/mock/pkg/stripe"
-	lib "github.com/stripe/stripe-go/v82"
 	"github.com/stretchr/testify/assert"
+	lib "github.com/stripe/stripe-go/v87"
 	"go.uber.org/mock/gomock"
 )
 
@@ -115,7 +115,8 @@ func TestCancelPayment(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, m *mock.MockClient) {
-				m.EXPECT().Cancel(ctx, "pi_xxx", lib.PaymentIntentCancellationReasonRequestedByCustomer).
+				m.EXPECT().
+					Cancel(ctx, "pi_xxx", lib.PaymentIntentCancellationReasonRequestedByCustomer).
 					Return(&lib.PaymentIntent{}, nil)
 			},
 			paymentID: "pi_xxx",
@@ -123,7 +124,8 @@ func TestCancelPayment(t *testing.T) {
 		{
 			name: "error",
 			setup: func(ctx context.Context, m *mock.MockClient) {
-				m.EXPECT().Cancel(ctx, "pi_xxx", lib.PaymentIntentCancellationReasonRequestedByCustomer).
+				m.EXPECT().
+					Cancel(ctx, "pi_xxx", lib.PaymentIntentCancellationReasonRequestedByCustomer).
 					Return(nil, errors.New("stripe error"))
 			},
 			paymentID: "pi_xxx",

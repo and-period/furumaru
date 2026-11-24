@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/and-period/furumaru/api/pkg/log"
-	"github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v87"
 )
 
 // reference: https://stripe.com/docs/api/refunds/create

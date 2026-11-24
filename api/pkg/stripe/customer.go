@@ -3,7 +3,7 @@ package stripe
 import (
 	"context"
 
-	"github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v87"
 )
 
 type CreateCustomerParams struct {

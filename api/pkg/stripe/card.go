@@ -3,7 +3,7 @@ package stripe
 import (
 	"context"
 
-	"github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v87"
 )
 
 // reference: https://stripe.com/docs/api/payment_methods/customer_list
@@ -37,10 +37,10 @@ func (c *client) GetCard(ctx context.Context, customerID, cardID string) (*strip
 // reference: https://stripe.com/docs/api/setup_intents/create
 func (c *client) SetupCard(ctx context.Context, customerID string) (*stripe.SetupIntent, error) {
 	params := &stripe.SetupIntentParams{
-		Params:             stripe.Params{Context: ctx},
-		Customer:           stripe.String(customerID),
-		PaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
-		Usage:              stripe.String(string(stripe.PaymentIntentSetupFutureUsageOnSession)),
+		Params:                    stripe.Params{Context: ctx},
+		Customer:                  stripe.String(customerID),
+		AllowedPaymentMethodTypes: stripe.StringSlice([]string{string(stripe.PaymentMethodTypeCard)}),
+		Usage:                     stripe.String(string(stripe.PaymentIntentSetupFutureUsageOnSession)),
 	}
 	return c.setupintent.New(params)
 }
