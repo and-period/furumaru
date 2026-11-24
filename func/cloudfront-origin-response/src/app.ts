@@ -13,7 +13,14 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import * as querystring from 'querystring';
-import sharp, { ResizeOptions, RGBA, Color } from 'sharp';
+import sharp, { ResizeOptions, Color } from 'sharp';
+
+interface RGBA {
+  r: number;
+  g: number;
+  b: number;
+  alpha: number;
+}
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const cacheControl = 'max-age=0,s-maxage=2592000'; // 30 days
@@ -320,7 +327,8 @@ async function resizeImage(object: Uint8Array, options: ConvertOptions): Promise
     resize = resize.blur(options.blur);
   }
   if (options.format) {
-    resize = resize.toFormat(options.format);
+    // sharp 0.35 の型定義では 'jpg' が除外されたため 'jpeg' に正規化する (実行時は同義)
+    resize = resize.toFormat(options.format === 'jpg' ? 'jpeg' : options.format);
   }
   return await resize.toBuffer();
 }
