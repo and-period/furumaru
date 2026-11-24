@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { playwright } from '@vitest/browser-playwright';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +16,7 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, './src/index.ts'),
+      entry: resolve(dirname, './src/index.ts'),
       name: '@furumaru/shared',
       fileName: "index",
       formats: ['es', 'cjs', 'umd']
@@ -51,7 +52,7 @@ export default defineConfig({
         browser: {
           enabled: true,
           headless: true,
-          provider: 'playwright',
+          provider: playwright(),
           instances: [{
             browser: 'chromium'
           }]
