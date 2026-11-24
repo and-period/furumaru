@@ -198,7 +198,7 @@ const discountFormatter = (discount: number): string => {
             </div>
             <div class="col-span-3 text-right md:col-span-1">
               <template v-if="shippingFee !== undefined">
-                {{ priceFormatter(shippingFee) }}
+                {{ priceFormatter(shippingFee ?? 0) }}
               </template>
               <template v-else>
                 {{ texts.calculateNextPageMessage }}
