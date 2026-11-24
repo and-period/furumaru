@@ -135,7 +135,7 @@ jobs:
         ps aux | grep -E 'tidb|tikv|pd-server|playground' | grep -v grep || true
         find ~/.tiup/data -name '*.log' -exec sh -c 'echo "== $1"; tail -n 50 "$1"' _ {} \; 2>/dev/null || true
 
-    - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+    - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
