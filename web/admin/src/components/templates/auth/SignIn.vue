@@ -139,7 +139,7 @@ const onSubmit = (): void => {
         md="12"
       >
         <nuxt-link
-          class="text-body-2"
+          class="text-body-medium"
           to="/privacy"
         >
           プライバシーポリシー
@@ -151,7 +151,7 @@ const onSubmit = (): void => {
         md="12"
       >
         <nuxt-link
-          class="text-body-2"
+          class="text-body-medium"
           to="/legal-notice"
         >
           特商取引法に基づく表記

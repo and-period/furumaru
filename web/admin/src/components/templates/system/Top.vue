@@ -101,7 +101,7 @@ const groupedMenus = computed(() => {
 <template>
   <v-container class="pa-6">
     <div class="mb-8">
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiCog"
           size="32"
@@ -109,7 +109,7 @@ const groupedMenus = computed(() => {
         />
         システム設定
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         システム全体の設定と各種管理機能にアクセスできます
       </p>
     </div>
@@ -120,7 +120,7 @@ const groupedMenus = computed(() => {
       class="mb-8"
     >
       <div class="category-header mb-4">
-        <h2 class="text-h6 font-weight-bold text-grey-darken-2">
+        <h2 class="text-title-large font-weight-bold text-grey-darken-2">
           {{ category }}
         </h2>
         <v-divider class="mt-2" />
@@ -136,7 +136,7 @@ const groupedMenus = computed(() => {
         >
           <v-card
             class="system-card h-100"
-            elevation="2"
+            elevation="1"
             hover
             @click="onClick(item.action)"
           >
@@ -166,10 +166,10 @@ const groupedMenus = computed(() => {
                 </v-chip>
               </div>
 
-              <h3 class="text-subtitle-1 font-weight-medium mb-2">
+              <h3 class="text-body-large font-weight-medium mb-2">
                 {{ item.text }}
               </h3>
-              <p class="text-body-2 text-grey-darken-1">
+              <p class="text-body-medium text-grey-darken-1">
                 {{ getMenuDescription(item.text) }}
               </p>
             </v-card-text>

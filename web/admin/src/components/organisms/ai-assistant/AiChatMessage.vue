@@ -54,7 +54,7 @@ function getTextContent(message: UIMessage): string {
       />
     </v-avatar>
     <div
-      class="ai-chat-bubble pa-2 rounded-lg text-body-2"
+      class="ai-chat-bubble pa-2 rounded-lg text-body-medium"
       :class="message.role === 'user' ? 'ai-chat-bubble-user' : 'ai-chat-bubble-assistant'"
       style="max-width: 85%"
     >

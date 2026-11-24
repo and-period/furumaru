@@ -486,7 +486,7 @@ const onSubmitActive = (): void => {
           size="28"
           class="mr-3 text-primary"
         />
-        <span class="text-h5 font-weight-medium">配送設定登録</span>
+        <span class="text-headline-small font-weight-medium">配送設定登録</span>
       </v-card-title>
       <v-card-text class="mt-6">
         <v-alert
@@ -497,7 +497,7 @@ const onSubmitActive = (): void => {
         />
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -505,7 +505,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送設定名</span>
+            <span class="text-title-large font-weight-medium">配送設定名</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-text-field
@@ -521,7 +521,7 @@ const onSubmitActive = (): void => {
         </v-card>
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -529,7 +529,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送オプション：サイズ60</span>
+            <span class="text-title-large font-weight-medium">配送オプション：サイズ60</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
@@ -592,7 +592,7 @@ const onSubmitActive = (): void => {
         <!-- サイズ80配送設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -600,7 +600,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送オプション：サイズ80</span>
+            <span class="text-title-large font-weight-medium">配送オプション：サイズ80</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
@@ -662,7 +662,7 @@ const onSubmitActive = (): void => {
 
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -670,7 +670,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送オプション：サイズ100</span>
+            <span class="text-title-large font-weight-medium">配送オプション：サイズ100</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
@@ -733,7 +733,7 @@ const onSubmitActive = (): void => {
         <!-- 送料無料設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -741,7 +741,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">送料無料設定</span>
+            <span class="text-title-large font-weight-medium">送料無料設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-checkbox
@@ -798,7 +798,7 @@ const onSubmitActive = (): void => {
           size="28"
           class="mr-3 text-primary"
         />
-        <span class="text-h5 font-weight-medium">配送設定編集</span>
+        <span class="text-headline-small font-weight-medium">配送設定編集</span>
       </v-card-title>
       <v-card-text class="mt-6">
         <v-alert
@@ -809,7 +809,7 @@ const onSubmitActive = (): void => {
         />
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -817,7 +817,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送設定名</span>
+            <span class="text-title-large font-weight-medium">配送設定名</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-text-field
@@ -833,7 +833,7 @@ const onSubmitActive = (): void => {
         </v-card>
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -841,7 +841,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送オプション：サイズ60</span>
+            <span class="text-title-large font-weight-medium">配送オプション：サイズ60</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
@@ -864,7 +864,7 @@ const onSubmitActive = (): void => {
               class="px-4 py-2 mb-2 border"
             >
               <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+                <p class="text-title-small text-grey">
                   オプション{{ i + 1 }}
                 </p>
                 <v-spacer />
@@ -900,7 +900,7 @@ const onSubmitActive = (): void => {
         <!-- サイズ80配送設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -908,7 +908,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送オプション：サイズ80</span>
+            <span class="text-title-large font-weight-medium">配送オプション：サイズ80</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
@@ -931,7 +931,7 @@ const onSubmitActive = (): void => {
               class="px-4 py-2 mb-2 border"
             >
               <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+                <p class="text-title-small text-grey">
                   オプション{{ i + 1 }}
                 </p>
                 <v-spacer />
@@ -984,7 +984,7 @@ const onSubmitActive = (): void => {
               class="px-4 py-2 mb-2 border"
             >
               <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+                <p class="text-title-small text-grey">
                   オプション{{ i + 1 }}
                 </p>
                 <v-spacer />
@@ -1020,7 +1020,7 @@ const onSubmitActive = (): void => {
         <!-- 送料無料設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -1028,7 +1028,7 @@ const onSubmitActive = (): void => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">送料無料設定</span>
+            <span class="text-title-large font-weight-medium">送料無料設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-checkbox
@@ -1079,14 +1079,14 @@ const onSubmitActive = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 py-4">
+      <v-card-title class="text-title-large py-4">
         配送設定削除の確認
       </v-card-title>
       <v-card-text class="pb-4">
-        <div class="text-body-1">
+        <div class="text-body-large">
           「{{ getShippingName(shipping) }}」を削除しますか？
         </div>
-        <div class="text-body-2 text-medium-emphasis mt-2">
+        <div class="text-body-medium text-medium-emphasis mt-2">
           この操作は取り消せません。
         </div>
       </v-card-text>
@@ -1116,11 +1116,11 @@ const onSubmitActive = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 py-4">
+      <v-card-title class="text-title-large py-4">
         配送設定有効化前確認
       </v-card-title>
       <v-card-text class="pb-4">
-        <div class="text-body-1">
+        <div class="text-body-large">
           「{{ getShippingName(shipping) }}」を有効化しますか？
         </div>
       </v-card-text>
@@ -1147,7 +1147,7 @@ const onSubmitActive = (): void => {
 
   <v-card
     class="form-section-card"
-    elevation="2"
+    elevation="1"
   >
     <v-card-title class="d-flex align-center justify-space-between section-header">
       <div class="d-flex align-center">
@@ -1156,7 +1156,7 @@ const onSubmitActive = (): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">配送設定一覧</span>
+        <span class="text-title-large font-weight-medium">配送設定一覧</span>
       </div>
       <v-btn
         variant="elevated"
@@ -1198,12 +1198,12 @@ const onSubmitActive = (): void => {
             </v-chip>
           </template>
           <template #[`item.createdAt`]="{ item }">
-            <span class="text-body-2 text-grey-darken-1">
+            <span class="text-body-medium text-grey-darken-1">
               {{ getDateTimeString(item.createdAt) }}
             </span>
           </template>
           <template #[`item.updatedAt`]="{ item }">
-            <span class="text-body-2 text-grey-darken-1">
+            <span class="text-body-medium text-grey-darken-1">
               {{ getDateTimeString(item.updatedAt) }}
             </span>
           </template>
@@ -1254,10 +1254,10 @@ const onSubmitActive = (): void => {
           size="64"
           class="text-grey-lighten-1 mb-4"
         />
-        <h3 class="text-h6 text-grey-darken-1 mb-2">
+        <h3 class="text-title-large text-grey-darken-1 mb-2">
           配送情報が登録されていません
         </h3>
-        <p class="text-body-2 text-grey-darken-1 mb-4">
+        <p class="text-body-medium text-grey-darken-1 mb-4">
           配送料金や配送オプションを設定してください
         </p>
         <v-btn

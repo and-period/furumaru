@@ -38,7 +38,7 @@ const handleClickDeleteButton = () => {
       cols="7"
       class="flex-grow-1 d-flex flex-column ga-3"
     >
-      <p class="text-subtitle-1">
+      <p class="text-body-large">
         {{ item.title }}
       </p>
       <div class="text-gray">

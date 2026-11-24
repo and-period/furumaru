@@ -412,17 +412,17 @@ const onSubmitReview = (): void => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         商品編集
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         商品情報を編集・管理します。タブを切り替えて各種設定を行ってください。
       </p>
     </div>
 
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="props.loading"
     >
       <v-card-title class="section-header pa-0">
@@ -479,7 +479,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">基本情報</span>
+                      <span class="text-title-large font-weight-medium">基本情報</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-select
@@ -520,7 +520,7 @@ const onSubmitReview = (): void => {
                   <v-card
                     :loading="props.loading"
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -528,7 +528,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">商品画像管理</span>
+                      <span class="text-title-large font-weight-medium">商品画像管理</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <div class="mb-4">
@@ -600,7 +600,7 @@ const onSubmitReview = (): void => {
                                 </v-chip>
                                 <span
                                   v-else
-                                  class="text-caption text-grey"
+                                  class="text-body-small text-grey"
                                 >
                                   画像 {{ i + 1 }}
                                 </span>
@@ -615,7 +615,7 @@ const onSubmitReview = (): void => {
                   <!-- おすすめポイント・商品詳細セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -623,11 +623,11 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">おすすめポイント・商品詳細</span>
+                      <span class="text-title-large font-weight-medium">おすすめポイント・商品詳細</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <div class="mb-4">
-                        <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                        <p class="text-title-small mb-3 text-grey-darken-1">
                           おすすめポイント
                         </p>
                         <v-text-field
@@ -701,7 +701,7 @@ const onSubmitReview = (): void => {
                   <!-- 価格設定セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -709,7 +709,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">価格設定</span>
+                      <span class="text-title-large font-weight-medium">価格設定</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-row>
@@ -749,7 +749,7 @@ const onSubmitReview = (): void => {
                         variant="outlined"
                         class="profit-calculation mt-4"
                       >
-                        <v-card-title class="text-h6 d-flex align-center">
+                        <v-card-title class="text-title-large d-flex align-center">
                           <v-icon
                             icon="mdi-calculator"
                             size="20"
@@ -764,16 +764,16 @@ const onSubmitReview = (): void => {
                             </v-col>
                             <v-col
                               cols="4"
-                              class="text-right font-weight-bold text-h6 text-primary"
+                              class="text-right font-weight-bold text-title-large text-primary"
                             >
                               {{ getBenefits().toLocaleString() }} 円
                             </v-col>
                           </v-row>
                           <v-divider class="my-2" />
-                          <v-row dense>
+                          <v-row density="compact">
                             <v-col
                               cols="8"
-                              class="text-body-2"
+                              class="text-body-medium"
                             >
                               販売価格
                             </v-col>
@@ -784,10 +784,10 @@ const onSubmitReview = (): void => {
                               {{ formDataValue.price.toLocaleString() }} 円
                             </v-col>
                           </v-row>
-                          <v-row dense>
+                          <v-row density="compact">
                             <v-col
                               cols="8"
-                              class="text-body-2"
+                              class="text-body-medium"
                             >
                               原価
                             </v-col>
@@ -798,10 +798,10 @@ const onSubmitReview = (): void => {
                               -{{ formDataValue.cost.toLocaleString() }} 円
                             </v-col>
                           </v-row>
-                          <v-row dense>
+                          <v-row density="compact">
                             <v-col
                               cols="8"
-                              class="text-body-2"
+                              class="text-body-medium"
                             >
                               手数料(10%)
                             </v-col>
@@ -820,7 +820,7 @@ const onSubmitReview = (): void => {
                   <!-- 在庫設定セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -828,7 +828,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">在庫設定</span>
+                      <span class="text-title-large font-weight-medium">在庫設定</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-row>
@@ -875,7 +875,7 @@ const onSubmitReview = (): void => {
                   <!-- 配送設定セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -883,7 +883,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">配送設定</span>
+                      <span class="text-title-large font-weight-medium">配送設定</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-row>
@@ -920,7 +920,7 @@ const onSubmitReview = (): void => {
                         </v-col>
                       </v-row>
                       <div class="box-size-section mt-4">
-                        <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                        <p class="text-title-small mb-3 text-grey-darken-1">
                           箱サイズ占有率
                         </p>
                         <v-row
@@ -967,7 +967,7 @@ const onSubmitReview = (): void => {
                   <!-- 販売設定セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -975,7 +975,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">販売設定</span>
+                      <span class="text-title-large font-weight-medium">販売設定</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-alert
@@ -997,7 +997,7 @@ const onSubmitReview = (): void => {
                         class="mb-4"
                       />
                       <div class="date-time-section">
-                        <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                        <p class="text-title-small mb-3 text-grey-darken-1">
                           販売開始日時 *
                         </p>
                         <v-row>
@@ -1035,7 +1035,7 @@ const onSubmitReview = (): void => {
                           </v-col>
                         </v-row>
 
-                        <p class="text-subtitle-2 mb-3 mt-4 text-grey-darken-1">
+                        <p class="text-title-small mb-3 mt-4 text-grey-darken-1">
                           販売終了日時 *
                         </p>
                         <v-row>
@@ -1079,7 +1079,7 @@ const onSubmitReview = (): void => {
                   <!-- 詳細分類セクション -->
                   <v-card
                     class="form-section-card mb-6"
-                    elevation="2"
+                    elevation="1"
                   >
                     <v-card-title class="d-flex align-center section-header">
                       <v-icon
@@ -1087,7 +1087,7 @@ const onSubmitReview = (): void => {
                         size="24"
                         class="mr-3 text-primary"
                       />
-                      <span class="text-h6 font-weight-medium">詳細分類</span>
+                      <span class="text-title-large font-weight-medium">詳細分類</span>
                     </v-card-title>
                     <v-card-text class="pa-6">
                       <v-autocomplete
@@ -1209,10 +1209,10 @@ const onSubmitReview = (): void => {
           >
             <div class="pa-6">
               <div class="mb-4">
-                <h3 class="text-h6 mb-2">
+                <h3 class="text-title-large mb-2">
                   ダミーレビュー投稿
                 </h3>
-                <p class="text-body-2 text-medium-emphasis">
+                <p class="text-body-medium text-medium-emphasis">
                   商品のダミーレビューを投稿します。入力したレビューは商品詳細ページに表示されます。
                 </p>
               </div>
@@ -1232,7 +1232,7 @@ const onSubmitReview = (): void => {
                   />
 
                   <div class="mb-4">
-                    <p class="text-subtitle-2 mb-2 text-grey-darken-1">
+                    <p class="text-title-small mb-2 text-grey-darken-1">
                       評価 *
                     </p>
                     <v-rating
@@ -1243,7 +1243,7 @@ const onSubmitReview = (): void => {
                       length="5"
                       size="large"
                     />
-                    <p class="text-body-2 text-medium-emphasis mt-1">
+                    <p class="text-body-medium text-medium-emphasis mt-1">
                       {{ reviewFormDataValue.rate }} / 5
                     </p>
                   </div>

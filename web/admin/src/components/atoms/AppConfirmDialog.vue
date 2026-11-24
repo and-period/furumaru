@@ -53,18 +53,18 @@ function onConfirm() {
     >
       <v-card-title
         :id="titleId"
-        class="text-h6 py-4"
+        class="text-title-large py-4"
       >
         {{ title }}
       </v-card-title>
       <v-card-text class="pb-4">
         <div
           :id="descriptionId"
-          class="text-body-1"
+          class="text-body-large"
         >
           {{ message }}
         </div>
-        <div class="text-body-2 text-medium-emphasis mt-2">
+        <div class="text-body-medium text-medium-emphasis mt-2">
           この操作は取り消せません。
         </div>
       </v-card-text>

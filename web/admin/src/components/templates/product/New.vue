@@ -337,10 +337,10 @@ const onSubmit = async (): Promise<void> => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         商品登録
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         新しい商品の情報を登録します。各セクションを順番に入力してください。
       </p>
     </div>
@@ -353,7 +353,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 基本情報セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -361,7 +361,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">基本情報</span>
+            <span class="text-title-large font-weight-medium">基本情報</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-autocomplete
@@ -405,7 +405,7 @@ const onSubmit = async (): Promise<void> => {
         <v-card
           :loading="props.loading"
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -413,7 +413,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">商品画像管理</span>
+            <span class="text-title-large font-weight-medium">商品画像管理</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="mb-4">
@@ -485,7 +485,7 @@ const onSubmit = async (): Promise<void> => {
                       </v-chip>
                       <span
                         v-else
-                        class="text-caption text-grey"
+                        class="text-body-small text-grey"
                       >
                         画像 {{ i + 1 }}
                       </span>
@@ -500,7 +500,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- おすすめポイント・商品詳細セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -508,11 +508,11 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">おすすめポイント・詳細</span>
+            <span class="text-title-large font-weight-medium">おすすめポイント・詳細</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="mb-4">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 おすすめポイント
               </p>
               <v-text-field
@@ -586,7 +586,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 価格設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -594,7 +594,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">価格設定</span>
+            <span class="text-title-large font-weight-medium">価格設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-row>
@@ -634,7 +634,7 @@ const onSubmit = async (): Promise<void> => {
               variant="outlined"
               class="profit-calculation mt-4"
             >
-              <v-card-title class="text-h6 d-flex align-center">
+              <v-card-title class="text-title-large d-flex align-center">
                 <v-icon
                   icon="mdi-calculator"
                   size="20"
@@ -649,16 +649,16 @@ const onSubmit = async (): Promise<void> => {
                   </v-col>
                   <v-col
                     cols="4"
-                    class="text-right font-weight-bold text-h6 text-primary"
+                    class="text-right font-weight-bold text-title-large text-primary"
                   >
                     {{ getBenefits().toLocaleString() }} 円
                   </v-col>
                 </v-row>
                 <v-divider class="my-2" />
-                <v-row dense>
+                <v-row density="compact">
                   <v-col
                     cols="8"
-                    class="text-body-2"
+                    class="text-body-medium"
                   >
                     販売価格
                   </v-col>
@@ -669,10 +669,10 @@ const onSubmit = async (): Promise<void> => {
                     {{ formDataValue.price.toLocaleString() }} 円
                   </v-col>
                 </v-row>
-                <v-row dense>
+                <v-row density="compact">
                   <v-col
                     cols="8"
-                    class="text-body-2"
+                    class="text-body-medium"
                   >
                     原価
                   </v-col>
@@ -683,10 +683,10 @@ const onSubmit = async (): Promise<void> => {
                     -{{ formDataValue.cost.toLocaleString() }} 円
                   </v-col>
                 </v-row>
-                <v-row dense>
+                <v-row density="compact">
                   <v-col
                     cols="8"
-                    class="text-body-2"
+                    class="text-body-medium"
                   >
                     手数料(10%)
                   </v-col>
@@ -705,7 +705,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 在庫設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -713,7 +713,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">在庫設定</span>
+            <span class="text-title-large font-weight-medium">在庫設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-row>
@@ -766,7 +766,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 配送設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -774,7 +774,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配送設定</span>
+            <span class="text-title-large font-weight-medium">配送設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-row>
@@ -811,7 +811,7 @@ const onSubmit = async (): Promise<void> => {
               </v-col>
             </v-row>
             <div class="box-size-section mt-4">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 箱サイズ占有率
               </p>
               <v-row
@@ -858,7 +858,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 販売設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -866,7 +866,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">販売設定</span>
+            <span class="text-title-large font-weight-medium">販売設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-alert
@@ -888,7 +888,7 @@ const onSubmit = async (): Promise<void> => {
               class="mb-4"
             />
             <div class="date-time-section">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 販売開始日時 *
               </p>
               <v-row>
@@ -926,7 +926,7 @@ const onSubmit = async (): Promise<void> => {
                 </v-col>
               </v-row>
 
-              <p class="text-subtitle-2 mb-3 mt-4 text-grey-darken-1">
+              <p class="text-title-small mb-3 mt-4 text-grey-darken-1">
                 販売終了日時 *
               </p>
               <v-row>
@@ -970,7 +970,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 詳細分類セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -978,7 +978,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">詳細分類</span>
+            <span class="text-title-large font-weight-medium">詳細分類</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-autocomplete
@@ -1070,7 +1070,7 @@ const onSubmit = async (): Promise<void> => {
     <v-footer
       app
       color="white"
-      elevation="8"
+      elevation="3"
       class="px-6 py-4 fixed-footer-actions"
     >
       <v-container

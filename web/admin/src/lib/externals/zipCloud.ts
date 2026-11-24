@@ -55,6 +55,7 @@ export async function searchAddressByPostalCode(
   catch (error) {
     throw new Error(
       '住所検索に失敗しました。お手数ですがご自身で入力してください。',
+      { cause: error },
     )
   }
 }

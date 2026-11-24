@@ -298,10 +298,10 @@ const onSubmitDelete = (): void => {
 
   <v-row>
     <v-col
+      class="order-lg-2"
       sm="12"
       md="12"
       lg="4"
-      order-lg="2"
     >
       <v-card
         elevation="0"
@@ -344,22 +344,22 @@ const onSubmitDelete = (): void => {
         <v-card-text class="px-6">
           <v-list>
             <v-list-item class="mb-6 px-0">
-              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
+              <v-list-item-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-3">
                 氏名
               </v-list-item-subtitle>
-              <div class="text-h6 font-weight-medium mb-1">
+              <div class="text-title-large font-weight-medium mb-1">
                 {{ getUsername() }}
               </div>
-              <div class="text-body-2 text-grey-darken-2">
+              <div class="text-body-medium text-grey-darken-2">
                 {{ getUsernameKana() }}
               </div>
             </v-list-item>
             <v-list-item class="mb-6 px-0">
-              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
+              <v-list-item-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-3">
                 基本情報
               </v-list-item-subtitle>
               <div class="d-flex align-center mb-2">
-                <span class="text-body-2 text-grey-darken-2 mr-2">ステータス：</span>
+                <span class="text-body-medium text-grey-darken-2 mr-2">ステータス：</span>
                 <v-chip
                   size="small"
                   :color="getCustomerStatusColor()"
@@ -370,28 +370,28 @@ const onSubmitDelete = (): void => {
               </div>
               <div
                 v-show="customer.username != ''"
-                class="text-body-2 mb-1"
+                class="text-body-medium mb-1"
               >
                 <span class="text-grey-darken-2">ユーザー名：</span>
                 <span>{{ customer.username }}</span>
               </div>
               <div
                 v-show="customer.accountId != ''"
-                class="text-body-2"
+                class="text-body-medium"
               >
                 <span class="text-grey-darken-2">アカウントID：</span>
                 <span>{{ customer.accountId }}</span>
               </div>
             </v-list-item>
             <v-list-item class="mb-6 px-0">
-              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
+              <v-list-item-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-3">
                 連絡先情報
               </v-list-item-subtitle>
-              <div class="text-body-2 mb-1">
+              <div class="text-body-medium mb-1">
                 <span class="text-grey-darken-2">メール：</span>
                 <span>{{ props.customer.email }}</span>
               </div>
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 <span class="text-grey-darken-2">電話番号：</span>
                 <span>{{ getPhoneNumber() }}</span>
               </div>
@@ -400,10 +400,10 @@ const onSubmitDelete = (): void => {
               v-show="props.address?.postalCode !== ''"
               class="px-0"
             >
-              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
+              <v-list-item-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-3">
                 請求先情報
               </v-list-item-subtitle>
-              <div class="text-body-2 mb-1">
+              <div class="text-body-medium mb-1">
                 <v-icon
                   icon="mdi-map-marker"
                   size="16"
@@ -411,15 +411,15 @@ const onSubmitDelete = (): void => {
                 />
                 〒{{ props.address?.postalCode || '' }}
               </div>
-              <div class="text-body-2 mb-1">
+              <div class="text-body-medium mb-1">
                 {{ getAddressArea() }}
               </div>
-              <div class="text-body-2 mb-1">
+              <div class="text-body-medium mb-1">
                 {{ props.address?.addressLine1 || '' }}
               </div>
               <div
                 v-show="props.address?.addressLine2"
-                class="text-body-2"
+                class="text-body-medium"
               >
                 {{ props.address?.addressLine2 || '' }}
               </div>
@@ -430,10 +430,10 @@ const onSubmitDelete = (): void => {
     </v-col>
 
     <v-col
+      class="order-lg-1"
       sm="12"
       md="12"
       lg="8"
-      order-lg="1"
     >
       <v-card
         elevation="0"
@@ -455,10 +455,10 @@ const onSubmitDelete = (): void => {
               sm="6"
             >
               <div class="stats-item">
-                <v-card-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-2">
+                <v-card-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-2">
                   購入商品金額（※送料等は除く）
                 </v-card-subtitle>
-                <div class="text-h5 font-weight-bold text-primary">
+                <div class="text-headline-small font-weight-bold text-primary">
                   ¥{{ props.totalProductAmount.toLocaleString() }}
                 </div>
               </div>
@@ -468,10 +468,10 @@ const onSubmitDelete = (): void => {
               sm="6"
             >
               <div class="stats-item">
-                <v-card-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-2">
+                <v-card-subtitle class="text-title-small font-weight-medium text-grey-darken-1 pb-2">
                   注文数
                 </v-card-subtitle>
-                <div class="text-h5 font-weight-bold text-primary">
+                <div class="text-headline-small font-weight-bold text-primary">
                   {{ props.totalPaymentCount.toLocaleString() }} 件
                 </div>
               </div>
@@ -567,10 +567,10 @@ const onSubmitDelete = (): void => {
                 </template>
                 <div class="timeline-content">
                   <div class="d-flex flex-column flex-lg-row justify-space-between flex-grow-1">
-                    <div class="text-body-2">
+                    <div class="text-body-medium">
                       {{ activity.detail }}
                     </div>
-                    <div class="flex-shrink-0 text-caption text-grey-darken-1 mt-1 mt-lg-0">
+                    <div class="flex-shrink-0 text-body-small text-grey-darken-1 mt-1 mt-lg-0">
                       {{ activity.createdAt }}
                     </div>
                   </div>
@@ -594,15 +594,15 @@ const onSubmitDelete = (): void => {
                   variant="outlined"
                 >
                   <v-card-title class="d-lg-flex flex-lg-row align-center pa-4">
-                    <div class="text-subtitle-2 font-weight-medium pr-2">
+                    <div class="text-title-small font-weight-medium pr-2">
                       {{ activity.username }}
                     </div>
-                    <div class="text-caption text-grey-darken-1">
+                    <div class="text-body-small text-grey-darken-1">
                       {{ activity.createdAt }}
                     </div>
                   </v-card-title>
                   <v-card-text class="pa-4 pt-0">
-                    <div class="text-body-2">
+                    <div class="text-body-medium">
                       {{ activity.detail }}
                     </div>
                   </v-card-text>

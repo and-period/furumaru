@@ -71,7 +71,7 @@ const onSubmit = async (): Promise<void> => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiEmail"
           size="32"
@@ -79,19 +79,19 @@ const onSubmit = async (): Promise<void> => {
         />
         メールアドレス変更
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         ログイン用メールアドレスを変更します。変更後は認証が必要です。
       </p>
     </div>
 
     <v-card
-      elevation="2"
+      elevation="1"
       class="email-form-card"
     >
       <v-form @submit.prevent="onSubmit">
         <v-card-text class="pa-8">
           <div class="form-section">
-            <h3 class="text-subtitle-1 font-weight-medium mb-4 text-grey-darken-1">
+            <h3 class="text-body-large font-weight-medium mb-4 text-grey-darken-1">
               新しいメールアドレス
             </h3>
             <v-text-field
@@ -109,7 +109,7 @@ const onSubmit = async (): Promise<void> => {
               variant="outlined"
               class="mt-4"
             >
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 <strong>注意事項:</strong><br>
                 • 変更後は新しいメールアドレスでのログインになります<br>
                 • 認証コードが送信されます<br>

@@ -182,7 +182,7 @@ const submitDelete = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 primaryLight">
+      <v-card-title class="text-title-large primaryLight">
         スポット種別登録
       </v-card-title>
       <v-card-text>
@@ -219,7 +219,7 @@ const submitDelete = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 primaryLight">
+      <v-card-title class="text-title-large primaryLight">
         スポット種別編集
       </v-card-title>
       <v-card-text>

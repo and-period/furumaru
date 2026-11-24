@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
       color="medium-emphasis"
       class="mb-4"
     />
-    <div class="text-body-1 text-medium-emphasis mb-4">
+    <div class="text-body-large text-medium-emphasis mb-4">
       {{ props.message }}
     </div>
     <slot />

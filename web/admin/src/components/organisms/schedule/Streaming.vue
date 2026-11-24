@@ -255,13 +255,13 @@ const onClickCopyUrl = (url: string) => {
           size="24"
           class="mr-3 text-warning"
         />
-        <span class="text-h6 font-weight-medium">配信停止の確認</span>
+        <span class="text-title-large font-weight-medium">配信停止の確認</span>
       </v-card-title>
       <v-card-text class="pa-6">
-        <p class="text-body-1 mb-0">
+        <p class="text-body-large mb-0">
           ライブ配信を停止しますか？
         </p>
-        <p class="text-body-2 text-grey-darken-1 mt-2">
+        <p class="text-body-medium text-grey-darken-1 mt-2">
           停止後は再開に時間がかかる場合があります。
         </p>
       </v-card-text>
@@ -305,7 +305,7 @@ const onClickCopyUrl = (url: string) => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">アーカイブ映像アップロード</span>
+        <span class="text-title-large font-weight-medium">アーカイブ映像アップロード</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-file-input
@@ -375,7 +375,7 @@ const onClickCopyUrl = (url: string) => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">ライブ映像切り替え</span>
+        <span class="text-title-large font-weight-medium">ライブ映像切り替え</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-file-input
@@ -443,7 +443,7 @@ const onClickCopyUrl = (url: string) => {
         <!-- 配信プレビューセクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -451,7 +451,7 @@ const onClickCopyUrl = (url: string) => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配信プレビュー</span>
+            <span class="text-title-large font-weight-medium">配信プレビュー</span>
             <v-spacer />
             <v-btn
               v-show="isLive()"
@@ -501,7 +501,7 @@ const onClickCopyUrl = (url: string) => {
                   size="64"
                   class="text-grey-lighten-1 mb-4"
                 />
-                <p class="text-body-1 text-grey-darken-1">
+                <p class="text-body-large text-grey-darken-1">
                   配信が開始されていません
                 </p>
               </div>
@@ -512,7 +512,7 @@ const onClickCopyUrl = (url: string) => {
         <!-- YouTube連携セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -520,12 +520,12 @@ const onClickCopyUrl = (url: string) => {
               size="24"
               class="mr-3 text-red"
             />
-            <span class="text-h6 font-weight-medium">YouTube連携</span>
+            <span class="text-title-large font-weight-medium">YouTube連携</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div v-if="broadcastValue.youtubeAccount === ''">
               <template v-if="authYoutubeUrlValue === ''">
-                <p class="text-body-2 text-grey-darken-1 mb-4">
+                <p class="text-body-medium text-grey-darken-1 mb-4">
                   YouTubeチャンネルと連携して配信を行います。ハンドル名を入力してください。
                 </p>
                 <v-text-field
@@ -625,7 +625,7 @@ const onClickCopyUrl = (url: string) => {
         <!-- 配信状況セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -633,7 +633,7 @@ const onClickCopyUrl = (url: string) => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配信状況</span>
+            <span class="text-title-large font-weight-medium">配信状況</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-select
@@ -680,7 +680,7 @@ const onClickCopyUrl = (url: string) => {
         <v-card
           v-show="isLive()"
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -688,11 +688,11 @@ const onClickCopyUrl = (url: string) => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">配信操作</span>
+            <span class="text-title-large font-weight-medium">配信操作</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="control-section">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 ライブ配信制御
               </p>
               <div class="d-flex flex-column ga-3 mb-6">
@@ -722,7 +722,7 @@ const onClickCopyUrl = (url: string) => {
                 </v-btn>
               </div>
 
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 入力チャンネル設定
               </p>
               <div class="d-flex flex-column ga-3 mb-6">
@@ -752,7 +752,7 @@ const onClickCopyUrl = (url: string) => {
                 </v-btn>
               </div>
 
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 ふた絵表示設定
               </p>
               <div class="d-flex flex-column ga-3">
@@ -789,7 +789,7 @@ const onClickCopyUrl = (url: string) => {
         <v-card
           v-show="isVOD()"
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -797,10 +797,10 @@ const onClickCopyUrl = (url: string) => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">オンデマンド配信</span>
+            <span class="text-title-large font-weight-medium">オンデマンド配信</span>
           </v-card-title>
           <v-card-text class="pa-6">
-            <p class="text-body-2 text-grey-darken-1 mb-4">
+            <p class="text-body-medium text-grey-darken-1 mb-4">
               アーカイブ動画をアップロードしてオンデマンド配信を開始できます。
             </p>
             <v-btn

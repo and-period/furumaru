@@ -6,3 +6,13 @@ $heading-font-family: "BIZ UDPGothic", sans-serif;
 $card-elevation: 0;
 $list-padding: 0;
 $data-table-expanded-content-box-shadow: none;
+
+// Vuetify 4 でデフォルトのブレークポイントが縮小されたため、v3 の値を維持する
+$grid-breakpoints: (
+  "xs": 0,
+  "sm": 600px,
+  "md": 960px,
+  "lg": 1280px,
+  "xl": 1920px,
+  "xxl": 2560px,
+);

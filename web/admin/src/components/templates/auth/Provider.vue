@@ -92,7 +92,7 @@ const getItems = computed(() => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiLink"
           size="32"
@@ -100,13 +100,13 @@ const getItems = computed(() => {
         />
         SNSアカウント連携
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         外部SNSアカウントと連携して、簡単ログインを有効にします。
       </p>
     </div>
 
     <v-card
-      elevation="2"
+      elevation="1"
       class="provider-card"
     >
       <v-card-text class="pa-6">
@@ -115,7 +115,7 @@ const getItems = computed(() => {
           variant="outlined"
           class="mb-6"
         >
-          <div class="text-body-2">
+          <div class="text-body-medium">
             <strong>重要な注意事項</strong><br><br>
             • 連携完了後、実際にログインで使えるようになるまで数分かかる場合があります<br>
             • 外部アカウント連携後、メールアドレス認証が利用できなくなるケースがあります
@@ -123,7 +123,7 @@ const getItems = computed(() => {
         </v-alert>
 
         <div class="mb-4">
-          <h3 class="text-subtitle-1 font-weight-medium mb-4 text-grey-darken-1">
+          <h3 class="text-body-large font-weight-medium mb-4 text-grey-darken-1">
             利用可能SNSサービス
           </h3>
         </div>
@@ -163,10 +163,10 @@ const getItems = computed(() => {
                     />
                   </v-avatar>
                 </div>
-                <h4 class="text-h6 font-weight-medium mb-2">
+                <h4 class="text-title-large font-weight-medium mb-2">
                   {{ item.name }}
                 </h4>
-                <p class="text-body-2 text-grey-darken-1 mb-4">
+                <p class="text-body-medium text-grey-darken-1 mb-4">
                   {{ item.connected ? '連携済み' : '未連携' }}
                 </p>
                 <v-btn

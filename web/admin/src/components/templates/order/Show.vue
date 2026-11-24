@@ -752,19 +752,19 @@ const onSubmitRefund = (): void => {
 
     <!-- Order Header -->
     <v-card
-      elevation="2"
+      elevation="1"
       class="mb-6"
     >
       <v-card-title class="bg-primary text-white pa-6">
-        <v-row align="center">
+        <v-row class="align-center">
           <v-col
             cols="12"
             md="8"
           >
-            <h2 class="text-h4 font-weight-bold mb-2">
+            <h2 class="text-headline-large font-weight-bold mb-2">
               注文 #{{ order?.managementId || order?.id?.slice(-8) || '' }}
             </h2>
-            <p class="text-h6 mb-0">
+            <p class="text-title-large mb-0">
               {{ getCoordinatorName() || '未設定' }}
             </p>
           </v-col>
@@ -796,7 +796,7 @@ const onSubmitRefund = (): void => {
         cols="12"
         md="4"
       >
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-text class="text-center">
             <v-icon
               size="32"
@@ -804,10 +804,10 @@ const onSubmitRefund = (): void => {
               class="mb-2"
               :icon="mdiCurrencyJpy"
             />
-            <h3 class="text-h4 font-weight-bold mb-1">
+            <h3 class="text-headline-large font-weight-bold mb-1">
               ¥{{ (order?.payment?.total || 0).toLocaleString() }}
             </h3>
-            <p class="text-subtitle-1 text-grey">
+            <p class="text-body-large text-grey">
               合計金額
             </p>
           </v-card-text>
@@ -817,7 +817,7 @@ const onSubmitRefund = (): void => {
         cols="12"
         md="4"
       >
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-text class="text-center">
             <v-icon
               size="32"
@@ -825,10 +825,10 @@ const onSubmitRefund = (): void => {
               :icon="mdiCreditCard"
               class="mb-2"
             />
-            <h3 class="text-h5 font-weight-bold mb-1">
+            <h3 class="text-headline-small font-weight-bold mb-1">
               {{ getPaymentStatus(order?.payment.status) }}
             </h3>
-            <p class="text-subtitle-1 text-grey">
+            <p class="text-body-large text-grey">
               支払い状況
             </p>
           </v-card-text>
@@ -838,7 +838,7 @@ const onSubmitRefund = (): void => {
         cols="12"
         md="4"
       >
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-text class="text-center">
             <v-icon
               size="32"
@@ -846,10 +846,10 @@ const onSubmitRefund = (): void => {
               class="mb-2"
               :icon="props.order.type === OrderType.OrderTypeExperience ? mdiCalendarStar : mdiPackageVariant"
             />
-            <h3 class="text-h5 font-weight-bold mb-1">
+            <h3 class="text-headline-small font-weight-bold mb-1">
               {{ getAllItemsCount }}
             </h3>
-            <p class="text-subtitle-1 text-grey">
+            <p class="text-body-large text-grey">
               {{ props.order.type === OrderType.OrderTypeExperience ? '予約アイテム' : '商品アイテム' }}
             </p>
           </v-card-text>
@@ -865,7 +865,7 @@ const onSubmitRefund = (): void => {
       >
         <!-- Basic Information -->
         <v-card
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -883,18 +883,18 @@ const onSubmitRefund = (): void => {
                 sm="6"
               >
                 <div class="mb-4">
-                  <p class="text-subtitle-2 text-grey mb-1">
+                  <p class="text-title-small text-grey mb-1">
                     注文番号
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ order?.id || '' }}
                   </p>
                 </div>
                 <div class="mb-4">
-                  <p class="text-subtitle-2 text-grey mb-1">
+                  <p class="text-title-small text-grey mb-1">
                     購入日時
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ getOrderedAt() }}
                   </p>
                 </div>
@@ -904,18 +904,18 @@ const onSubmitRefund = (): void => {
                 sm="6"
               >
                 <div class="mb-4">
-                  <p class="text-subtitle-2 text-grey mb-1">
+                  <p class="text-title-small text-grey mb-1">
                     支払い方法
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ getPaymentMethodType() }}
                   </p>
                 </div>
                 <div class="mb-4">
-                  <p class="text-subtitle-2 text-grey mb-1">
+                  <p class="text-title-small text-grey mb-1">
                     {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了日時' : '完了日時' }}
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ getCompletedAt() }}
                   </p>
                 </div>
@@ -926,7 +926,7 @@ const onSubmitRefund = (): void => {
 
         <!-- Payment Breakdown -->
         <v-card
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -996,7 +996,7 @@ const onSubmitRefund = (): void => {
                     合計（税込）
                   </td>
                   <td class="pa-4" />
-                  <td class="pa-4 text-right text-h6 font-weight-bold text-primary">
+                  <td class="pa-4 text-right text-title-large font-weight-bold text-primary">
                     ¥{{ (order?.payment?.total || 0).toLocaleString() }}
                   </td>
                 </tr>
@@ -1008,7 +1008,7 @@ const onSubmitRefund = (): void => {
         <!-- Product Information -->
         <v-card
           v-if="props.order.type === OrderType.OrderTypeProduct"
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1066,7 +1066,7 @@ const onSubmitRefund = (): void => {
         <!-- Experience Information -->
         <v-card
           v-if="props.order.type === OrderType.OrderTypeExperience"
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1083,10 +1083,10 @@ const onSubmitRefund = (): void => {
               v-if="experienceTitle"
               class="mb-4"
             >
-              <h3 class="text-h6 font-weight-bold mb-1">
+              <h3 class="text-title-large font-weight-bold mb-1">
                 体験名
               </h3>
-              <p class="text-body-1 mb-0">
+              <p class="text-body-large mb-0">
                 {{ experienceTitle }}
               </p>
             </div>
@@ -1096,11 +1096,11 @@ const onSubmitRefund = (): void => {
               class="mb-4"
             >
               <div class="mb-2">
-                <h4 class="text-subtitle-1 font-weight-medium text-grey-darken-2">
+                <h4 class="text-body-large font-weight-medium text-grey-darken-2">
                   体験説明
                 </h4>
               </div>
-              <div class="text-body-1 pa-4 bg-grey-lighten-5 rounded">
+              <div class="text-body-large pa-4 bg-grey-lighten-5 rounded">
                 {{ experienceDescription }}
               </div>
             </div>
@@ -1116,7 +1116,7 @@ const onSubmitRefund = (): void => {
         <!-- User Request Information -->
         <v-card
           v-if="orderRequest"
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1128,7 +1128,7 @@ const onSubmitRefund = (): void => {
             ユーザーからの要望
           </v-card-title>
           <v-card-text class="pa-6">
-            <div class="text-body-1">
+            <div class="text-body-large">
               {{ orderRequest }}
             </div>
           </v-card-text>
@@ -1142,7 +1142,7 @@ const onSubmitRefund = (): void => {
       >
         <!-- Customer Information -->
         <v-card
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1155,10 +1155,10 @@ const onSubmitRefund = (): void => {
           </v-card-title>
           <v-card-text class="pa-4">
             <div class="mb-4">
-              <h4 class="text-h6 font-weight-medium mb-2">
+              <h4 class="text-title-large font-weight-medium mb-2">
                 {{ getCustomerName() }}
               </h4>
-              <p class="text-body-2 text-grey mb-2">
+              <p class="text-body-medium text-grey mb-2">
                 {{ getCustomerNameKana() }}
               </p>
               <div class="d-flex align-center mb-2">
@@ -1168,7 +1168,7 @@ const onSubmitRefund = (): void => {
                   color="grey"
                   :icon="mdiEmail"
                 />
-                <span class="text-body-2">{{ props.customer.email }}</span>
+                <span class="text-body-medium">{{ props.customer.email }}</span>
               </div>
               <div class="d-flex align-center">
                 <v-icon
@@ -1177,7 +1177,7 @@ const onSubmitRefund = (): void => {
                   color="grey"
                   :icon="mdiPhone"
                 />
-                <span class="text-body-2">{{ props.customer.phoneNumber }}</span>
+                <span class="text-body-medium">{{ props.customer.phoneNumber }}</span>
               </div>
             </div>
           </v-card-text>
@@ -1186,7 +1186,7 @@ const onSubmitRefund = (): void => {
         <!-- Billing Address -->
         <v-card
           v-if="props.order.type !== OrderType.OrderTypeExperience && getShippingAddressName()"
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1198,7 +1198,7 @@ const onSubmitRefund = (): void => {
             請求先情報
           </v-card-title>
           <v-card-text class="pa-4">
-            <h4 class="text-subtitle-1 font-weight-medium mb-2">
+            <h4 class="text-body-large font-weight-medium mb-2">
               {{ getShippingAddressName() }}
             </h4>
             <div class="d-flex align-center mb-1">
@@ -1208,7 +1208,7 @@ const onSubmitRefund = (): void => {
                 color="grey"
                 :icon="mdiPhone"
               />
-              <span class="text-body-2">{{ getShippingAddressPhoneNumber() }}</span>
+              <span class="text-body-medium">{{ getShippingAddressPhoneNumber() }}</span>
             </div>
             <div class="d-flex align-start mt-2">
               <v-icon
@@ -1217,7 +1217,7 @@ const onSubmitRefund = (): void => {
                 color="grey"
                 :icon="mdiMapMarker"
               />
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 <div>〒{{ props.order?.payment?.postalCode || '' }}</div>
                 <div>{{ `${getShippingAddressPrefecture()} ${props.order?.payment?.city || ''}` }}</div>
                 <div>{{ props.order?.payment?.addressLine1 || '' }}</div>
@@ -1232,7 +1232,7 @@ const onSubmitRefund = (): void => {
         <!-- Shipping Information -->
         <v-card
           v-if="props.order?.fulfillments?.length > 0"
-          elevation="2"
+          elevation="1"
           class="mb-4"
         >
           <v-card-title class="bg-grey-lighten-4 py-4">
@@ -1253,10 +1253,10 @@ const onSubmitRefund = (): void => {
                   :icon="mdiStore"
                 />
                 <div>
-                  <p class="text-subtitle-2 mb-1">
+                  <p class="text-title-small mb-1">
                     受け取り場所
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ getPickupLocation() }}
                   </p>
                 </div>
@@ -1269,17 +1269,17 @@ const onSubmitRefund = (): void => {
                   :icon="mdiCalendar"
                 />
                 <div>
-                  <p class="text-subtitle-2 mb-1">
+                  <p class="text-title-small mb-1">
                     受け取り日時
                   </p>
-                  <p class="text-body-1 font-weight-medium">
+                  <p class="text-body-large font-weight-medium">
                     {{ getPickupDate() }}
                   </p>
                 </div>
               </div>
             </template>
             <template v-else>
-              <h4 class="text-subtitle-1 font-weight-medium mb-2">
+              <h4 class="text-body-large font-weight-medium mb-2">
                 {{ getFulfillmentAddressName() }}
               </h4>
               <div class="d-flex align-center mb-1">
@@ -1289,7 +1289,7 @@ const onSubmitRefund = (): void => {
                   color="grey"
                   :icon="mdiPhone"
                 />
-                <span class="text-body-2">{{ getFulfillmentAddressPhoneNumber() }}</span>
+                <span class="text-body-medium">{{ getFulfillmentAddressPhoneNumber() }}</span>
               </div>
               <div class="d-flex align-start mt-2">
                 <v-icon
@@ -1298,7 +1298,7 @@ const onSubmitRefund = (): void => {
                   color="grey"
                   :icon="mdiMapMarker"
                 />
-                <div class="text-body-2">
+                <div class="text-body-medium">
                   <div>〒{{ props.order.fulfillments[0]?.postalCode || '' }}</div>
                   <div>{{ `${getFulfillmentAddressPrefecture()} ${props.order.fulfillments[0]?.city || ''}` }}</div>
                   <div>{{ props.order.fulfillments[0]?.addressLine1 || '' }}</div>
@@ -1320,7 +1320,7 @@ const onSubmitRefund = (): void => {
       class="mb-4"
     >
       <v-col cols="12">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title class="bg-grey-lighten-4 py-4">
             <v-icon
               class="mr-2"
@@ -1362,10 +1362,10 @@ const onSubmitRefund = (): void => {
                           md="6"
                         >
                           <div class="mb-4">
-                            <p class="text-subtitle-2 text-grey mb-1">
+                            <p class="text-title-small text-grey mb-1">
                               受け取り場所
                             </p>
-                            <p class="text-h6 font-weight-bold">
+                            <p class="text-title-large font-weight-bold">
                               {{ getPickupLocation() }}
                             </p>
                           </div>
@@ -1375,10 +1375,10 @@ const onSubmitRefund = (): void => {
                           md="6"
                         >
                           <div class="mb-4">
-                            <p class="text-subtitle-2 text-grey mb-1">
+                            <p class="text-title-small text-grey mb-1">
                               受け取り日時
                             </p>
-                            <p class="text-h6 font-weight-bold">
+                            <p class="text-title-large font-weight-bold">
                               {{ getPickupDate() }}
                             </p>
                           </div>
@@ -1394,7 +1394,7 @@ const onSubmitRefund = (): void => {
                       sm="4"
                     >
                       <div class="text-center">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           配送タイプ
                         </p>
                         <v-chip
@@ -1411,7 +1411,7 @@ const onSubmitRefund = (): void => {
                       sm="4"
                     >
                       <div class="text-center">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           箱サイズ
                         </p>
                         <v-chip
@@ -1428,7 +1428,7 @@ const onSubmitRefund = (): void => {
                       sm="4"
                     >
                       <div class="text-center">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           占有率
                         </p>
                         <v-chip
@@ -1444,7 +1444,7 @@ const onSubmitRefund = (): void => {
 
                   <!-- Products in this fulfillment -->
                   <div v-if="getOrderItems(fulfillment.fulfillmentId).length > 0">
-                    <h4 class="text-subtitle-1 font-weight-medium mb-3">
+                    <h4 class="text-body-large font-weight-medium mb-3">
                       受け取り予定商品
                     </h4>
                     <v-data-table
@@ -1508,10 +1508,10 @@ const onSubmitRefund = (): void => {
                       md="3"
                     >
                       <div class="mb-4">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           配送タイプ
                         </p>
-                        <p class="text-body-1 font-weight-medium">
+                        <p class="text-body-large font-weight-medium">
                           {{ getShippingType(fulfillment.shippingType) }}
                         </p>
                       </div>
@@ -1522,10 +1522,10 @@ const onSubmitRefund = (): void => {
                       md="3"
                     >
                       <div class="mb-4">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           箱サイズ
                         </p>
-                        <p class="text-body-1 font-weight-medium">
+                        <p class="text-body-large font-weight-medium">
                           {{ getBoxSize(fulfillment.boxSize) }}サイズ
                         </p>
                       </div>
@@ -1536,10 +1536,10 @@ const onSubmitRefund = (): void => {
                       md="3"
                     >
                       <div class="mb-4">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           占有率
                         </p>
-                        <p class="text-body-1 font-weight-medium">
+                        <p class="text-body-large font-weight-medium">
                           {{ fulfillment.boxRate }}%
                         </p>
                       </div>
@@ -1550,10 +1550,10 @@ const onSubmitRefund = (): void => {
                       md="3"
                     >
                       <div class="mb-4">
-                        <p class="text-subtitle-2 text-grey mb-1">
+                        <p class="text-title-small text-grey mb-1">
                           配送希望日
                         </p>
-                        <p class="text-body-1 font-weight-medium">
+                        <p class="text-body-large font-weight-medium">
                           {{ getRequestDaliveryDay(fulfillment) }}
                         </p>
                       </div>
@@ -1562,7 +1562,7 @@ const onSubmitRefund = (): void => {
 
                   <!-- Products in this fulfillment -->
                   <div v-if="getOrderItems(fulfillment.fulfillmentId).length > 0">
-                    <h4 class="text-subtitle-1 font-weight-medium mb-3">
+                    <h4 class="text-body-large font-weight-medium mb-3">
                       この配送に含まれる商品
                     </h4>
                     <v-data-table
@@ -1618,7 +1618,7 @@ const onSubmitRefund = (): void => {
                     variant="tonal"
                     color="info"
                   >
-                    <v-card-title class="text-h6 pb-2">
+                    <v-card-title class="text-title-large pb-2">
                       配送追跡
                     </v-card-title>
                     <v-card-text>
@@ -1667,7 +1667,7 @@ const onSubmitRefund = (): void => {
     <!-- Shipping Message -->
     <v-row v-show="showShippingMessage()">
       <v-col cols="12">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title class="bg-grey-lighten-4 py-4">
             <v-icon
               class="mr-2"
@@ -1705,10 +1705,10 @@ const onSubmitRefund = (): void => {
           注文キャンセル確認
         </v-card-title>
         <v-card-text class="py-6">
-          <p class="text-body-1 mb-0">
+          <p class="text-body-large mb-0">
             本当にこの注文をキャンセルしますか？
           </p>
-          <p class="text-body-2 text-grey mt-2">
+          <p class="text-body-medium text-grey mt-2">
             この操作は取り消すことができません。
           </p>
         </v-card-text>
@@ -1747,7 +1747,7 @@ const onSubmitRefund = (): void => {
           返金処理
         </v-card-title>
         <v-card-text class="py-6">
-          <p class="text-body-1 mb-4">
+          <p class="text-body-large mb-4">
             返金理由を入力してください。
           </p>
           <v-textarea
@@ -1786,7 +1786,7 @@ const onSubmitRefund = (): void => {
     <v-footer
       app
       color="white"
-      elevation="8"
+      elevation="3"
       class="px-6 py-4 fixed-footer-actions"
     >
       <v-container

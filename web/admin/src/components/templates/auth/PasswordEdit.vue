@@ -92,7 +92,7 @@ const onSubmit = async (): Promise<void> => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiLock"
           size="32"
@@ -100,19 +100,19 @@ const onSubmit = async (): Promise<void> => {
         />
         パスワード変更
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         セキュリティ保護のため、定期的なパスワード変更を推奨します
       </p>
     </div>
 
     <v-card
-      elevation="2"
+      elevation="1"
       class="password-form-card"
     >
       <v-form @submit.prevent="onSubmit">
         <v-card-text class="pa-8">
           <div class="form-section mb-6">
-            <h3 class="text-subtitle-1 font-weight-medium mb-4 text-grey-darken-1">
+            <h3 class="text-body-large font-weight-medium mb-4 text-grey-darken-1">
               現在の認証情報
             </h3>
             <v-text-field
@@ -127,7 +127,7 @@ const onSubmit = async (): Promise<void> => {
             />
           </div>
           <div class="form-section">
-            <h3 class="text-subtitle-1 font-weight-medium mb-4 text-grey-darken-1">
+            <h3 class="text-body-large font-weight-medium mb-4 text-grey-darken-1">
               新しいパスワード
             </h3>
             <v-text-field
@@ -159,7 +159,7 @@ const onSubmit = async (): Promise<void> => {
               variant="outlined"
               class="mt-4"
             >
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 <strong>パスワード要件:</strong><br>
                 • 8文字以上<br>
                 • 英字・数字を含む<br>

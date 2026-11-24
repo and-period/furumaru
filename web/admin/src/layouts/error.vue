@@ -30,7 +30,7 @@ useHead({
         <v-card
           max-width="480"
           class="text-center pa-8"
-          elevation="2"
+          elevation="1"
           rounded="lg"
         >
           <div class="mb-4">
@@ -41,13 +41,13 @@ useHead({
               aria-hidden="true"
             />
           </div>
-          <div class="text-h3 font-weight-bold mb-4 text-medium-emphasis">
+          <div class="text-display-medium font-weight-bold mb-4 text-medium-emphasis">
             {{ error?.statusCode || 500 }}
           </div>
-          <v-card-title class="text-h6 pb-2">
+          <v-card-title class="text-title-large pb-2">
             {{ is404 ? 'ページが見つかりません' : 'エラーが発生しました' }}
           </v-card-title>
-          <v-card-text class="text-body-1 text-medium-emphasis pb-6">
+          <v-card-text class="text-body-large text-medium-emphasis pb-6">
             {{
               is404
                 ? 'お探しのページは移動または削除された可能性があります。'

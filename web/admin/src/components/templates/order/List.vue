@@ -289,7 +289,7 @@ const onSubmitExport = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 py-4">
+      <v-card-title class="text-title-large py-4">
         ファイルの取り込み
       </v-card-title>
 
@@ -332,7 +332,7 @@ const onSubmitExport = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 py-4">
+      <v-card-title class="text-title-large py-4">
         ファイルの出力
       </v-card-title>
 
@@ -383,10 +383,10 @@ const onSubmitExport = (): void => {
           class="mr-3 text-primary"
         />
         <div>
-          <h1 class="text-h6 text-sm-h5 font-weight-bold text-primary">
+          <h1 class="text-title-large text-sm-headline-small font-weight-bold text-primary">
             注文管理
           </h1>
-          <p class="text-caption text-sm-body-2 text-medium-emphasis ma-0">
+          <p class="text-body-small text-sm-body-medium text-medium-emphasis ma-0">
             注文の確認・管理・エクスポートを行います
           </p>
         </div>

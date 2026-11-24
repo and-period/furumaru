@@ -52,7 +52,7 @@ function handleKeydown(event: KeyboardEvent) {
         />
       </template>
     </v-textarea>
-    <div class="text-caption text-medium-emphasis mt-1">
+    <div class="text-body-small text-medium-emphasis mt-1">
       Ctrl+Enter で送信
     </div>
   </form>
@@ -60,6 +60,6 @@ function handleKeydown(event: KeyboardEvent) {
 
 <style scoped>
 .ai-chat-input {
-  border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-top: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
 }
 </style>

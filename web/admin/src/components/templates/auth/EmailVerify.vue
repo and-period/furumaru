@@ -80,7 +80,7 @@ const onSubmit = async (): Promise<void> => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiEmailCheck"
           size="32"
@@ -88,13 +88,13 @@ const onSubmit = async (): Promise<void> => {
         />
         メールアドレス認証
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         送信された認証コードを入力して、メールアドレスの変更を完了してください。
       </p>
     </div>
 
     <v-card
-      elevation="2"
+      elevation="1"
       class="verify-form-card"
     >
       <v-card-text class="pa-8 text-center">
@@ -104,16 +104,16 @@ const onSubmit = async (): Promise<void> => {
             size="64"
             class="text-success mb-4"
           />
-          <h3 class="text-h6 font-weight-medium mb-2">
+          <h3 class="text-title-large font-weight-medium mb-2">
             認証コードを送信しました
           </h3>
-          <p class="text-body-2 text-grey-darken-1">
+          <p class="text-body-medium text-grey-darken-1">
             <strong>{{ props.email }}</strong> に6桁の認証コードを送信しました
           </p>
         </div>
 
         <div class="mb-6">
-          <h4 class="text-subtitle-1 font-weight-medium mb-4 text-grey-darken-1">
+          <h4 class="text-body-large font-weight-medium mb-4 text-grey-darken-1">
             認証コードを入力
           </h4>
           <div class="otp-container">
@@ -133,7 +133,7 @@ const onSubmit = async (): Promise<void> => {
           variant="outlined"
           class="mb-6 text-left"
         >
-          <div class="text-body-2">
+          <div class="text-body-medium">
             <v-icon
               :icon="mdiTimerSand"
               class="mr-2"

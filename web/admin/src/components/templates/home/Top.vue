@@ -366,10 +366,10 @@ const onChangeEndAt = (): void => {
     <!-- Date Range & Period Selection -->
     <v-card
       class="mb-4"
-      elevation="2"
+      elevation="1"
     >
       <v-card-text>
-        <v-row align="center">
+        <v-row class="align-center">
           <v-col
             cols="12"
             md="9"
@@ -386,7 +386,7 @@ const onChangeEndAt = (): void => {
                 style="max-width: 200px"
                 @change="onChangeStartAt"
               />
-              <div class="text-subtitle-2 px-2">
+              <div class="text-title-small px-2">
                 〜
               </div>
               <v-text-field
@@ -432,7 +432,7 @@ const onChangeEndAt = (): void => {
           <div class="font-weight-bold">
             公開中の商品・体験がありません
           </div>
-          <div class="text-body-2">
+          <div class="text-body-medium">
             商品または体験を登録して販売を開始しましょう
           </div>
         </div>
@@ -458,7 +458,7 @@ const onChangeEndAt = (): void => {
     <v-card
       v-if="pendingOrdersTotal > 0"
       class="mb-4"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center">
         <v-icon
@@ -478,7 +478,7 @@ const onChangeEndAt = (): void => {
         </v-btn>
       </v-card-title>
       <v-card-text>
-        <div class="text-body-2 mb-3">
+        <div class="text-body-medium mb-3">
           未完了の注文が {{ pendingOrdersTotal }}件 あります
         </div>
         <v-list density="compact">
@@ -489,7 +489,7 @@ const onChangeEndAt = (): void => {
             @click="emit('click:order', order.id)"
           >
             <template #prepend>
-              <span class="text-body-2 text-grey-darken-1 mr-3">
+              <span class="text-body-medium text-grey-darken-1 mr-3">
                 #{{ order.managementId || order.id.slice(-8) }}
               </span>
             </template>
@@ -502,12 +502,12 @@ const onChangeEndAt = (): void => {
               >
                 {{ getOrderStatusLabel(order.status) }}
               </v-chip>
-              <span class="text-body-2 text-grey-darken-1 mr-3">
+              <span class="text-body-medium text-grey-darken-1 mr-3">
                 {{ unix(order.createdAt).format('YYYY/MM/DD') }}
               </span>
             </template>
             <template #append>
-              <span class="text-body-2 font-weight-medium">
+              <span class="text-body-medium font-weight-medium">
                 &yen;{{ order.payment.total.toLocaleString() }}
               </span>
             </template>
@@ -540,7 +540,7 @@ const onChangeEndAt = (): void => {
       >
         <v-card
           class="kpi-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text>
             <div class="d-flex align-center mb-2">
@@ -550,9 +550,9 @@ const onChangeEndAt = (): void => {
                 class="mr-2"
                 :icon="mdiCurrencyJpy"
               />
-              <span class="text-caption text-grey-darken-1">売上総額</span>
+              <span class="text-body-small text-grey-darken-1">売上総額</span>
             </div>
-            <div class="text-h5 font-weight-bold mb-1">
+            <div class="text-headline-small font-weight-bold mb-1">
               ¥{{ orders.sales.value.toLocaleString() }}
             </div>
             <v-chip
@@ -578,7 +578,7 @@ const onChangeEndAt = (): void => {
       >
         <v-card
           class="kpi-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text>
             <div class="d-flex align-center mb-2">
@@ -588,11 +588,11 @@ const onChangeEndAt = (): void => {
                 class="mr-2"
                 :icon="mdiCartOutline"
               />
-              <span class="text-caption text-grey-darken-1">注文件数</span>
+              <span class="text-body-small text-grey-darken-1">注文件数</span>
             </div>
-            <div class="text-h5 font-weight-bold mb-1">
+            <div class="text-headline-small font-weight-bold mb-1">
               {{ orders.orders.value.toLocaleString() }}
-              <span class="text-body-2">件</span>
+              <span class="text-body-medium">件</span>
             </div>
             <v-chip
               :color="orders.orders.comparison >= 0 ? 'success' : 'error'"
@@ -616,7 +616,7 @@ const onChangeEndAt = (): void => {
       >
         <v-card
           class="kpi-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text>
             <div class="d-flex align-center mb-2">
@@ -626,11 +626,11 @@ const onChangeEndAt = (): void => {
                 class="mr-2"
                 :icon="mdiAccountMultipleOutline"
               />
-              <span class="text-caption text-grey-darken-1">購入者数</span>
+              <span class="text-body-small text-grey-darken-1">購入者数</span>
             </div>
-            <div class="text-h5 font-weight-bold mb-1">
+            <div class="text-headline-small font-weight-bold mb-1">
               {{ orders.users.value.toLocaleString() }}
-              <span class="text-body-2">人</span>
+              <span class="text-body-medium">人</span>
             </div>
             <v-chip
               :color="orders.users.comparison >= 0 ? 'success' : 'error'"
@@ -654,7 +654,7 @@ const onChangeEndAt = (): void => {
       >
         <v-card
           class="kpi-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text>
             <div class="d-flex align-center mb-2">
@@ -664,12 +664,12 @@ const onChangeEndAt = (): void => {
                 class="mr-2"
                 :icon="mdiCashMultiple"
               />
-              <span class="text-caption text-grey-darken-1">平均単価</span>
+              <span class="text-body-small text-grey-darken-1">平均単価</span>
             </div>
-            <div class="text-h5 font-weight-bold mb-1">
+            <div class="text-headline-small font-weight-bold mb-1">
               ¥{{ averageOrderValue.toLocaleString() }}
             </div>
-            <div class="text-caption text-grey">
+            <div class="text-body-small text-grey">
               売上 ÷ 注文数
             </div>
           </v-card-text>
@@ -703,7 +703,7 @@ const onChangeEndAt = (): void => {
         cols="12"
         lg="8"
       >
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="primary"
@@ -726,7 +726,7 @@ const onChangeEndAt = (): void => {
         cols="12"
         lg="4"
       >
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="info"
@@ -749,7 +749,7 @@ const onChangeEndAt = (): void => {
     <!-- Payment Details Table -->
     <v-row>
       <v-col cols="12">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title class="d-flex align-center">
             <v-icon
               color="secondary"

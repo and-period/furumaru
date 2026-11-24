@@ -47,7 +47,7 @@ const onChangeEndAt = async (): Promise<void> => {
 
 <template>
   <div class="d-flex flex-column ga-2">
-    <v-label class="text-body-2 font-weight-medium">
+    <v-label class="text-body-medium font-weight-medium">
       使用期間 *
     </v-label>
 
@@ -75,7 +75,7 @@ const onChangeEndAt = async (): Promise<void> => {
       </div>
 
       <!-- 区切り -->
-      <div class="text-body-2 text-grey px-2">
+      <div class="text-body-medium text-grey px-2">
         〜
       </div>
 

@@ -24,14 +24,14 @@ const { getPromotionTerm, getPromotionDiscount } = useNotificationDisplay()
   >
     <v-card-title
       v-if="showTitle"
-      class="text-h6 pa-0 mb-3"
+      class="text-title-large pa-0 mb-3"
     >
       {{ promotion.title }}
     </v-card-title>
 
     <div class="d-flex flex-column ga-2">
       <div class="d-flex justify-space-between align-center">
-        <span class="text-body-2 text-grey-darken-1">割引コード</span>
+        <span class="text-body-medium text-grey-darken-1">割引コード</span>
         <v-chip
           size="small"
           :color="promotion.code ? 'primary' : 'grey'"
@@ -42,7 +42,7 @@ const { getPromotionTerm, getPromotionDiscount } = useNotificationDisplay()
       </div>
 
       <div class="d-flex justify-space-between align-center">
-        <span class="text-body-2 text-grey-darken-1">割引額</span>
+        <span class="text-body-medium text-grey-darken-1">割引額</span>
         <v-chip
           size="small"
           color="success"
@@ -53,8 +53,8 @@ const { getPromotionTerm, getPromotionDiscount } = useNotificationDisplay()
       </div>
 
       <div class="d-flex justify-space-between align-center">
-        <span class="text-body-2 text-grey-darken-1">使用期間</span>
-        <span class="text-body-2">{{ getPromotionTerm(promotion) }}</span>
+        <span class="text-body-medium text-grey-darken-1">使用期間</span>
+        <span class="text-body-medium">{{ getPromotionTerm(promotion) }}</span>
       </div>
     </div>
   </v-card>
@@ -68,7 +68,7 @@ const { getPromotionTerm, getPromotionDiscount } = useNotificationDisplay()
       icon="mdi-information-outline"
       class="mb-2 text-grey"
     />
-    <div class="text-body-2 text-grey-darken-1">
+    <div class="text-body-medium text-grey-darken-1">
       プロモーション情報を選択してください
     </div>
   </v-card>

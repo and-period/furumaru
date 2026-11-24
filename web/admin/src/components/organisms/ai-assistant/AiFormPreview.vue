@@ -69,7 +69,7 @@ function formatValue(field: string, value: unknown): string {
     class="ai-form-preview mx-2 mb-2"
     density="compact"
   >
-    <v-card-title class="text-body-2 font-weight-bold pa-3 pb-1">
+    <v-card-title class="text-body-medium font-weight-bold pa-3 pb-1">
       フォーム更新プレビュー
     </v-card-title>
     <v-card-text class="pa-3 pt-1">
@@ -82,10 +82,10 @@ function formatValue(field: string, value: unknown): string {
           :key="change.field"
           class="pa-0 mb-1"
         >
-          <div class="text-caption text-medium-emphasis">
+          <div class="text-body-small text-medium-emphasis">
             {{ change.label }}
           </div>
-          <div class="text-body-2">
+          <div class="text-body-medium">
             {{ formatValue(change.field, change.newValue) }}
           </div>
         </v-list-item>
