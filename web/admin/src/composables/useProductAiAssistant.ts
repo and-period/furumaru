@@ -88,7 +88,6 @@ export function useProductAiAssistant(formData: Ref<Record<string, unknown>>) {
   const chat = new Chat({
     transport: new DefaultChatTransport({
       api: `${runtimeConfig.public.API_BASE_URL}/v1/ai/chat`,
-      streamProtocol: 'data',
       headers: () => ({
         Authorization: `Bearer ${authStore.accessToken}`,
       }),

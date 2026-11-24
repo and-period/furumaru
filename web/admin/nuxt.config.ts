@@ -120,14 +120,15 @@ export default defineNuxtConfig({
     build: {
       sourcemap: true,
     },
-    plugins: [
-      process.env.SENTRY_AUTH_TOKEN
-      && sentryVitePlugin({
-        org: process.env.SENTRY_ORGANIZATION,
-        project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-      }),
-    ],
+    plugins: process.env.SENTRY_AUTH_TOKEN
+      ? [
+          sentryVitePlugin({
+            org: process.env.SENTRY_ORGANIZATION,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+          }),
+        ]
+      : [],
   },
 
   compatibilityDate: '2024-10-27',

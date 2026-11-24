@@ -27,7 +27,6 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/integrations": "^15.1.0",
     "ai": "^7.0.181",
-    "zod": "^4.6.7",
     "axios": "^1.21.1",
     "dayjs": "^1.11.23",
     "dotenv": "^18.0.10",
@@ -42,7 +41,8 @@
     "universal-cookie": "^8.1.2",
     "vue-echarts": "^8.3.2",
     "vuetify": "^4.3.4",
-    "vuetify-nuxt-module": "^1.0.0-rc.6"
+    "vuetify-nuxt-module": "^1.0.0-rc.6",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@mdi/js": "7.4.47",
@@ -65,12 +65,13 @@
     "stylelint-config-recommended-vue": "2.0.0",
     "stylelint-config-standard": "41.1.0",
     "ts-node": "10.9.2",
-    "typescript": "7.0.2",
-    "vite": "8.3.8"
+    "typescript": "6.0.3",
+    "vite": "8.3.8",
+    "vue-tsc": "^3.3.14"
   },
   "peerDependencies": {
     "@tiptap/core": "^3.20.1",
     "vue": "^3.5.30"
   },
-  "packageManager": "pnpm@10.34.6"
+  "packageManager": "pnpm@10.12.1"
 }
