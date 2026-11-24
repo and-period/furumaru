@@ -16,7 +16,7 @@ runs:
 
   - name: Start TiDB emulator
     shell: bash
-    run: nohup tiup playground > /tmp/tidb-playground.log 2>&1 &
+    run: nohup tiup playground --without-monitor > /tmp/tidb-playground.log 2>&1 &
 
   - name: Wait for start TiDB emulator
     shell: bash
