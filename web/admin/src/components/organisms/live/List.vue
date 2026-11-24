@@ -287,7 +287,7 @@ const onSubmitDelete = (liveId: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">ライブスケジュール登録</span>
+        <span class="text-title-large font-weight-medium">ライブスケジュール登録</span>
         <v-spacer />
         <v-btn
           :icon="mdiClose"
@@ -307,11 +307,11 @@ const onSubmitDelete = (liveId: string): void => {
               size="20"
               class="mr-2 text-primary"
             />
-            <span class="text-subtitle-1 font-weight-medium">開催期間設定</span>
+            <span class="text-body-large font-weight-medium">開催期間設定</span>
           </div>
 
           <div class="mb-4">
-            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+            <p class="text-title-small mb-3 text-grey-darken-1">
               開始日時 *
             </p>
             <v-row>
@@ -351,7 +351,7 @@ const onSubmitDelete = (liveId: string): void => {
           </div>
 
           <div class="mb-4">
-            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+            <p class="text-title-small mb-3 text-grey-darken-1">
               終了日時 *
             </p>
             <v-row>
@@ -399,7 +399,7 @@ const onSubmitDelete = (liveId: string): void => {
               size="20"
               class="mr-2 text-primary"
             />
-            <span class="text-subtitle-1 font-weight-medium">生産者・商品設定</span>
+            <span class="text-body-large font-weight-medium">生産者・商品設定</span>
           </div>
 
           <v-autocomplete
@@ -440,8 +440,8 @@ const onSubmitDelete = (liveId: string): void => {
             <template #chip="{ props: val, item }">
               <v-chip
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :text="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :text="item.name"
                 rounded
                 class="px-3"
                 variant="outlined"
@@ -451,8 +451,8 @@ const onSubmitDelete = (liveId: string): void => {
             <template #item="{ props: val, item }">
               <v-list-item
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :title="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :title="item.name"
               />
             </template>
           </v-autocomplete>
@@ -507,7 +507,7 @@ const onSubmitDelete = (liveId: string): void => {
     <!-- スケジュール情報セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center section-header">
         <v-icon
@@ -515,7 +515,7 @@ const onSubmitDelete = (liveId: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">マルシェ開催期間</span>
+        <span class="text-title-large font-weight-medium">マルシェ開催期間</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <div class="schedule-period">
@@ -539,7 +539,7 @@ const onSubmitDelete = (liveId: string): void => {
     <!-- ライブスケジュール一覧セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center section-header">
         <v-icon
@@ -547,7 +547,7 @@ const onSubmitDelete = (liveId: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">ライブスケジュール一覧</span>
+        <span class="text-title-large font-weight-medium">ライブスケジュール一覧</span>
         <v-spacer />
         <v-btn
           variant="elevated"
@@ -591,7 +591,7 @@ const onSubmitDelete = (liveId: string): void => {
             size="64"
             class="text-grey-lighten-1 mb-4"
           />
-          <p class="text-body-1 text-grey-darken-1 mb-4">
+          <p class="text-body-large text-grey-darken-1 mb-4">
             ライブスケジュールが登録されていません
           </p>
           <v-btn

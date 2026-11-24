@@ -288,7 +288,7 @@ const calcStyle = (i: number) => {
     </a>
     <v-app-bar
       color="primary"
-      elevation="2"
+      elevation="1"
       :density="$vuetify.display.mobile ? 'compact' : 'default'"
     >
       <template #prepend>
@@ -330,8 +330,8 @@ const calcStyle = (i: number) => {
             />
           </v-avatar>
           <div class="d-flex flex-column">
-            <span class="text-body-2 font-weight-medium">{{ user.username }}</span>
-            <span class="text-caption opacity-75">{{ user.email }}</span>
+            <span class="text-body-medium font-weight-medium">{{ user.username }}</span>
+            <span class="text-body-small opacity-75">{{ user.email }}</span>
           </div>
         </div>
         <v-btn
@@ -381,10 +381,10 @@ const calcStyle = (i: number) => {
             </v-avatar>
           </template>
           <div class="ml-3">
-            <div class="text-subtitle-2 font-weight-medium">
+            <div class="text-title-small font-weight-medium">
               {{ user?.username || "" }}
             </div>
-            <div class="text-caption text-grey-darken-1">
+            <div class="text-body-small text-grey-darken-1">
               {{ user?.email || "" }}
             </div>
           </div>
@@ -448,7 +448,7 @@ const calcStyle = (i: number) => {
               :icon="isGroupExpanded(group.title) ? mdiChevronUp : mdiChevronDown"
             />
           </template>
-          <v-list-item-title class="text-body-2 font-weight-bold text-grey-darken-2">
+          <v-list-item-title class="text-body-medium font-weight-bold text-grey-darken-2">
             {{ group.title }}
           </v-list-item-title>
         </v-list-item>
@@ -466,7 +466,7 @@ const calcStyle = (i: number) => {
               color="primary"
               class="rounded-lg mx-2 mb-1 nav-item"
             >
-              <v-list-item-title class="text-body-2">
+              <v-list-item-title class="text-body-medium">
                 {{ item.title }}
               </v-list-item-title>
             </v-list-item>
@@ -484,7 +484,7 @@ const calcStyle = (i: number) => {
           size="48"
           class="text-grey-lighten-1 mb-2"
         />
-        <div class="text-body-2 text-grey-darken-1">
+        <div class="text-body-medium text-grey-darken-1">
           「{{ searchQuery }}」に一致するメニューが見つかりません
         </div>
       </div>
@@ -497,7 +497,7 @@ const calcStyle = (i: number) => {
             :prepend-icon="mdiHelpCircleOutline"
             class="rounded-lg mx-2 my-1"
           >
-            <v-list-item-title class="text-body-2">
+            <v-list-item-title class="text-body-medium">
               ヘルプ
             </v-list-item-title>
           </v-list-item>

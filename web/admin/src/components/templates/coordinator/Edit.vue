@@ -444,17 +444,17 @@ const onSubmitActiveShipping = (): void => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         コーディネーター編集
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         コーディネーター情報を編集・管理します。タブを切り替えて各種設定を行ってください。
       </p>
     </div>
 
     <v-card
       class="form-section-card"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="section-header pa-0">

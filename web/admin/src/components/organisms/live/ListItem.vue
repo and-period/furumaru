@@ -247,11 +247,11 @@ watch(
       width="500"
     >
       <v-card>
-        <v-card-title class="text-h6 primaryLight">
+        <v-card-title class="text-title-large primaryLight">
           スケジュール更新
         </v-card-title>
         <v-card-text>
-          <p class="text-subtitle-2 text-grey pb-2">
+          <p class="text-title-small text-grey pb-2">
             ライブ配開始日時
           </p>
           <div class="d-flex flex-column flex-md-row justify-center">
@@ -277,7 +277,7 @@ watch(
               @update:model-value="onChangeUpdateStartAt"
             />
           </div>
-          <p class="text-subtitle-2 text-grey pb-2">
+          <p class="text-title-small text-grey pb-2">
             ライブ配終了日時
           </p>
           <div class="d-flex flex-column flex-md-row justify-center">
@@ -331,8 +331,8 @@ watch(
             <template #chip="{ props: val, item }">
               <v-chip
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :text="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :text="item.name"
                 rounded
                 class="px-4"
                 variant="outlined"
@@ -342,8 +342,8 @@ watch(
             <template #item="{ props: val, item }">
               <v-list-item
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :title="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :title="item.name"
               />
             </template>
           </v-autocomplete>
@@ -419,16 +419,16 @@ watch(
       <v-card-text>
         <v-row>
           <v-col sm="12">
-            <p class="text-subtitle-2 text-grey pb-2">
+            <p class="text-title-small text-grey pb-2">
               概要
             </p>
             <p
-              class="text-subtitle-2"
+              class="text-title-small"
               v-html="item.comment"
             />
           </v-col>
           <v-col sm="12">
-            <p class="text-subtitle-2 text-grey pb-2">
+            <p class="text-title-small text-grey pb-2">
               関連商品
             </p>
 

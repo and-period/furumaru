@@ -230,10 +230,10 @@ const onClickDelete = (): void => {
           class="mr-3 text-primary"
         />
         <div>
-          <h1 class="text-h6 text-sm-h5 font-weight-bold text-primary">
+          <h1 class="text-title-large text-sm-headline-small font-weight-bold text-primary">
             お知らせ管理
           </h1>
-          <p class="text-caption text-sm-body-2 text-medium-emphasis ma-0">
+          <p class="text-body-small text-sm-body-medium text-medium-emphasis ma-0">
             お知らせの登録・編集・削除を行います
           </p>
         </div>

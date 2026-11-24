@@ -258,8 +258,8 @@ const onClickBanComment = (commentId: string): void => {
             <template #chip="{ props: val, item }">
               <v-chip
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :text="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :text="item.name"
                 rounded
                 class="px-4"
                 variant="outlined"
@@ -268,8 +268,8 @@ const onClickBanComment = (commentId: string): void => {
             <template #item="{ props: val, item }">
               <v-list-item
                 v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :title="item.raw.name"
+                :prepend-avatar="getProductThumbnailUrl(item)"
+                :title="item.name"
               />
             </template>
           </v-autocomplete>
@@ -322,18 +322,18 @@ const onClickBanComment = (commentId: string): void => {
             <template #chip="{ props: val, item }">
               <v-chip
                 v-bind="val"
-                :text="item.raw.title"
+                :text="item.title"
                 rounded
                 class="px-4"
                 variant="outlined"
-                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
+                :prepend-avatar="getExperienceThumbnailUrl(item)"
               />
             </template>
             <template #item="{ props: val, item }">
               <v-list-item
                 v-bind="val"
-                :title="item.raw.title"
-                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
+                :title="item.title"
+                :prepend-avatar="getExperienceThumbnailUrl(item)"
               />
             </template>
           </v-autocomplete>
@@ -372,17 +372,17 @@ const onClickBanComment = (commentId: string): void => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         動画編集
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         動画コンテンツの詳細情報を編集・管理します。タブを切り替えて各種設定を行ってください。
       </p>
     </div>
 
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="props.loading"
     >
       <v-card-title class="section-header pa-0">
@@ -484,10 +484,10 @@ const onClickBanComment = (commentId: string): void => {
           <v-window-item value="comments">
             <div class="pa-6">
               <div class="mb-4">
-                <h3 class="text-h6 mb-2">
+                <h3 class="text-title-large mb-2">
                   コメント管理
                 </h3>
-                <p class="text-body-2 text-medium-emphasis">
+                <p class="text-body-medium text-medium-emphasis">
                   視聴者からのコメントを管理します
                 </p>
               </div>

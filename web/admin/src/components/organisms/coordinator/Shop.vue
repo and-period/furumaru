@@ -76,7 +76,7 @@ const onChangeSearchProductType = (name: string): void => {
     <!-- 店舗基本情報セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center section-header">
         <v-icon
@@ -84,7 +84,7 @@ const onChangeSearchProductType = (name: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">店舗基本情報</span>
+        <span class="text-title-large font-weight-medium">店舗基本情報</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-text-field
@@ -101,7 +101,7 @@ const onChangeSearchProductType = (name: string): void => {
     <!-- 取り扱い品目セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center section-header">
         <v-icon
@@ -109,7 +109,7 @@ const onChangeSearchProductType = (name: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">取り扱い品目</span>
+        <span class="text-title-large font-weight-medium">取り扱い品目</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-autocomplete
@@ -130,8 +130,8 @@ const onChangeSearchProductType = (name: string): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="item.raw?.iconUrl"
-              :text="item.raw?.name"
+              :prepend-avatar="item?.iconUrl"
+              :text="item?.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -140,8 +140,8 @@ const onChangeSearchProductType = (name: string): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="item?.raw?.iconUrl"
-              :title="item?.raw?.name"
+              :prepend-avatar="item?.iconUrl"
+              :title="item?.name"
             />
           </template>
         </v-autocomplete>
@@ -151,7 +151,7 @@ const onChangeSearchProductType = (name: string): void => {
     <!-- 営業日設定セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
     >
       <v-card-title class="d-flex align-center section-header">
         <v-icon
@@ -159,7 +159,7 @@ const onChangeSearchProductType = (name: string): void => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">営業日設定</span>
+        <span class="text-title-large font-weight-medium">営業日設定</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-select
@@ -179,7 +179,7 @@ const onChangeSearchProductType = (name: string): void => {
     <v-footer
       app
       color="white"
-      elevation="8"
+      elevation="3"
       class="px-6 py-4 fixed-footer-actions"
     >
       <v-container

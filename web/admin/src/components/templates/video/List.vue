@@ -165,10 +165,10 @@ const onClickDelete = (): void => {
           class="mr-3 text-primary"
         />
         <div>
-          <h1 class="text-h6 text-sm-h5 font-weight-bold text-primary">
+          <h1 class="text-title-large text-sm-headline-small font-weight-bold text-primary">
             動画管理
           </h1>
-          <p class="text-caption text-sm-body-2 text-medium-emphasis ma-0">
+          <p class="text-body-small text-sm-body-medium text-medium-emphasis ma-0">
             動画コンテンツの登録・編集・削除を行います
           </p>
         </div>
@@ -225,15 +225,15 @@ const onClickDelete = (): void => {
           </v-avatar>
         </template>
         <template #[`item.title`]="{ item }">
-          <div class="text-body-1 font-weight-medium">
+          <div class="text-body-large font-weight-medium">
             {{ item.title }}
           </div>
-          <div class="text-body-2 text-medium-emphasis">
+          <div class="text-body-medium text-medium-emphasis">
             {{ item.description?.substring(0, 50) }}{{ item.description?.length > 50 ? '...' : '' }}
           </div>
         </template>
         <template #[`item.publishedAt`]="{ item }">
-          <div class="text-body-2">
+          <div class="text-body-medium">
             {{ getPublishedAt(item.publishedAt) }}
           </div>
         </template>

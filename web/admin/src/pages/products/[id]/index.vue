@@ -294,7 +294,7 @@ catch (err) {
       icon
       size="large"
       class="ai-fab"
-      elevation="8"
+      elevation="3"
       @click="aiAssistant.togglePanel()"
     >
       <v-icon :icon="mdiRobotOutline" />

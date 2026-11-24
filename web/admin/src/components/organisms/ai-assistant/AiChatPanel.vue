@@ -54,7 +54,7 @@ onMounted(() => scrollToBottom())
           :icon="mdiRobotOutline"
           class="ml-4"
         />
-        <v-toolbar-title class="text-body-1 font-weight-bold">
+        <v-toolbar-title class="text-body-large font-weight-bold">
           AI アシスタント
         </v-toolbar-title>
         <v-btn
@@ -82,7 +82,7 @@ onMounted(() => scrollToBottom())
           color="grey-lighten-1"
           class="mb-2"
         />
-        <p class="text-body-2 text-medium-emphasis">
+        <p class="text-body-medium text-medium-emphasis">
           商品情報を自然言語で伝えてください。<br>
           フォームへの入力をお手伝いします。
         </p>
@@ -90,7 +90,7 @@ onMounted(() => scrollToBottom())
           <v-chip
             size="small"
             variant="outlined"
-            class="text-caption"
+            class="text-body-small"
             @click="emit('update:input', '青森県産のふじりんごを登録したいです')"
           >
             例: 青森県産のふじりんごを登録したいです
@@ -98,7 +98,7 @@ onMounted(() => scrollToBottom())
           <v-chip
             size="small"
             variant="outlined"
-            class="text-caption"
+            class="text-body-small"
             @click="emit('update:input', '商品説明をもっと魅力的にしてください')"
           >
             例: 商品説明をもっと魅力的にしてください
@@ -106,7 +106,7 @@ onMounted(() => scrollToBottom())
           <v-chip
             size="small"
             variant="outlined"
-            class="text-caption"
+            class="text-body-small"
             @click="emit('update:input', 'おすすめポイントを考えてください')"
           >
             例: おすすめポイントを考えてください
@@ -137,7 +137,7 @@ onMounted(() => scrollToBottom())
           width="2"
           color="primary"
         />
-        <span class="text-body-2 text-medium-emphasis">考え中...</span>
+        <span class="text-body-medium text-medium-emphasis">考え中...</span>
       </div>
 
       <!-- Error message -->
@@ -167,7 +167,7 @@ onMounted(() => scrollToBottom())
 
 <style scoped>
 .ai-chat-panel {
-  border-left: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-left: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
 }
 
 .ai-chat-messages {

@@ -275,17 +275,17 @@ catch (err) {
     />
 
     <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         デフォルト配送設定
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         システム全体のデフォルト配送料金を設定します。各コーディネーターの配送設定が無い場合にこの設定が適用されます。
       </p>
     </div>
 
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="d-flex align-center section-header">
@@ -294,7 +294,7 @@ catch (err) {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">配送オプション：サイズ60</span>
+        <span class="text-title-large font-weight-medium">配送オプション：サイズ60</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <div class="d-flex flex-column flex-md-row justify-center">
@@ -356,7 +356,7 @@ catch (err) {
 
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="d-flex align-center section-header">
@@ -365,7 +365,7 @@ catch (err) {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">配送オプション：サイズ80</span>
+        <span class="text-title-large font-weight-medium">配送オプション：サイズ80</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <div class="d-flex flex-column flex-md-row justify-center">
@@ -427,7 +427,7 @@ catch (err) {
 
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="d-flex align-center section-header">
@@ -436,7 +436,7 @@ catch (err) {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">配送オプション：サイズ100</span>
+        <span class="text-title-large font-weight-medium">配送オプション：サイズ100</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <div class="d-flex flex-column flex-md-row justify-center">
@@ -499,7 +499,7 @@ catch (err) {
     <!-- 送料無料設定セクション -->
     <v-card
       class="form-section-card mb-6"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="d-flex align-center section-header">
@@ -508,7 +508,7 @@ catch (err) {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">送料無料設定</span>
+        <span class="text-title-large font-weight-medium">送料無料設定</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <v-checkbox
@@ -533,7 +533,7 @@ catch (err) {
     <v-footer
       app
       color="white"
-      elevation="8"
+      elevation="3"
       class="px-6 py-4 fixed-footer-actions"
     >
       <v-container

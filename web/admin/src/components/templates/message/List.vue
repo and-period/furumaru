@@ -121,12 +121,12 @@ onMounted(() => {
       class="mb-2"
     >
       <v-card-text class="pb-2">
-        <v-row align="center">
+        <v-row class="align-center">
           <v-col
             cols="12"
             md="6"
           >
-            <h2 class="text-h5 font-weight-bold">
+            <h2 class="text-headline-small font-weight-bold">
               <v-icon
                 color="primary"
                 class="mr-2"
@@ -167,12 +167,12 @@ onMounted(() => {
         class="message-list-column"
       >
         <v-card
-          elevation="2"
+          elevation="1"
           class="h-100 d-flex flex-column"
         >
           <v-card-title class="py-3 px-4 bg-grey-lighten-4">
             <div class="d-flex align-center justify-space-between">
-              <span class="text-subtitle-1 font-weight-medium">
+              <span class="text-body-large font-weight-medium">
                 受信ボックス
                 <v-chip
                   v-if="messages.length > 0"
@@ -256,10 +256,10 @@ onMounted(() => {
             >
               {{ mdiInbox }}
             </v-icon>
-            <p class="text-h6">
+            <p class="text-title-large">
               メッセージがありません
             </p>
-            <p class="text-body-2">
+            <p class="text-body-medium">
               新しいメッセージが届くとここに表示されます
             </p>
           </v-card-text>
@@ -274,13 +274,13 @@ onMounted(() => {
         :lg="8"
       >
         <v-card
-          elevation="2"
+          elevation="1"
           class="h-100 d-flex flex-column"
         >
           <div v-if="message.title">
             <!-- Message Header -->
             <v-card-title class="bg-white">
-              <v-row align="center">
+              <v-row class="align-center">
                 <v-col cols="12">
                   <div class="d-flex align-center">
                     <v-btn
@@ -294,10 +294,10 @@ onMounted(() => {
                       <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
                     <div class="flex-grow-1">
-                      <h3 class="text-h6 font-weight-medium mb-1">
+                      <h3 class="text-title-large font-weight-medium mb-1">
                         {{ message.title }}
                       </h3>
-                      <div class="text-caption text-grey">
+                      <div class="text-body-small text-grey">
                         <v-icon
                           size="small"
                           class="mr-1"
@@ -366,10 +366,10 @@ onMounted(() => {
             >
               {{ mdiEmailOutline }}
             </v-icon>
-            <p class="text-h6">
+            <p class="text-title-large">
               メッセージを選択してください
             </p>
-            <p class="text-body-2">
+            <p class="text-body-medium">
               左の一覧からメッセージを選択すると内容が表示されます
             </p>
           </v-card-text>

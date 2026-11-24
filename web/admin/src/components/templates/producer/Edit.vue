@@ -209,10 +209,10 @@ const onClickSearchAddress = (): void => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         生産者情報編集
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         生産者の情報を編集します。変更したい項目を入力して更新ボタンを押してください。
       </p>
     </div>
@@ -221,7 +221,7 @@ const onClickSearchAddress = (): void => {
       <!-- 基本情報セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -229,7 +229,7 @@ const onClickSearchAddress = (): void => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">基本情報</span>
+          <span class="text-title-large font-weight-medium">基本情報</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-text-field
@@ -310,7 +310,7 @@ const onClickSearchAddress = (): void => {
       <!-- メディアセクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -318,7 +318,7 @@ const onClickSearchAddress = (): void => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">画像・動画</span>
+          <span class="text-title-large font-weight-medium">画像・動画</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-row>
@@ -382,7 +382,7 @@ const onClickSearchAddress = (): void => {
       <!-- 連絡先セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -390,7 +390,7 @@ const onClickSearchAddress = (): void => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">連絡先</span>
+          <span class="text-title-large font-weight-medium">連絡先</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-text-field
@@ -416,7 +416,7 @@ const onClickSearchAddress = (): void => {
       <!-- 住所セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -424,7 +424,7 @@ const onClickSearchAddress = (): void => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">住所</span>
+          <span class="text-title-large font-weight-medium">住所</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <molecules-address-form
@@ -442,7 +442,7 @@ const onClickSearchAddress = (): void => {
       <!-- SNS連携セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -450,7 +450,7 @@ const onClickSearchAddress = (): void => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">SNS連携</span>
+          <span class="text-title-large font-weight-medium">SNS連携</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-text-field
@@ -478,7 +478,7 @@ const onClickSearchAddress = (): void => {
       <v-footer
         app
         color="white"
-        elevation="8"
+        elevation="3"
         class="px-6 py-4 fixed-footer-actions"
       >
         <v-container

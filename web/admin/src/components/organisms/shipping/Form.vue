@@ -210,7 +210,7 @@ const handleSubmit = async () => {
           class="px-4 py-2 mb-2 border"
         >
           <div class="d-flex flex-row align-center">
-            <p class="text-subtitle-2 text-grey">
+            <p class="text-title-small text-grey">
               オプション{{ i + 1 }}
             </p>
             <v-spacer />
@@ -267,7 +267,7 @@ const handleSubmit = async () => {
           class="px-4 py-2 mb-2 border"
         >
           <div class="d-flex flex-row align-center">
-            <p class="text-subtitle-2 text-grey">
+            <p class="text-title-small text-grey">
               オプション{{ i + 1 }}
             </p>
             <v-spacer />
@@ -324,7 +324,7 @@ const handleSubmit = async () => {
           class="px-4 py-2 mb-2 border"
         >
           <div class="d-flex flex-row align-center">
-            <p class="text-subtitle-2 text-grey">
+            <p class="text-title-small text-grey">
               オプション{{ i + 1 }}
             </p>
             <v-spacer />

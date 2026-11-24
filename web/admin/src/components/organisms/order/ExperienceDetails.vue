@@ -114,10 +114,10 @@ const getCategoryTotal = (category: AgeCategory): number => {
                 class="mb-2"
                 :icon="category.icon"
               />
-              <h4 class="text-h5 mb-1">
+              <h4 class="text-headline-small mb-1">
                 {{ props.experience?.[category.key] || 0 }}人
               </h4>
-              <p class="text-subtitle-2 mb-1">
+              <p class="text-title-small mb-1">
                 {{ category.label }}
               </p>
               <p class="font-weight-bold">

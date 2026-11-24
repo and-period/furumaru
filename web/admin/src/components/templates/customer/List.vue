@@ -154,10 +154,10 @@ const onClickRow = (item: UserToList): void => {
           class="mr-3 text-primary"
         />
         <div>
-          <h1 class="text-h5 font-weight-bold text-primary">
+          <h1 class="text-headline-small font-weight-bold text-primary">
             顧客管理
           </h1>
-          <p class="text-body-2 text-medium-emphasis ma-0">
+          <p class="text-body-medium text-medium-emphasis ma-0">
             顧客情報の確認・管理を行います
           </p>
         </div>

@@ -258,10 +258,10 @@ const onSubmit = async (): Promise<void> => {
       >
         戻る
       </v-btn>
-      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+      <h1 class="text-headline-large font-weight-bold mt-2 mb-2">
         体験登録
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         新しい体験の情報を登録します。各セクションを順番に入力してください。
       </p>
     </div>
@@ -274,7 +274,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 基本情報セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -282,7 +282,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">基本情報</span>
+            <span class="text-title-large font-weight-medium">基本情報</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-autocomplete
@@ -322,7 +322,7 @@ const onSubmit = async (): Promise<void> => {
         <v-card
           :loading="props.loading"
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -330,7 +330,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">体験画像管理</span>
+            <span class="text-title-large font-weight-medium">体験画像管理</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="mb-4">
@@ -402,7 +402,7 @@ const onSubmit = async (): Promise<void> => {
                       </v-chip>
                       <span
                         v-else
-                        class="text-caption text-grey"
+                        class="text-body-small text-grey"
                       >
                         画像 {{ i + 1 }}
                       </span>
@@ -417,7 +417,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 紹介動画セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -425,7 +425,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">紹介動画</span>
+            <span class="text-title-large font-weight-medium">紹介動画</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <molecules-video-select-form
@@ -452,7 +452,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- おすすめポイント・詳細セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -460,11 +460,11 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">おすすめポイント・詳細</span>
+            <span class="text-title-large font-weight-medium">おすすめポイント・詳細</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="mb-4">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 おすすめポイント
               </p>
               <v-text-field
@@ -533,7 +533,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 営業時間・場所セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -541,11 +541,11 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">営業時間・場所</span>
+            <span class="text-title-large font-weight-medium">営業時間・場所</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <div class="mb-4">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 営業時間
               </p>
               <v-row>
@@ -592,7 +592,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 価格設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -600,7 +600,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">価格設定</span>
+            <span class="text-title-large font-weight-medium">価格設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-row>
@@ -701,7 +701,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 販売設定セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -709,7 +709,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">販売設定</span>
+            <span class="text-title-large font-weight-medium">販売設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-alert
@@ -743,7 +743,7 @@ const onSubmit = async (): Promise<void> => {
             />
 
             <div class="date-time-section">
-              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              <p class="text-title-small mb-3 text-grey-darken-1">
                 販売開始日時 *
               </p>
               <v-row>
@@ -781,7 +781,7 @@ const onSubmit = async (): Promise<void> => {
                 </v-col>
               </v-row>
 
-              <p class="text-subtitle-2 mb-3 mt-4 text-grey-darken-1">
+              <p class="text-title-small mb-3 mt-4 text-grey-darken-1">
                 販売終了日時 *
               </p>
               <v-row>
@@ -825,7 +825,7 @@ const onSubmit = async (): Promise<void> => {
         <!-- 詳細分類セクション -->
         <v-card
           class="form-section-card mb-6"
-          elevation="2"
+          elevation="1"
         >
           <v-card-title class="d-flex align-center section-header">
             <v-icon
@@ -833,7 +833,7 @@ const onSubmit = async (): Promise<void> => {
               size="24"
               class="mr-3 text-primary"
             />
-            <span class="text-h6 font-weight-medium">詳細分類</span>
+            <span class="text-title-large font-weight-medium">詳細分類</span>
           </v-card-title>
           <v-card-text class="pa-6">
             <v-select
@@ -858,7 +858,7 @@ const onSubmit = async (): Promise<void> => {
     <v-footer
       app
       color="white"
-      elevation="8"
+      elevation="3"
       class="px-6 py-4 fixed-footer-actions"
     >
       <v-container

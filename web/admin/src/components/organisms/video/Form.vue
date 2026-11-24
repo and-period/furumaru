@@ -201,7 +201,7 @@ const handleSubmit = () => {
       item-value="value"
     />
     <div class="w-100">
-      <p class="text-subtitle-2 text-gray mb-2">
+      <p class="text-title-small text-gray mb-2">
         公開時間
       </p>
       <div class="d-flex ga-4 w-50">
@@ -248,7 +248,7 @@ const handleSubmit = () => {
     />
 
     <div>
-      <p class="text-subtitle-2 text-gray mb-2">
+      <p class="text-title-small text-gray mb-2">
         カテゴリ
       </p>
       <v-checkbox
@@ -266,7 +266,7 @@ const handleSubmit = () => {
     </div>
 
     <div>
-      <p class="text-subtitle-2 text-gray mb-2">
+      <p class="text-title-small text-gray mb-2">
         商品を紐づける
       </p>
       <template v-if="selectedProducts.length === 0">
@@ -315,7 +315,7 @@ const handleSubmit = () => {
     </div>
 
     <div>
-      <p class="text-subtitle-2 text-gray mb-2">
+      <p class="text-title-small text-gray mb-2">
         体験を紐づける
       </p>
       <template v-if="selectedExperiences.length === 0">

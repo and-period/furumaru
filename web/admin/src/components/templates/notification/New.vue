@@ -157,7 +157,7 @@ const onSubmit = async (): Promise<void> => {
           />
 
           <div class="d-flex flex-column ga-2">
-            <v-label class="text-body-2 font-weight-medium">
+            <v-label class="text-body-medium font-weight-medium">
               投稿日時 *
             </v-label>
             <div class="d-flex align-center ga-2">
@@ -211,7 +211,7 @@ const onSubmit = async (): Promise<void> => {
   <v-footer
     app
     color="white"
-    elevation="8"
+    elevation="3"
     class="px-6 py-4 fixed-footer-actions"
   >
     <v-container

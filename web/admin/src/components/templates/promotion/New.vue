@@ -163,7 +163,7 @@ const onSubmit = async (): Promise<void> => {
   <v-footer
     app
     color="white"
-    elevation="8"
+    elevation="3"
     class="px-6 py-4 fixed-footer-actions"
   >
     <v-container

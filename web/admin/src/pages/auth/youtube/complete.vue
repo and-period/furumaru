@@ -17,7 +17,7 @@ const handleClickBackToTopButton = () => {
           color="primary"
           size="64"
         />
-        <p class="text-h5">
+        <p class="text-headline-small">
           YouTube 連携が完了しました
         </p>
       </div>

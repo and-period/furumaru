@@ -185,10 +185,10 @@ const onClickDelete = (): void => {
             class="mr-3 text-primary"
           />
           <div>
-            <h1 class="text-h6 text-sm-h5 font-weight-bold text-primary">
+            <h1 class="text-title-large text-sm-headline-small font-weight-bold text-primary">
               生産者管理
             </h1>
-            <p class="text-caption text-sm-body-2 text-medium-emphasis ma-0">
+            <p class="text-body-small text-sm-body-medium text-medium-emphasis ma-0">
               生産者の登録・編集・削除を行います
             </p>
           </div>
@@ -248,12 +248,12 @@ const onClickDelete = (): void => {
             </v-avatar>
           </template>
           <template #[`item.coordinatorName`]="{ item }">
-            <span class="text-body-2">
+            <span class="text-body-medium">
               {{ getShopName(item) || '未設定' }}
             </span>
           </template>
           <template #[`item.phoneNumber`]="{ item }">
-            <span class="text-body-2">
+            <span class="text-body-medium">
               {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
             </span>
           </template>

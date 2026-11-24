@@ -67,7 +67,7 @@ const onClickBanComment = (commentId: string): void => {
           md="4"
         >
           <v-card>
-            <v-card-title class="text-h6">
+            <v-card-title class="text-title-large">
               コメント一覧
             </v-card-title>
             <v-divider />
@@ -95,7 +95,7 @@ const onClickBanComment = (commentId: string): void => {
                   <v-list-item-subtitle>
                     {{ comment.comment }}
                   </v-list-item-subtitle>
-                  <v-list-item-subtitle class="text-caption">
+                  <v-list-item-subtitle class="text-body-small">
                     {{ dateTimeFormatter(comment.publishedAt) }}
                   </v-list-item-subtitle>
                   <template #append>

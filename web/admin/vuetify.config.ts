@@ -8,6 +8,15 @@ export default {
     messages: { ja },
   },
   blueprint: md3,
+  // Vuetify 4 でデフォルトのブレークポイントが縮小されたため、v3 の値を維持する
+  display: {
+    thresholds: {
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+      xxl: 2560,
+    },
+  },
   icons: {
     defaultSet: 'mdi-svg',
   },

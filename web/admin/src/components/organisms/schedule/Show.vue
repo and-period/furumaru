@@ -234,7 +234,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 基本情報セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -242,7 +242,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">基本情報</span>
+          <span class="text-title-large font-weight-medium">基本情報</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-text-field
@@ -273,7 +273,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- メディアファイル管理セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -281,7 +281,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">メディアファイル管理</span>
+          <span class="text-title-large font-weight-medium">メディアファイル管理</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-row>
@@ -336,7 +336,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- ステータス情報セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -344,7 +344,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">ステータス情報</span>
+          <span class="text-title-large font-weight-medium">ステータス情報</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-alert
@@ -361,7 +361,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 開催期間設定セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -369,11 +369,11 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">開催期間設定</span>
+          <span class="text-title-large font-weight-medium">開催期間設定</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <div class="date-time-section">
-            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+            <p class="text-title-small mb-3 text-grey-darken-1">
               開始日時 *
             </p>
             <v-row>
@@ -413,7 +413,7 @@ const onSubmit = async (): Promise<void> => {
               </v-col>
             </v-row>
 
-            <p class="text-subtitle-2 mb-3 mt-4 text-grey-darken-1">
+            <p class="text-title-small mb-3 mt-4 text-grey-darken-1">
               終了日時 *
             </p>
             <v-row>

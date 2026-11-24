@@ -131,10 +131,10 @@ const onSubmit = async (): Promise<void> => {
       >
         <v-card-text class="d-flex flex-column ga-3">
           <div>
-            <div class="text-caption text-medium-emphasis mb-1">
+            <div class="text-body-small text-medium-emphasis mb-1">
               タイトル
             </div>
-            <div class="text-body-1 font-weight-medium">
+            <div class="text-body-large font-weight-medium">
               {{ featureRequest.title }}
             </div>
           </div>
@@ -144,10 +144,10 @@ const onSubmit = async (): Promise<void> => {
               cols="6"
               sm="3"
             >
-              <div class="text-caption text-medium-emphasis mb-1">
+              <div class="text-body-small text-medium-emphasis mb-1">
                 カテゴリ
               </div>
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 {{ getCategoryLabel(featureRequest.category) }}
               </div>
             </v-col>
@@ -155,10 +155,10 @@ const onSubmit = async (): Promise<void> => {
               cols="6"
               sm="3"
             >
-              <div class="text-caption text-medium-emphasis mb-1">
+              <div class="text-body-small text-medium-emphasis mb-1">
                 優先度
               </div>
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 {{ getPriorityLabel(featureRequest.priority) }}
               </div>
             </v-col>
@@ -166,10 +166,10 @@ const onSubmit = async (): Promise<void> => {
               cols="6"
               sm="3"
             >
-              <div class="text-caption text-medium-emphasis mb-1">
+              <div class="text-body-small text-medium-emphasis mb-1">
                 提出者
               </div>
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 {{ featureRequest.submitterName }}
               </div>
             </v-col>
@@ -177,21 +177,21 @@ const onSubmit = async (): Promise<void> => {
               cols="6"
               sm="3"
             >
-              <div class="text-caption text-medium-emphasis mb-1">
+              <div class="text-body-small text-medium-emphasis mb-1">
                 提出日時
               </div>
-              <div class="text-body-2">
+              <div class="text-body-medium">
                 {{ formatDate(featureRequest.createdAt) }}
               </div>
             </v-col>
           </v-row>
 
           <div>
-            <div class="text-caption text-medium-emphasis mb-1">
+            <div class="text-body-small text-medium-emphasis mb-1">
               要望内容
             </div>
             <div
-              class="text-body-2"
+              class="text-body-medium"
               style="white-space: pre-wrap;"
             >
               {{ featureRequest.description }}
@@ -202,7 +202,7 @@ const onSubmit = async (): Promise<void> => {
 
       <!-- 管理者コメント表示（読み取り専用 for coordinator） -->
       <template v-if="!isAdmin && featureRequest.note">
-        <div class="text-subtitle-2 mb-2">
+        <div class="text-title-small mb-2">
           管理者コメント
         </div>
         <v-card
@@ -211,7 +211,7 @@ const onSubmit = async (): Promise<void> => {
         >
           <v-card-text>
             <div
-              class="text-body-2"
+              class="text-body-medium"
               style="white-space: pre-wrap;"
             >
               {{ featureRequest.note }}
@@ -223,7 +223,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 管理者向け編集フォーム -->
       <template v-if="isAdmin">
         <v-divider class="mb-4" />
-        <div class="text-subtitle-1 font-weight-bold mb-3">
+        <div class="text-body-large font-weight-bold mb-3">
           ステータス管理
         </div>
 

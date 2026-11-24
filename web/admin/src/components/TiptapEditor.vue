@@ -208,7 +208,7 @@ const handleChangeTextStyle = (level: number): void => {
     <div
       v-show="errorMessage"
       role="alert"
-      class="text-error text-caption mt-1"
+      class="text-error text-body-small mt-1"
     >
       {{ errorMessage }}
     </div>

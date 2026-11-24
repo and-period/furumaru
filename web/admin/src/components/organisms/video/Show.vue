@@ -199,7 +199,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 基本情報セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -207,7 +207,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">基本情報</span>
+          <span class="text-title-large font-weight-medium">基本情報</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-text-field
@@ -238,7 +238,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- メディアファイル管理セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -246,7 +246,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">メディアファイル</span>
+          <span class="text-title-large font-weight-medium">メディアファイル</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-row>
@@ -283,7 +283,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 関連コンテンツセクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -291,13 +291,13 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">関連コンテンツ</span>
+          <span class="text-title-large font-weight-medium">関連コンテンツ</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <!-- 商品セクション -->
           <div class="mb-6">
             <div class="d-flex align-center justify-space-between mb-3">
-              <div class="text-subtitle-1 font-weight-medium">
+              <div class="text-body-large font-weight-medium">
                 紐づけ商品
               </div>
               <v-btn
@@ -359,7 +359,7 @@ const onSubmit = async (): Promise<void> => {
           <!-- 体験セクション -->
           <div>
             <div class="d-flex align-center justify-space-between mb-3">
-              <div class="text-subtitle-1 font-weight-medium">
+              <div class="text-body-large font-weight-medium">
                 紐づけ体験
               </div>
               <v-btn
@@ -429,7 +429,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 公開設定セクション -->
       <v-card
         class="form-section-card mb-6"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -437,7 +437,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-primary"
           />
-          <span class="text-h6 font-weight-medium">公開設定</span>
+          <span class="text-title-large font-weight-medium">公開設定</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-alert
@@ -463,7 +463,7 @@ const onSubmit = async (): Promise<void> => {
           />
 
           <div class="date-time-section">
-            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+            <p class="text-title-small mb-3 text-grey-darken-1">
               公開日時 *
             </p>
             <v-row>
@@ -509,7 +509,7 @@ const onSubmit = async (): Promise<void> => {
       <!-- 注意事項 -->
       <v-card
         class="form-section-card"
-        elevation="2"
+        elevation="1"
       >
         <v-card-title class="d-flex align-center section-header">
           <v-icon
@@ -517,7 +517,7 @@ const onSubmit = async (): Promise<void> => {
             size="24"
             class="mr-3 text-warning"
           />
-          <span class="text-h6 font-weight-medium">注意事項</span>
+          <span class="text-title-large font-weight-medium">注意事項</span>
         </v-card-title>
         <v-card-text class="pa-6">
           <v-list
@@ -525,17 +525,17 @@ const onSubmit = async (): Promise<void> => {
             class="bg-transparent"
           >
             <v-list-item class="px-0">
-              <v-list-item-title class="text-body-2">
+              <v-list-item-title class="text-body-medium">
                 • 動画ファイルは最大500MBまでアップロード可能です
               </v-list-item-title>
             </v-list-item>
             <v-list-item class="px-0">
-              <v-list-item-title class="text-body-2">
+              <v-list-item-title class="text-body-medium">
                 • サムネイル画像は16:9の比率を推奨します
               </v-list-item-title>
             </v-list-item>
             <v-list-item class="px-0">
-              <v-list-item-title class="text-body-2">
+              <v-list-item-title class="text-body-medium">
                 • 公開設定を変更すると即座に反映されます
               </v-list-item-title>
             </v-list-item>

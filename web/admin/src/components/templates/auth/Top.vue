@@ -56,7 +56,7 @@ const getMenuDescription = (text: string): string => {
 <template>
   <v-container class="pa-6">
     <div class="mb-8">
-      <h1 class="text-h4 font-weight-bold mb-2">
+      <h1 class="text-headline-large font-weight-bold mb-2">
         <v-icon
           :icon="mdiAccountEdit"
           size="32"
@@ -64,7 +64,7 @@ const getMenuDescription = (text: string): string => {
         />
         アカウント設定
       </h1>
-      <p class="text-body-1 text-grey-darken-1">
+      <p class="text-body-large text-grey-darken-1">
         プロフィール、セキュリティ設定を管理できます
       </p>
     </div>
@@ -85,7 +85,7 @@ const getMenuDescription = (text: string): string => {
           ]"
           :color="item.color === 'error' ? 'error' : 'transparent'"
           :variant="item.color === 'error' ? 'outlined' : 'elevated'"
-          elevation="2"
+          elevation="1"
           hover
           @click="onClick(item.action)"
         >
@@ -104,13 +104,13 @@ const getMenuDescription = (text: string): string => {
               </v-avatar>
             </div>
             <h3
-              class="text-subtitle-1 font-weight-medium mb-2"
+              class="text-body-large font-weight-medium mb-2"
               :class="item.color === 'error' ? 'text-error' : ''"
             >
               {{ item.text }}
             </h3>
             <p
-              class="text-body-2 text-grey-darken-1"
+              class="text-body-medium text-grey-darken-1"
               :class="item.color === 'error' ? 'text-error-darken-1' : ''"
             >
               {{ getMenuDescription(item.text) }}

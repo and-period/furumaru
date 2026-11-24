@@ -190,7 +190,7 @@ const getBroadcastDuration = (): string => {
       >
         <v-card
           class="stats-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text class="d-flex align-center pa-4">
             <v-avatar
@@ -205,10 +205,10 @@ const getBroadcastDuration = (): string => {
               />
             </v-avatar>
             <div>
-              <p class="text-body-2 text-grey-darken-1 mb-1">
+              <p class="text-body-medium text-grey-darken-1 mb-1">
                 総視聴者数
               </p>
-              <p class="text-h6 font-weight-bold mb-0">
+              <p class="text-title-large font-weight-bold mb-0">
                 {{ props.totalViewers }}人
               </p>
             </div>
@@ -222,7 +222,7 @@ const getBroadcastDuration = (): string => {
       >
         <v-card
           class="stats-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text class="d-flex align-center pa-4">
             <v-avatar
@@ -237,10 +237,10 @@ const getBroadcastDuration = (): string => {
               />
             </v-avatar>
             <div>
-              <p class="text-body-2 text-grey-darken-1 mb-1">
+              <p class="text-body-medium text-grey-darken-1 mb-1">
                 最大同時視聴者数
               </p>
-              <p class="text-h6 font-weight-bold mb-0">
+              <p class="text-title-large font-weight-bold mb-0">
                 {{ getMaxViewers() }}人
               </p>
             </div>
@@ -254,7 +254,7 @@ const getBroadcastDuration = (): string => {
       >
         <v-card
           class="stats-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text class="d-flex align-center pa-4">
             <v-avatar
@@ -269,10 +269,10 @@ const getBroadcastDuration = (): string => {
               />
             </v-avatar>
             <div>
-              <p class="text-body-2 text-grey-darken-1 mb-1">
+              <p class="text-body-medium text-grey-darken-1 mb-1">
                 平均視聴者数
               </p>
-              <p class="text-h6 font-weight-bold mb-0">
+              <p class="text-title-large font-weight-bold mb-0">
                 {{ getAverageViewers() }}人
               </p>
             </div>
@@ -286,7 +286,7 @@ const getBroadcastDuration = (): string => {
       >
         <v-card
           class="stats-card"
-          elevation="2"
+          elevation="1"
         >
           <v-card-text class="d-flex align-center pa-4">
             <v-avatar
@@ -301,10 +301,10 @@ const getBroadcastDuration = (): string => {
               />
             </v-avatar>
             <div>
-              <p class="text-body-2 text-grey-darken-1 mb-1">
+              <p class="text-body-medium text-grey-darken-1 mb-1">
                 配信時間
               </p>
-              <p class="text-h6 font-weight-bold mb-0">
+              <p class="text-title-large font-weight-bold mb-0">
                 {{ getBroadcastDuration() }}
               </p>
             </div>
@@ -316,7 +316,7 @@ const getBroadcastDuration = (): string => {
     <!-- 視聴者数推移チャートセクション -->
     <v-card
       class="form-section-card"
-      elevation="2"
+      elevation="1"
       :loading="loading"
     >
       <v-card-title class="d-flex align-center section-header">
@@ -325,7 +325,7 @@ const getBroadcastDuration = (): string => {
           size="24"
           class="mr-3 text-primary"
         />
-        <span class="text-h6 font-weight-medium">視聴者数推移</span>
+        <span class="text-title-large font-weight-medium">視聴者数推移</span>
       </v-card-title>
       <v-card-text class="pa-6">
         <div v-if="props.viewerLogs.length > 0">
@@ -344,10 +344,10 @@ const getBroadcastDuration = (): string => {
             size="64"
             class="text-grey-lighten-1 mb-4"
           />
-          <p class="text-body-1 text-grey-darken-1 mb-2">
+          <p class="text-body-large text-grey-darken-1 mb-2">
             分析データがありません
           </p>
-          <p class="text-body-2 text-grey-darken-1">
+          <p class="text-body-medium text-grey-darken-1">
             配信が開始されると視聴者数の推移が表示されます
           </p>
         </div>
