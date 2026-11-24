@@ -5,26 +5,25 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --ext .ts .",
+    "lint": "eslint .",
     "compile": "tsc",
     "build": "node ./esbuild.config.mjs",
     "prebuild": "npm run compile"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.554.0",
-    "sharp": "^0.33.3"
+    "@aws-sdk/client-s3": "^3.1176.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.92",
-    "@types/node": "^20.5.7",
-    "@typescript-eslint/eslint-plugin": "^5.10.2",
-    "@typescript-eslint/parser": "^5.10.2",
-    "esbuild": "^0.25.0",
-    "eslint": "^8.8.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.5.1",
-    "typescript": "^4.8.4"
+    "@types/aws-lambda": "^8.10.164",
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.74.0"
   },
   "os": [
     "linux"
