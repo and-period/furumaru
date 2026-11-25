@@ -1,7 +1,9 @@
-const AWS = require('aws-sdk')
-const medialive = new AWS.MediaLive();
-const defaultSettings = require('./default.json')
-const uuid = require('uuid');
+// @aws-sdk/client-medialive は Lambda の Node.js ランタイムに同梱されているため依存に含めない
+const { MediaLiveClient, CreateChannelCommand } = require('@aws-sdk/client-medialive');
+const { randomUUID } = require('node:crypto');
+const defaultSettings = require('./default.json');
+
+const medialive = new MediaLiveClient({});
 
 module.exports.createChannelWithRTMPOutputs = async (event) => {
   const params = event;
@@ -16,12 +18,13 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
 
   settings.EncoderSettings.OutputGroups.forEach((outputGroup) => {
     outputGroup.Outputs.forEach((output) => {
-      output.OutputName = uuid.v4();
+      output.OutputName = randomUUID();
     });
   });
 
   const RTMPOutputs = params.RTMPOutputs;
-  const RTMPOutputGroup = require('./RTMPOutputGroup.json');
+  // require はキャッシュされ、ウォームスタート時に Outputs が積み上がるため複製する
+  const RTMPOutputGroup = JSON.parse(JSON.stringify(require('./RTMPOutputGroup.json')));
   if (RTMPOutputs.length > 0) {
     RTMPOutputs.forEach((output, i) => {
       settings.Destinations.push({
@@ -60,7 +63,7 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
   }
   console.log(settings);
   try {
-    const data = await medialive.createChannel(settings).promise();
+    const data = await medialive.send(new CreateChannelCommand(settings));
     console.log(data);
     return data;
   } catch (err) {
