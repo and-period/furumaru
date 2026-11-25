@@ -8,15 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@aws-sdk/client-mediastore-data':
-        specifier: ^3.1176.0
-        version: 3.1176.0
-      aws-cli-js:
-        specifier: ^2.2.3
-        version: 2.2.3
       aws-sdk:
         specifier: ^2.1693.0
         version: 2.1693.0
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
     devDependencies:
       serverless-step-functions:
         specifier: 3.31.2
@@ -30,10 +27,6 @@ packages:
 
   '@aws-sdk/client-cloudformation@3.1176.0':
     resolution: {integrity: sha512-gClvyA0s9DYKdgbKH4TI3PwWTexAGg+IGgY6dGWpJwrcziY6tAt6Amc/qKdrAIlsGqiTWtQgeKgEC95HGazTdA==}
-    engines: {node: '>=20.0.0'}
-
-  '@aws-sdk/client-mediastore-data@3.1176.0':
-    resolution: {integrity: sha512-J/o8wjz4U3cUHO01pfzG0HRiRU58uCOY72jmB2TRwOhnzpM+djLNrvRLNwTZj9B+fdQey+zlZUOuoFPYwpk1mw==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/client-s3@3.1176.0':
@@ -236,9 +229,6 @@ packages:
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
-
-  aws-cli-js@2.2.3:
-    resolution: {integrity: sha512-QHnL5VXtbXbcZK9xlvIUGr+iua5cgBXqEG0wXRoJ/DCjdG7M2jq0nSn2bV5rzuR7nOFyWFMwgLmaDXiTBSl7wg==}
 
   aws-sdk@2.1693.0:
     resolution: {integrity: sha512-cJmb8xEnVLT+R6fBS5sn/EFJiX7tUnDaPtOPZ1vFbOJtd0fnZn/Ky2XGgsvvoeliWeH7mL3TWSX5zXXGSQV6gQ==}
@@ -695,9 +685,6 @@ packages:
   next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
 
-  nodeify-ts@1.0.6:
-    resolution: {integrity: sha512-jq+8sqVG1aLqy5maMTceL8NUJ1CvarWztlxvrYh3G0aao9BsVeoVmVedUnrUSBLetP7oLIAJrPrw4+iIo7v3GA==}
-
   object-inspect@1.14.0:
     resolution: {integrity: sha512-IVgHNlp/jwQX271+Xzoq9LZNTWXxZK+cEOrGBOBxXNbn7fapnZ+Ts6TVMgNOuAezwG2wdtnMX97tTPK6VEnuOQ==}
     engines: {node: '>= 0.4'}
@@ -937,6 +924,11 @@ packages:
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
+  uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+    hasBin: true
+
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
     engines: {node: '>= 0.4'}
@@ -982,17 +974,6 @@ snapshots:
       tslib: 2.8.1
 
   '@aws-sdk/client-cloudformation@3.1176.0':
-    dependencies:
-      '@aws-sdk/core': 3.981.1
-      '@aws-sdk/credential-provider-node': 3.972.98
-      '@aws-sdk/types': 3.975.1
-      '@smithy/core': 3.41.1
-      '@smithy/fetch-http-handler': 5.8.1
-      '@smithy/node-http-handler': 4.14.2
-      '@smithy/types': 4.20.0
-      tslib: 2.8.1
-
-  '@aws-sdk/client-mediastore-data@3.1176.0':
     dependencies:
       '@aws-sdk/core': 3.981.1
       '@aws-sdk/credential-provider-node': 3.972.98
@@ -1350,10 +1331,6 @@ snapshots:
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
-
-  aws-cli-js@2.2.3:
-    dependencies:
-      nodeify-ts: 1.0.6
 
   aws-sdk@2.1693.0:
     dependencies:
@@ -1945,8 +1922,6 @@ snapshots:
 
   next-tick@1.1.0: {}
 
-  nodeify-ts@1.0.6: {}
-
   object-inspect@1.14.0: {}
 
   object-keys@1.1.1: {}
@@ -2249,6 +2224,8 @@ snapshots:
       which-typed-array: 1.1.24
 
   uuid@8.0.0: {}
+
+  uuid@8.3.2: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:
