@@ -1,5 +1,21 @@
 # Changelog
 
+## [v12.0.3](https://github.com/and-period/furumaru/compare/v12.0.2...v12.0.3) - 2026-11-25
+- chore(deps): lock file maintenance by @renovate[bot] in https://github.com/and-period/furumaru/pull/3428
+- chore(deps): lock file maintenance by @renovate[bot] in https://github.com/and-period/furumaru/pull/3429
+- chore(web/admin): 依存ライブラリをメジャー更新（Vuetify 4 ほか） by @taba2424 in https://github.com/and-period/furumaru/pull/3477
+- chore(web/shared): 依存ライブラリをメジャー更新（Storybook 10, Vitest 5 ほか） by @taba2424 in https://github.com/and-period/furumaru/pull/3478
+- chore(func): Lambda / serverless の依存ライブラリを更新（ESLint 10 ほか） by @taba2424 in https://github.com/and-period/furumaru/pull/3479
+- chore(api): 依存ライブラリを更新（stripe-go v87, casbin v3, backoff v5 ほか） by @taba2424 in https://github.com/and-period/furumaru/pull/3476
+- fix(ci): 失効した Action の更新と serverless の pnpm 移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3480
+- fix(docker): ベースイメージを更新し脆弱性を解消 by @taba2424 in https://github.com/and-period/furumaru/pull/3481
+- fix(serverless): 環境ファイルの変数参照を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3482
+- fix(serverless): Lambda パッケージサイズを上限内に収める by @taba2424 in https://github.com/and-period/furumaru/pull/3483
+- chore(api): gin-contrib を更新し Go を 1.26.10 以上に引き上げ by @taba2424 in https://github.com/and-period/furumaru/pull/3484
+- chore(api): sentry-go を v0.50.0 に更新し slog の Sentry 連携を自前実装に置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/3485
+- chore(serverless): Lambda を AWS SDK for JavaScript v3 に移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3486
+- chore(deps): pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3488
+
 ## [v12.0.2](https://github.com/and-period/furumaru/compare/v12.0.1...v12.0.2) - 2026-03-22
 - fix(web): Nuxt dev 起動時の client.precomputed.mjs ENOENT エラーを自動修復 by @taba2424 in https://github.com/and-period/furumaru/pull/3425
 - fix(web): 管理画面の対応が必要な注文から支払い待ちを除外 by @taba2424 in https://github.com/and-period/furumaru/pull/3427
