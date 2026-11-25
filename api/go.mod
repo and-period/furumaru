@@ -1,6 +1,6 @@
 module github.com/and-period/furumaru/api
 
-go 1.26.10
+go 1.27.4
 
 require (
 	firebase.google.com/go/v4 v4.23.0
@@ -26,8 +26,8 @@ require (
 	github.com/cenkalti/backoff/v5 v5.0.3
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/dlclark/regexp2 v1.12.0
-	github.com/getsentry/sentry-go v0.47.0
-	github.com/getsentry/sentry-go/slog v0.47.0
+	github.com/getsentry/sentry-go v0.50.0
+	github.com/getsentry/sentry-go/slog v0.50.0
 	github.com/gin-contrib/gzip v1.2.10
 	github.com/gin-contrib/pprof v1.5.8
 	github.com/gin-gonic/gin v1.12.0
@@ -60,7 +60,7 @@ require (
 	golang.org/x/oauth2 v0.38.0
 	golang.org/x/sync v0.25.0
 	golang.org/x/text v0.44.0
-	google.golang.org/api v0.316.0
+	google.golang.org/api v0.317.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261123191846-1e707ab9fbc2
 	google.golang.org/grpc v1.85.0
 	google.golang.org/protobuf v1.36.12
@@ -108,7 +108,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.4 // indirect
 	github.com/MirrexOne/unqueryvet v1.2.1 // indirect
 	github.com/OpenPeeDeeP/depguard/v2 v2.2.1 // indirect
-	github.com/air-verse/air v1.63.0 // indirect
+	github.com/air-verse/air v1.67.4 // indirect
 	github.com/alecthomas/chroma/v2 v2.20.0 // indirect
 	github.com/alecthomas/go-check-sumtype v0.3.1 // indirect
 	github.com/alexkohler/nakedret/v2 v2.0.6 // indirect
@@ -234,7 +234,7 @@ require (
 	github.com/golangci/dupl v0.0.0-20250308024227-f665c8d69b32 // indirect
 	github.com/golangci/go-printf-func-name v0.1.1 // indirect
 	github.com/golangci/gofmt v0.0.0-20250106114630-d62b90e6713d // indirect
-	github.com/golangci/golangci-lint/v2 v2.5.0 // indirect
+	github.com/golangci/golangci-lint/v2 v2.15.0 // indirect
 	github.com/golangci/golines v0.0.0-20250217134842-442fd0091d95 // indirect
 	github.com/golangci/misspell v0.7.0 // indirect
 	github.com/golangci/nilerr v0.0.0-20250918000102-015671e622fe // indirect
@@ -366,7 +366,7 @@ require (
 	github.com/stretchr/objx v0.5.3 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/sv-tools/openapi v0.2.1 // indirect
-	github.com/swaggo/swag/v2 v2.0.0-rc4 // indirect
+	github.com/swaggo/swag/v2 v2.0.0-rc6 // indirect
 	github.com/tdewolff/parse/v2 v2.8.3 // indirect
 	github.com/testcontainers/testcontainers-go v0.45.0 // indirect
 	github.com/tetafro/godot v1.5.4 // indirect
@@ -429,7 +429,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20261123191846-1e707ab9fbc2 // indirect
 	gotest.tools/gotestsum v1.13.0 // indirect
 	honnef.co/go/tools v0.6.1 // indirect
-	mvdan.cc/gofumpt v0.9.1 // indirect
+	mvdan.cc/gofumpt v0.12.0 // indirect
 	mvdan.cc/unparam v0.0.0-20250301125049-0df0534333a4 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
