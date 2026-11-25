@@ -1,5 +1,5 @@
 # ビルド用コンテナ
-FROM golang:1.26.0-bookworm@sha256:2a0ba12e116687098780d3ce700f9ce3cb340783779646aafbabed748fa6677c as builder
+FROM golang:1.26.11-bookworm@sha256:ea47ee45f1284d60f9cc09cb2c3bb4f508c256b640bd8bb30342ff13d1adcb52 as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
@@ -34,14 +34,15 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     make build-hack SERVICE=${SERVICE} BUILD_DIR=/dist
 
 # 実行用コンテナ
-FROM debian:bookworm-slim@sha256:f06537653ac770703bc45b4b113475bd402f451e85223f0f2837acbf89ab020a
+FROM debian:bookworm-slim@sha256:e67eeead736ff7bbe258ef088bff683635c561b1fcfefad0806c1df4ab49ce0e
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 
 WORKDIR /var/api
 
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
     ca-certificates \
     nscd \
     && rm -rf /var/lib/apt/lists/*
