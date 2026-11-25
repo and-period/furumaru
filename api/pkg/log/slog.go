@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	sentryslog "github.com/getsentry/sentry-go/slog"
 	slogmulti "github.com/samber/slog-multi"
 )
 
@@ -42,16 +41,20 @@ func Start(ctx context.Context, opts ...Option) (func(), error) {
 
 	stopFn := func() {
 		var wg sync.WaitGroup
-		wg.Add(1) //nolint:mnd
+		wg.Add(1)
+
 		go func() {
 			defer wg.Done()
+
 			stopSentry()
 		}()
+
 		wg.Wait()
 	}
 
 	logger := slog.New(slogmulti.Pipe(middleware).Handler(slogmulti.Fanout(handlers...)))
 	slog.SetDefault(logger)
+
 	return stopFn, nil
 }
 
@@ -62,35 +65,16 @@ func startSentry(ctx context.Context, opts *options, handlerFunc func(slog.Handl
 		Environment: opts.sentryEnvironment,
 	}
 	sentry.Init(sopts)
+
 	fn := func() {
 		const timeout = time.Second * 5
+
 		_ = sentry.Flush(timeout)
 	}
-	lopts := &sentryslog.Option{
-		EventLevel: sentryLevelsFromMinimum(slogLevel(opts.sentryLevel)),
-		AddSource:  true,
-	}
-	handler := lopts.NewSentryHandler(ctx)
-	handlerFunc(handler)
-	return fn
-}
 
-func sentryLevelsFromMinimum(minLevel slog.Level) []slog.Level {
-	levels := []slog.Level{
-		slog.LevelDebug,
-		slog.LevelInfo,
-		slog.LevelWarn,
-		slog.LevelError,
-		sentryslog.LevelFatal,
-	}
-	var res []slog.Level
-	for _, level := range levels {
-		if level < minLevel {
-			continue
-		}
-		res = append(res, level)
-	}
-	return res
+	handlerFunc(newSentryHandler(ctx, slogLevel(opts.sentryLevel)))
+
+	return fn
 }
 
 func slogLevel(level string) slog.Level {
