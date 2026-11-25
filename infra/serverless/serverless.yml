@@ -4,12 +4,9 @@ frameworkVersion: "4"
 
 package:
   patterns:
-    - "!node_modules/.bin/**"
-    - "!node_modules/.pnpm/**"
-    - "!node_modules/serverless/**"
-    - "!node_modules/serverless-step-functions/**"
-    - "!node_modules/@aws-sdk/**"
-    - "!node_modules/@smithy/**"
+    - "!node_modules/**"
+    - "!.npmrc"
+    - "!pnpm-lock.yaml"
 
 provider:
   name: aws
