@@ -5,20 +5,14 @@ frameworkVersion: "4"
 provider:
   name: aws
   runtime: nodejs22.x
-  account: ${self:custom.envMap.${self:provider.stage}.accountId}
-  stage: ${opt:stage, self:custom.defaultStage}
+  account: ${file(env/${sls:stage}.yaml):accountId}
+  stage: ${opt:stage, "stg"}
   region: ap-northeast-1
   vpc:
-    securityGroupIds: ${self:custom.envMap.${self:provider.stage}.vpc.securityGroups}
-    subnetIds: ${self:custom.envMap.${self:provider.stage}.vpc.subnetIds}
+    securityGroupIds: ${file(env/${sls:stage}.yaml):vpc.securityGroups}
+    subnetIds: ${file(env/${sls:stage}.yaml):vpc.subnetIds}
   iam:
     role: defaultRole
-
-custom:
-  defaultStage: stg
-  envMap:
-    prd: ${file(env/prd.yaml)}
-    stg: ${file(env/stg.yaml)}
 
 resources:
   Resources:
@@ -286,7 +280,7 @@ stepFunctions:
             Comment: リソース情報を登録
             InputPath: $
             ResultPath: $.RegisterResoursesInfoResult
-            Resource: ${self:custom.envMap.${self:provider.stage}.externalFunction.RegisterResoursesInfoArn}
+            Resource: ${file(env/${sls:stage}.yaml):externalFunction.RegisterResoursesInfoArn}
             End: True
     deleteLiveResourcesMachine:
       definition:
