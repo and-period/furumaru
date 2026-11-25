@@ -1,6 +1,6 @@
 module github.com/and-period/furumaru/api
 
-go 1.26.0
+go 1.26.10
 
 require (
 	firebase.google.com/go/v4 v4.23.0
@@ -28,8 +28,8 @@ require (
 	github.com/dlclark/regexp2 v1.12.0
 	github.com/getsentry/sentry-go v0.47.0
 	github.com/getsentry/sentry-go/slog v0.47.0
-	github.com/gin-contrib/gzip v1.2.5
-	github.com/gin-contrib/pprof v1.5.3
+	github.com/gin-contrib/gzip v1.2.10
+	github.com/gin-contrib/pprof v1.5.8
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-playground/validator/v10 v10.30.6
 	github.com/go-sql-driver/mysql v1.10.2
@@ -195,7 +195,7 @@ require (
 	github.com/fzipp/gocyclo v0.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.16 // indirect
 	github.com/ghostiam/protogetter v0.3.16 // indirect
-	github.com/gin-contrib/sse v1.1.0 // indirect
+	github.com/gin-contrib/sse v1.1.1 // indirect
 	github.com/go-critic/go-critic v0.13.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.9 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
