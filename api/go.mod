@@ -26,8 +26,7 @@ require (
 	github.com/cenkalti/backoff/v5 v5.0.3
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/dlclark/regexp2 v1.12.0
-	github.com/getsentry/sentry-go v0.47.0
-	github.com/getsentry/sentry-go/slog v0.47.0
+	github.com/getsentry/sentry-go v0.50.0
 	github.com/gin-contrib/gzip v1.2.10
 	github.com/gin-contrib/pprof v1.5.8
 	github.com/gin-gonic/gin v1.12.0
